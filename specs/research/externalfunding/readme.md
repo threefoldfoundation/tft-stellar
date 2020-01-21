@@ -11,6 +11,14 @@ An option is to fund the transactions from the Threefoldfoundation since transac
 
 An extra option might be that having the Threefoldfoundation fund the Lumen for the transaction fee is paid by the user in TFT so it feels like the transaction fee is actually in TFT.
 
+## Remarks
+
+In Stellar, there is the notion of a transaction and a transacyion envelope. The transaction contains all information and the transaction envelope contains the transaction + the required signatures.
+
+Signatures are made over hash(network id, transaction envelopetype identifier,serialized transaction).
+
+This means that signatures can only be added if the complete transaction is already constructed.
+
 ## Testscripts
 
 The scripts use the python virtualenv described and used in the [regular scripts](../../../scripts).
@@ -44,3 +52,4 @@ Added trustline to TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3 
 {'_links': {'transaction': {'href': 'https://horizon-testnet.stellar.org/transactions/1cdea2dd8797ce1d069211a122876d202b8c5bb1e6abc3f11863b021324da0f8'}}, 'hash': '1cdea2dd8797ce1d069211a122876d202b8c5bb1e6abc3f11863b021324da0f8', 'ledger': 1314650, 'envelope_xdr': 'AAAAAEc+Fa0JjEWA9RTPxukTFA2UYMC2AScb21Roc6rddyb8AAAAZAAT2/EAAAABAAAAAAAAAAAAAAABAAAAAAAAAAYAAAABVEZUAAAAAAA5/GQbeotMseuGw9LomxJQHv5mNT8nihPVgEwpv/efZH//////////AAAAAAAAAAHddyb8AAAAQKI8u5mnZjwY7nwwRMz+unavKb2kJ++c0wrXlLmYu5MsAHSs8zuFnkVSTZV7tqCSfNSSthvtJ/maTasm1YOSPAo=', 'result_xdr': 'AAAAAAAAAGQAAAAAAAAAAQAAAAAAAAAGAAAAAAAAAAA=', 'result_meta_xdr': 'AAAAAQAAAAIAAAADABQPWgAAAAAAAAAARz4VrQmMRYD1FM/G6RMUDZRgwLYBJxvbVGhzqt13JvwAAAAXSHbnnAAT2/EAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABABQPWgAAAAAAAAAARz4VrQmMRYD1FM/G6RMUDZRgwLYBJxvbVGhzqt13JvwAAAAXSHbnnAAT2/EAAAABAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAABAAAAAwAAAAMAFA9aAAAAAAAAAABHPhWtCYxFgPUUz8bpExQNlGDAtgEnG9tUaHOq3Xcm/AAAABdIduecABPb8QAAAAEAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAEAFA9aAAAAAAAAAABHPhWtCYxFgPUUz8bpExQNlGDAtgEnG9tUaHOq3Xcm/AAAABdIduecABPb8QAAAAEAAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAFA9aAAAAAQAAAABHPhWtCYxFgPUUz8bpExQNlGDAtgEnG9tUaHOq3Xcm/AAAAAFURlQAAAAAADn8ZBt6i0yx64bD0uibElAe/mY1PyeKE9WATCm/959kAAAAAAAAAAB//////////wAAAAEAAAAAAAAAAA=='}
 Added trustline to TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3 for account GBDT4FNNBGGELAHVCTH4N2ITCQGZIYGAWYASOG63KRUHHKW5O4TPYHLU
 ```
+
