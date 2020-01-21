@@ -23,7 +23,9 @@ This means that signatures can only be added if the complete transaction is alre
 
 The scripts use the python virtualenv described and used in the [regular scripts](../../../scripts).
 
-**Creating the accounts:**
+### Creating the accounts
+
+**Creating the keypairs:**
 
 ```sh
 rob@MacBook-Pro-783 scripts % ./createAccounts.py
@@ -53,3 +55,13 @@ Added trustline to TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3 
 Added trustline to TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3 for account GBDT4FNNBGGELAHVCTH4N2ITCQGZIYGAWYASOG63KRUHHKW5O4TPYHLU
 ```
 
+### Fund the sending account with the custom asset
+
+Either use the TFT faucet or if you have access to testnet assets, use your testnet wallet or the `fundWithAsset.py` script to send some tokens to the `from` account.
+
+```
+./fundWithAsset.py GAXABB7JFCAS5G2BBBD6PZ3U64C2UZXMW4UH6Y7FWZYK7EXBGCRWEV33 --signer=<SOURCE_SECRET_KEY>
+{'_links': {'transaction': {'href': 'https://horizon-testnet.stellar.org/transactions/9b20ed8f48abca15844628eb7e9a356f4eaa408c817e78a8dd9ea6f0604c07e2'}}, 'hash': '9b20ed8f48abca15844628eb7e9a356f4eaa408c817e78a8dd9ea6f0604c07e2', 'ledger': 1315596, 'envelope_xdr': 'AAAAADn8ZBt6i0yx64bD0uibElAe/mY1PyeKE9WATCm/959kAAAAZAASKjQAAAACAAAAAAAAAAAAAAABAAAAAAAAAAEAAAAALgCH6SiBLptBCEfn53T3Bapm7Lcof2PltnCvkuEwo2IAAAABVEZUAAAAAAA5/GQbeotMseuGw9LomxJQHv5mNT8nihPVgEwpv/efZAAAAAAF9eEAAAAAAAAAAAG/959kAAAAQN8rzq+N3e5YG7cXlhRenaBxCX2Kv0aNRJS+abyMAT/alZpsDAynJj4Shyooif2zz4ciGprs8pNQ02PdfNhg+Qc=', 'result_xdr': 'AAAAAAAAAGQAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAA=', 'result_meta_xdr': 'AAAAAQAAAAIAAAADABQTDAAAAAAAAAAAOfxkG3qLTLHrhsPS6JsSUB7+ZjU/J4oT1YBMKb/3n2QAAAAXSHbnOAASKjQAAAABAAAAAAAAAAAAAAAAAAAAEXd3dzIudGhyZWVmb2xkLmlvAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAEAFBMMAAAAAAAAAAA5/GQbeotMseuGw9LomxJQHv5mNT8nihPVgEwpv/efZAAAABdIduc4ABIqNAAAAAIAAAAAAAAAAAAAAAAAAAARd3d3Mi50aHJlZWZvbGQuaW8AAAABAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAIAAAADABQPWQAAAAEAAAAALgCH6SiBLptBCEfn53T3Bapm7Lcof2PltnCvkuEwo2IAAAABVEZUAAAAAAA5/GQbeotMseuGw9LomxJQHv5mNT8nihPVgEwpv/efZAAAAAAAAAAAf/////////8AAAABAAAAAAAAAAAAAAABABQTDAAAAAEAAAAALgCH6SiBLptBCEfn53T3Bapm7Lcof2PltnCvkuEwo2IAAAABVEZUAAAAAAA5/GQbeotMseuGw9LomxJQHv5mNT8nihPVgEwpv/efZAAAAAAF9eEAf/////////8AAAABAAAAAAAAAAA='}
+Sent 10 TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3 to GAXABB7JFCAS5G2BBBD6PZ3U64C2UZXMW4UH6Y7FWZYK7EXBGCRWEV33
+
+## Conclusion
