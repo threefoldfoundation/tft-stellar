@@ -80,4 +80,4 @@ Given the way how signatures work in Stellar( as explained earlier), the transac
 
 Another option is to have the funding service fill in the transaction details,sign it and give it back to the client that needs to verify if everything is still correct, sign and publish it.
 
-One can also add a fee in TFT for the funding service to accept the transaction to fund.
+One can also add a fee in TFT for the funding service to accept the transaction to fund or it can be added by the funding service and then it's up to the client to accept it.
