@@ -1,5 +1,7 @@
 # Time locks
 
+## Problem
+
 Tfchain (through Rivine) has an easy way of timelocking funds sent to an account.
 As traditional blockchains, the sender creates an output but with an extra condition, the timelock.
 
