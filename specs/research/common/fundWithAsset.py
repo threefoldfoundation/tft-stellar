@@ -5,12 +5,6 @@ import click
 import stellar_sdk
 from stellar_sdk.transaction_builder import TransactionBuilder
 
-@click.command()
-@click.argument('destination', type=str)
-@click.option('--amount', type=str,default='10')
-@click.option('--asset',default='TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3')
-@click.option('--source', type=str, default='GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3')
-@click.option('--signer', multiple=True, required=True,help='Secret key of a required signer')
 def send_asset_to_account(destination,asset,amount,source, signer):
     split_asset= asset.split(':',1)
     asset_code=split_asset[0]
@@ -32,6 +26,15 @@ def send_asset_to_account(destination,asset,amount,source, signer):
         asset=asset,
         destination=destination
     ))
+
+@click.command()
+@click.argument('destination', type=str)
+@click.option('--amount', type=str,default='10')
+@click.option('--asset',default='TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3')
+@click.option('--source', type=str, default='GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3')
+@click.option('--signer', multiple=True, required=True,help='Secret key of a required signer')
+def send_asset_to_account_command(destination,asset,amount,source, signer):
+    send_asset_to_account(destination,asset,amount,source, signer)
 
 if __name__ == '__main__':
   send_asset_to_account()
