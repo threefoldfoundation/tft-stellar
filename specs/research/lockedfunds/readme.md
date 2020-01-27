@@ -68,6 +68,4 @@ Process:
 The serialized unlock transaction should be kept to submit to the network after the unlock time has expired.
 After this, the destination account can merge the escrow account with it's own.
 
-The question on how to find all escrow accounts where the destination is a signer is still open.
-
-It is possible to find all escrow accounts where the destination is a signersince the [horizon server supports it](https://www.stellar.org/developers/horizon/reference/endpoints/accounts.html).
+It is possible to find all escrow accounts where the destination is a signer since the [horizon server supports it](https://www.stellar.org/developers/horizon/reference/endpoints/accounts.html).
