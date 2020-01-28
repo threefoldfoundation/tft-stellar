@@ -68,4 +68,10 @@ Process:
 The serialized unlock transaction should be kept to submit to the network after the unlock time has expired.
 After this, the destination account can merge the escrow account with it's own.
 
-It is possible to find all escrow accounts where the destination is a signer since the [horizon server supports it](https://www.stellar.org/developers/horizon/reference/endpoints/accounts.html).
+It is possible to find all escrow accounts where the destination is a signer since the [horizon server supports it](https://www.stellar.org/developers/horizon/reference/endpoints/accounts.html). as demonstrated in the 'findEscrowAccounts.py script.
+
+```sh
+./findEscrowAccounts.py GACDYYBJIGPT5RNORYGTFA46MVLMU5GY7JQ3NHW6AIEOMIH63VWFHTIN
+Account GB23ATJXDRUFQTTUCVQ5YUIG3TJ4YZP3NPUXAS6CVPYESWP7XXWNKYXL with 1.0000000 TFT has unlocktransaction hashes ['TB2PBXB443YJOA5JSU35UJQIJF2FD4F7XHK77Z4QWWDXSGEX7FD2AUEI']
+Account GBGQGHALUVLQTX6E2J2OZ7H6MPN663YZ7363WB34UJ7EW5YHJZVWISTS with 1.0000000 TFT has unlocktransaction hashes ['TBTVIHAGD6DRVAXAHCBQ7T2OF5KJPB3MYZG5JI4GWMUOLUW6IRTXD2EL']
+```

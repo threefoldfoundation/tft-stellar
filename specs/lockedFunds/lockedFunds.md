@@ -25,4 +25,5 @@ It does mean however that the preauthorization transaction is known to receiver 
 5. Send the custom assets to the escrow account
 6. Make the signed unlock transaction available to the receiver
 
-A working example can be found in the [locked funds research folder](../research/lockedunds).
+A working example can be found in the [locked funds research folder](../research/lockedunds). It also demonstrates how to find the locked funds in the escrow accounts.
+
