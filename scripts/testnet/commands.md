@@ -19,5 +19,5 @@ python account/fund-account.py --address GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQ
 ## Publish Token home domain
 
 ```sh
-../publishdomain.py --network=test TFT www2.threefold.io --issuer_secret=<Issuer secret>
+../publishdomain.py --network=test TFT www3.threefold.io --issuer_secret=<Issuer secret>
 ```

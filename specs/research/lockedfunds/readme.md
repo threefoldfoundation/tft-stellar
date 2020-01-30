@@ -53,7 +53,7 @@ Process:
 3. Create a signed unlock transaction (can oly be submitted after the unlock time) that sets the signing options of the escrow account to
     - require only 1 signature
     - remove the escrow account as signer
-4. Set the signing options for the escrow account to 
+4. Set the signing options for the escrow account to
     - requires 2 signatures
     - add the receiver as signer
     - add the hash of the unlock transaction as signer
