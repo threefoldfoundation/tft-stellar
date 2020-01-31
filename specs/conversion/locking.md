@@ -20,6 +20,12 @@ An account lock is a transaction with a unique transaction hash. This transactio
 
 ### Stop accepting transactions in the consensus
 
+In other words, pull the plug.
+
+Essentially the same but not so graceful and no hashes to include in the coin issuance transaction.
+
 ### Atomic Swaps
+
+As explained in the "why", this means having TFT running on both platforms and the traceability of coin creation because of the migration is far less.
 
 ## Process
