@@ -33,4 +33,3 @@ As explained in the "why", this means having TFT running on both platforms and t
 ## Distinction between locked and unlocked addresses
 
 Through the explorer: `https://explorer.testnet.threefoldtoken.com/explorer/authcoin/status?addr=address`
-
