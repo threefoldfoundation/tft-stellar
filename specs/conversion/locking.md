@@ -29,3 +29,8 @@ Essentially the same but not so graceful and no hashes to include in the coin is
 As explained in the "why", this means having TFT running on both platforms and the traceability of coin creation because of the migration is far less.
 
 ## Process
+
+## Distinction between locked and unlocked addresses
+
+Through the explorer: `https://explorer.testnet.threefoldtoken.com/explorer/authcoin/status?addr=address`
+
