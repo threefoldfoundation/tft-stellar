@@ -8,3 +8,7 @@ The other way is possible though but it does mean that a script to transfer all 
 A possible solution is to provide a service to migrate the funds on demand, initiated by the user's wallet.
 
 Before the conversion, all addresses on tfchain will be locked by unauthorizing them. [A seperate document explains why and the details](./locking.md).
+
+## Flow
+
+![Conversion sequence diagram](./Conversionflow.png)

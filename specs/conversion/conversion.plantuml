@@ -1,0 +1,27 @@
+@startuml conversionflow
+
+title Conversion flow
+
+actor Wallet
+participant "Conversion service" as cs
+participant "Stellar network" as sn
+
+Wallet-> Wallet: create Stellar address
+
+Wallet -> cs: Activate Account
+activate cs
+cs-> sn: Activate and fund account with Lumen
+cs->Wallet
+deactivate cs
+
+Wallet->sn: create trustline
+Wallet->cs: transfer TFT to account
+activate cs
+cs-> sn : transfer TFT to account
+cs->Wallet
+deactivate cs
+
+
+
+
+@enduml
