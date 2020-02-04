@@ -11,4 +11,4 @@ Before the conversion, all addresses on tfchain will be locked by unauthorizing 
 
 ## Flow
 
-![Conversion sequence diagram](./Conversionflow.png)
+![Conversion sequence diagram](./conversionflow.png)
