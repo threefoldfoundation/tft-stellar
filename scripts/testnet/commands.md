@@ -2,21 +2,23 @@
 
 ## Issuing Account
 
-These python scripts are available in the [Stellar examples of Rivine](https://github.com/threefoldtech/rivine/tree/master/research/stellar/examples/python)
+These commands are available through [Jumpscale](https://github.com/threefoldtech/jumpscaleX_core).
 
-Create a keypair:
+Create a wallet:
 
 ```sh
-python account/create-keypair.py
+j.clients.stellar.new('issuerwallet', network='TEST')
 ```
 
 Activate and fund the account:
 
 ```sh
-python account/fund-account.py --address GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3
+j.clients.stellar.issuerwallet.activate_through_friendbot()
 ```
 
 ## Publish Token home domain
+
+See the [readme](../readme.md) on how to run these scripts.
 
 ```sh
 ../publishdomain.py --network=test TFT www3.threefold.io --issuer_secret=<Issuer secret>
