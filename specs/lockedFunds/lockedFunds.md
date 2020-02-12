@@ -27,3 +27,7 @@ It does mean however that the preauthorization transaction is known to receiver 
 7. Make the signed unlock transaction available to the receiver
 
 A working example can be found in the [locked funds research folder](../research/lockedfunds). It also demonstrates how to find the locked funds in the escrow accounts.
+
+## Implementations
+
+Jumpscale has a working implementation of locked token.
