@@ -30,4 +30,4 @@ A working example can be found in the [locked funds research folder](../research
 
 ## Implementations
 
-Jumpscale has a working implementation of locked token.
+[Jumpscale](https://github.com/threefoldtech/jumpscaleX_libs/tree/development/JumpscaleLibs/clients/stellar) has a working implementation of locked tokens.
