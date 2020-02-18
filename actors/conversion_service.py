@@ -4,7 +4,18 @@ import time
 
 
 class conversion_service(j.baseclasses.threebot_actor):
-    
+
+
+    def _stellar_address_used_before(self, stellar_address):
+        try:
+           stellar_client= j.clients.stellar.get("converter")
+           from stellar_sdk.exceptions import NotFoundError
+           stellar_client.list_transactions(address=stellar_address)
+        except NotFoundError:
+            return False
+        else:
+            return True
+
     def _stellar_address_to_tfchain_address(self, stellar_address):
         from JumpscaleLibs.clients.tfchain.types.CryptoTypes import PublicKey, PublicKeySpecifier
         from stellar_sdk import strkey
@@ -15,9 +26,11 @@ class conversion_service(j.baseclasses.threebot_actor):
 
     @j.baseclasses.actor_method
     def activate_account(self, address, tfchain_address, schema_out=None, user_session=None):
-        converter = j.clients.stellar.get("converter")
+        if self._stellar_used_before(address):
+           raise j.exceptions.Base("This address is not new") 
         if tfchain_address != self._stellar_address_to_tfchain_address(address):
             raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
+        converter = j.clients.stellar.get("converter")
         return converter.activate_account(address)
 
     @j.baseclasses.actor_method
