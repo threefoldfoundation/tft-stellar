@@ -5,9 +5,20 @@ import gevent
 
 
 class conversion_service(j.baseclasses.threebot_actor):
+    
+    def _stellar_address_to_tfchain_address(self, stellar_address):
+        from JumpscaleLibs.clients.tfchain.types.CryptoTypes import PublicKey, PublicKeySpecifier
+        from stellar_sdk import strkey
+
+        raw_public_key = strkey.StrKey.decode_ed25519_public_key(stellar_address)
+        rivine_public_key = PublicKey(PublicKeySpecifier.ED25519, raw_public_key)
+        return rivine_public_key.unlockhash
+
     @j.baseclasses.actor_method
-    def activate_account(self, address, schema_out=None, user_session=None):
+    def activate_account(self, address, tfchain_address, schema_out=None, user_session=None):
         converter = j.clients.stellar.get("converter")
+        if tfchain_address != self._stellar_address_to_tfchain_address(address):
+            raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
         return converter.activate_account(address)
 
     @j.baseclasses.actor_method
