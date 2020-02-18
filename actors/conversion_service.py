@@ -4,7 +4,7 @@ import time
 import gevent
 
 
-class Conversion_service(j.baseclasses.threebot_actor):
+class conversion_service(j.baseclasses.threebot_actor):
     @j.baseclasses.actor_method
     def activate_account(self, address, schema_out=None, user_session=None):
         converter = j.clients.stellar.get("converter")

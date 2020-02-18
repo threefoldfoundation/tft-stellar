@@ -1,7 +1,7 @@
 from Jumpscale import j
 
 
-class Unlock_service(j.baseclasses.threebot_actor):
+class unlock_service(j.baseclasses.threebot_actor):
     def _init(self, **kwargs):
         self.unlockhash_transaction_model = j.threebot.packages.threefoldfoundation.tft_stellar.bcdb.model_get(
             url="threefoldfoundation.tft_stellar.unlockhash_transaction"
