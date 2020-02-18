@@ -1,7 +1,6 @@
 from Jumpscale import j
 from decimal import Decimal, getcontext
 import time
-import gevent
 
 
 class conversion_service(j.baseclasses.threebot_actor):
