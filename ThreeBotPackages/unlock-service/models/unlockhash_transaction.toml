@@ -1,0 +1,5 @@
+@url = threefoldfoundation.unlock_service.unlockhash_transaction
+
+unlockhash** = (S)
+
+transaction_xdr = (S)

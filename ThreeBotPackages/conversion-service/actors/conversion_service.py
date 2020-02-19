@@ -67,13 +67,16 @@ class conversion_service(j.baseclasses.threebot_actor):
         if not unlocked_tokens.is_zero():
             converter.transfer(stellar_address, unlocked_tokens, asset)
 
+        def format_output(lock_time, unlock_tx_xdr):
+            return {"unlocks_at": lock_time, "unlock_tx_xdr": unlock_tx_xdr}
+
         unlock_tx_xdrs = []
         if not locked_tokens.is_zero():
             for tx in result.transactions:
                 for coin_output in tx.coin_outputs:
                     lock_time = coin_output.condition.lock.value
                     if time.time() < lock_time:
-                        unlock_tx_xdr = converter.transfer_locked_funds(stellar_address, coin_output.value, asset, lock_time)
-                        unlock_tx_xdrs.append(unlock_tx_xdr)
+                        unlock_tx_xdr = converter.transfer(stellar_address, coin_output.value, asset, lock_time)
+                        unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
 
-        return unlock_tx_xdrs
+        return json.dumps(unlock_tx_xdrs)

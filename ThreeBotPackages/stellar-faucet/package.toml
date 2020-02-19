@@ -1,0 +1,10 @@
+[source]
+name = "stellar_faucet"
+description = "Package that provides tooling for stellar conversion"
+threebot = "threefoldfoundation"
+version = "0.0.1"
+
+# [[bcdbs]]
+# namespace = "threefoldfoundation"
+# type = "zdb"
+# instance = "default"
