@@ -8,17 +8,24 @@ class unlock_service(j.baseclasses.threebot_actor):
         )
 
     @j.baseclasses.actor_method
-    def create_unlockhash_transaction(self, unlockhash_transaction, schema_out, user_session):
+    def create_unlockhash_transaction(self, unlockhash, transaction_xdr, schema_out, user_session):
         """
       ```in
-      unlockhash_transaction = (O) !threefoldfoundation.tft_stellar.unlockhash_transaction
+      unlockhash = (S)
+      transaction_xdr = (S)
       ```
 
       ```out
       unlockhash_transaction = (O) !threefoldfoundation.tft_stellar.unlockhash_transaction
       ```
       """
-        unlockhash_transaction = self.unlockhash_transaction_model.new(unlockhash_transaction).save()
+        unlockhash_transaction = self.unlockhash_transaction_model.new()
+
+        unlockhash_transaction.unlockhash = unlockhash
+        unlockhash_transaction.transaction_xdr = transaction_xdr
+
+        unlockhash_transaction.save()
+
         return unlockhash_transaction
 
     @j.baseclasses.actor_method
