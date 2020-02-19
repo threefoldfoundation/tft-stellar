@@ -3,8 +3,8 @@ from Jumpscale import j
 
 class unlock_service(j.baseclasses.threebot_actor):
     def _init(self, **kwargs):
-        self.unlockhash_transaction_model = j.threebot.packages.threefoldfoundation.tft_stellar.unlock_service.bcdb.model_get(
-            url="threefoldfoundation.tft_stellar.unlock_service.unlockhash_transaction"
+        self.unlockhash_transaction_model = j.threebot.packages.threefoldfoundation.unlock_service.bcdb.model_get(
+            url="threefoldfoundation.unlock_service.unlockhash_transaction"
         )
 
     @j.baseclasses.actor_method
@@ -16,7 +16,7 @@ class unlock_service(j.baseclasses.threebot_actor):
       ```
 
       ```out
-      unlockhash_transaction = (O) !threefoldfoundation.tft_stellar.unlock_service.unlockhash_transaction
+      unlockhash_transaction = (O) !threefoldfoundation.unlock_service.unlockhash_transaction
       ```
       """
         unlockhash_transaction = self.unlockhash_transaction_model.new()
@@ -36,7 +36,7 @@ class unlock_service(j.baseclasses.threebot_actor):
       ```
 
       ```out
-      !threefoldfoundation.tft_stellar.unlock_service.unlockhash_transaction
+      !threefoldfoundation.unlock_service.unlockhash_transaction
       ```
       """
         try:
@@ -51,7 +51,7 @@ class unlock_service(j.baseclasses.threebot_actor):
     def list(self, schema_out=None, user_session=None):
         """
         ```out
-        unlockhash_transactions = (LO) !threefoldfoundation.tft_stellar.unlockhash_transaction
+        unlockhash_transactions = (LO) !threefoldfoundation.unlockhash_transaction
         ```
         """
         out = schema_out.new()

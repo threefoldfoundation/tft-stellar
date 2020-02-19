@@ -1,4 +1,4 @@
-@url = threefoldfoundation.tft_stellar.unlock_service.unlockhash_transaction
+@url = threefoldfoundation.unlock_service.unlockhash_transaction
 
 unlockhash** = (S)
 
