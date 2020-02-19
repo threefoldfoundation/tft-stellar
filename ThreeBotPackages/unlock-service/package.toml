@@ -1,10 +1,10 @@
 [source]
 name = "unlock_service"
-description = "Package that provides tooling for stellar conversion"
+description = "Package that provides a key value store for storing and retrieving unlockhash transactions"
 threebot = "threefoldfoundation"
 version = "0.0.1"
 
 [[bcdbs]]
-namespace = "threefoldfoundation.tft_stellar"
+namespace = "threefoldfoundation.unlock_service"
 type = "zdb"
 instance = "default"

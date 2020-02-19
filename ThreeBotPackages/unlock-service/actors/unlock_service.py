@@ -51,7 +51,7 @@ class unlock_service(j.baseclasses.threebot_actor):
     def list(self, schema_out=None, user_session=None):
         """
         ```out
-        unlockhash_transactions = (LO) !threefoldfoundation.unlockhash_transaction
+        unlockhash_transactions = (LO) !threefoldfoundation.unlock_service.unlockhash_transaction
         ```
         """
         out = schema_out.new()
