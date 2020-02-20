@@ -32,7 +32,7 @@ class conversion_service(j.baseclasses.threebot_actor):
         if tfchain_address != self._stellar_address_to_tfchain_address(address):
             raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
         converter = j.clients.stellar.get("converter")
-        return converter.activate_account(address)
+        return converter.activate_account(address, starting_balance="2.6")
 
     @j.baseclasses.actor_method
     def transfer_tokens(self, threefold_address, stellar_address, asset_code, issuer, schema_out=None, user_session=None):
