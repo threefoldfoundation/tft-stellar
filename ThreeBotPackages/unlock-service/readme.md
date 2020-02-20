@@ -22,6 +22,14 @@ JSX> p.threefoldfoundation.unlock_service.start()
 
 The server will start at `172.17.0.2/threefoldfoundation/unlock_service/`
 
+Test out listing the unlockhash transactions:
+
+`curl http://localhost/threefoldfoundation/unlock_service/list`
+
+## Troubleshooting
+
+If a 404 is returned, restart Lapis server.
+
 ## Actor
 
 There is one actor with 2 methods.
