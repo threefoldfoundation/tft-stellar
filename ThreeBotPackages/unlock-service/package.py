@@ -17,7 +17,7 @@ class Package(j.baseclasses.threebot_package):
             include_location.config = f"""
             include {website.path_cfg_dir}/{default_website_name}_locations/*.conf;
 
-            location / {{
+            location /threefoldfoundation/unlock_service {{
                 rewrite ^(.+) /threefoldfoundation/unlock_service/actors/unlock_service;
             }}"""
 
