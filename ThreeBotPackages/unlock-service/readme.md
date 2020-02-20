@@ -16,7 +16,7 @@ JSX> converter = j.clients.stellar.new("converter", network="TEST",secret="<conv
 JSX> tfchain = j.clients.tfchain.new(name="tfchain", network_type="TEST")
 
 JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
-JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/ThreeBotPackages/unlock-service")
+JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/unlock-service")
 JSX> p.threefoldfoundation.unlock_service.start()
 ```
 

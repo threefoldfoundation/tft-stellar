@@ -25,7 +25,7 @@ Once this process is completed, add this package to the Threebot.
 
 ```
 JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
-JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/ThreeBotPackages/stellar-faucet", install_kwargs={"secret":"secret", "issuer": "issuer", "amount": "amount"})
+JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar-faucet", install_kwargs={"secret":"secret", "issuer": "issuer", "amount": "amount"})
 JSX> p.threefoldfoundation.stellar_faucet.start()
 ```
 - server will start at `172.17.0.2/threefoldfoundation/stellar_faucet/`
