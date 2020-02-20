@@ -22,11 +22,12 @@ class conversion_service(j.baseclasses.threebot_actor):
 
         raw_public_key = strkey.StrKey.decode_ed25519_public_key(stellar_address)
         rivine_public_key = PublicKey(PublicKeySpecifier.ED25519, raw_public_key)
-        return rivine_public_key.unlockhash
+        return str(rivine_public_key.unlockhash)
+
 
     @j.baseclasses.actor_method
     def activate_account(self, address, tfchain_address, schema_out=None, user_session=None):
-        if self._stellar_used_before(address):
+        if self._stellar_address_used_before(address):
            raise j.exceptions.Base("This address is not new") 
         if tfchain_address != self._stellar_address_to_tfchain_address(address):
             raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
