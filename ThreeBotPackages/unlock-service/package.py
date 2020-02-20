@@ -11,14 +11,10 @@ class Package(j.baseclasses.threebot_package):
 
             include_location = locations.locations_custom.new()
             include_location.name = f"unlock_service_includes_{port}"
-            # default website locations include wiki related locations
-            # so include them
-            default_website_name = self.openresty.get_from_port(port).name
-            include_location.config = f"""
-            include {website.path_cfg_dir}/{default_website_name}_locations/*.conf;
 
+            include_location.config = f"""
             location /threefoldfoundation/unlock_service {{
-                rewrite ^(.+) /threefoldfoundation/unlock_service/actors/unlock_service;
+                rewrite /threefoldfoundation/unlock_service/(.*)$ /threefoldfoundation/unlock_service/actors/unlock_service/$1
             }}"""
 
             locations.configure()
