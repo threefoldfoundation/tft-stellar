@@ -10,7 +10,7 @@ class Package(j.baseclasses.threebot_package):
             website = server.get_from_port(port)
             locations = website.locations.get()
             actor_location = locations.locations_custom.new()
-            actor_location.name = "unlock_service"
+            actor_location.name = f"unlock_service_{port}"
 
             actor_location.config = """
             location /threefoldfoundation/unlock_service {
