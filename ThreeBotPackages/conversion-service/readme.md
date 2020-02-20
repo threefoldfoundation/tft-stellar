@@ -30,7 +30,11 @@ The server will start at `172.17.0.2/threefoldfoundation/conversion_service/`
 
 Test out the transfer tokens:
 
-`curl -H "Content-Type: application/json" -d '{ "args": { "tfchain_address": "", "stellar_address": "", "asset_code": "", "issuer": "" }}' -XPOST http://localhost/threefoldfoundation/conversion_service/actors/conversion_service/transfer_tokens`
+`curl -H "Content-Type: application/json" -d '{ "args": { "tfchain_address": "", "stellar_address": "", "asset_code": "", "issuer": "" }}' -XPOST http://localhost/threefoldfoundation/conversion_service/transfer_tokens`
+
+## Troubleshooting
+
+If a 404 is returned, restart Lapis server.
 
 ## Actor
 
