@@ -6,17 +6,19 @@ class Package(j.baseclasses.threebot_package):
         server = self.openresty
         server.install(reset=False)
 
-        for port in (443, 80):
-            website = server.get_from_port(port)
-            locations = website.locations.get()
-            actor_location = locations.locations_custom.new()
-            actor_location.name = f"unlock_service_{port}"
+        port = 80
 
-            actor_location.config = """
-            location /threefoldfoundation/unlock_service {
-                rewrite ^(.+) /threefoldfoundation/unlock_service/actors/unlock_service;
-            }"""
+        website = server.get_from_port(port)
+        locations = website.locations.get()
+        actor_location = locations.locations_custom.new()
+        actor_location.name = f"unlock_service_{port}"
 
-            locations.configure()
+        actor_location.config = """
+        location /threefoldfoundation/unlock_service {
+            rewrite ^(.+) /threefoldfoundation/unlock_service/actors/unlock_service;
+        }"""
+
+        locations.configure()
+        website.configure()
 
         server.configure()
