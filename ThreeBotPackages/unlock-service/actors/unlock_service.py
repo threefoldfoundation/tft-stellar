@@ -46,15 +46,3 @@ class unlock_service(j.baseclasses.threebot_actor):
             return transactions[0]
         except j.exceptions.NotFound:
             raise j.exceptions.NotFound("unlocktransaction with hash %s not found" % unlockhash)
-
-    @j.baseclasses.actor_method
-    def list(self, schema_out=None, user_session=None):
-        """
-        ```out
-        unlockhash_transactions = (LO) !threefoldfoundation.unlock_service.unlockhash_transaction
-        ```
-        """
-        out = schema_out.new()
-        for unlockhash_tx in self.unlockhash_transaction_model.iterate():
-            out.unlockhash_transactions.append(unlockhash_tx)
-        return out

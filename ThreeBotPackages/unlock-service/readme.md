@@ -18,27 +18,16 @@ JSX> p.threefoldfoundation.unlock_service.start()
 
 The server will start at `172.17.0.2/threefoldfoundation/unlock_service/`
 
-Test out listing the unlockhash transactions:
+Test out the creation of an unlockhash transaction:
 
-`curl http://localhost/threefoldfoundation/unlock_service/list`
-
-## Troubleshooting
-
-If a 404 is returned, restart Lapis server.
+`curl -H "Content-Type: application/json" -d '{ "args": { "unlockhash": "", "transaction_xdr": "" }}' -XPOST http://localhost/threefoldfoundation/unlock_service/create_unlockhash_transaction`
 
 ## Actor
 
 There is one actor with 2 methods.
 
 - `create_unlockhash_transaction`: creates an unlockhash transaction and stores it in bcdb.
+  - param `unlockhash`: unlockhash of transaction
+  - param `transaction_xdr`: Stellar transaction in xdr string
 - `get_unlockhash_transaction`: get's an unlockhash transaction by hash.
-- `list`: lists all unlockhash transactions
-
-## Notes
-
-A TFChain address balance has a precision of 9, a Stellar one has a precision of 7. We fetch the balance of unlocked/locked tokens from a TFChain address and set the precision to 7 to be compatible with Stellar.
-
-## TODO
-
-- Make conversion process for locked tokens faster, right now it executes locked token transfer sequentially. This is because the stellar account requires sequential increments when executing transactions.
-When this process is executed asynchronously the incrementions are scrambled and the stellar network does not aprove on these transactions.
+  - param `unlockhash`: unlockhash of transaction to look up
