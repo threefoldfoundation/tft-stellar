@@ -30,7 +30,7 @@ The server will start at `172.17.0.2/threefoldfoundation/conversion_service/`
 
 Test out the transfer tokens:
 
-`curl -H "Content-Type: application/json" -d '{ "args": { "tfchain_address": "", "stellar_address": "", "asset_code": "", "issuer": "" }}' -XPOST http://localhost/threefoldfoundation/conversion_service/transfer_tokens`
+`curl -H "Content-Type: application/json" -d '{ "args": { "tfchain_address": "", "stellar_address": "" }}' -XPOST http://localhost/threefoldfoundation/conversion_service/migrate_tokens`
 
 ## Troubleshooting
 
@@ -41,7 +41,7 @@ If a 404 is returned, restart Lapis server.
 There is one actor with 2 methods.
 
 - `activate_account`: activates a Stellar account with a minimal balance.
-- `transfer_tokens`: transfer tokens from a TFChain address to a Stellar address. This includes unlocked and locked tokens. Locked tokens will be held in escrow accounts. This function returns the unlock transactions that come with these escrow accounts.
+- `migrate_tokens`: migrate tokens from a TFChain address to a Stellar address. This includes unlocked and locked tokens. Locked tokens will be held in escrow accounts. This function returns the unlock transactions that come with these escrow accounts.
 
 ## Notes
 

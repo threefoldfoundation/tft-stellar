@@ -3,6 +3,8 @@ from decimal import Decimal, getcontext
 import time
 
 
+_TFT_FULL_ASSETCODES={"TEST":"TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3","STD":"TFT:issuertobefilledin"}
+
 class conversion_service(j.baseclasses.threebot_actor):
 
 
@@ -35,19 +37,16 @@ class conversion_service(j.baseclasses.threebot_actor):
         return converter.activate_account(address, starting_balance="2.6")
 
     @j.baseclasses.actor_method
-    def transfer_tokens(self, threefold_address, stellar_address, asset_code, issuer, schema_out=None, user_session=None):
-        if asset_code == "":
-            raise Exception("Asset code should be a valid string")
-        if issuer == "":
-            raise Exception("Issuer should be a valid string")
+    def migrate_tokens(self, tfchain_address, stellar_address, schema_out=None, user_session=None):
 
-        asset = asset_code + ":" + issuer
-
-        converter = j.clients.stellar.get("converter")
+        converter_wallet = j.clients.stellar.get("converter")
         tfchain_client = j.clients.tfchain.get("tfchain")
 
+        asset = _TFT_FULL_ASSETCODES[converter_wallet.network]
+
+
         # get balance from tfchain
-        result = tfchain_client.unlockhash_get(threefold_address)
+        result = tfchain_client.unlockhash_get(tfchain_address)
         balance = result.balance()
 
         # set Decimal precision to 7
@@ -66,7 +65,7 @@ class conversion_service(j.baseclasses.threebot_actor):
             raise Exception("Can't migrate right now, address had unconfirmed locked balance.")
 
         if not unlocked_tokens.is_zero():
-            converter.transfer(stellar_address, unlocked_tokens, asset)
+            converter_wallet.transfer(stellar_address, unlocked_tokens, asset)
 
         def format_output(lock_time, unlock_tx_xdr):
             return {"unlocks_at": lock_time, "unlock_tx_xdr": unlock_tx_xdr}
@@ -77,7 +76,7 @@ class conversion_service(j.baseclasses.threebot_actor):
                 for coin_output in tx.coin_outputs:
                     lock_time = coin_output.condition.lock.value
                     if time.time() < lock_time:
-                        unlock_tx_xdr = converter.transfer(stellar_address, coin_output.value, asset, lock_time)
+                        unlock_tx_xdr = converter_wallet.transfer(stellar_address, coin_output.value, asset, lock_time)
                         unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
 
         return json.dumps(unlock_tx_xdrs)
