@@ -41,7 +41,11 @@ If a 404 is returned, restart Lapis server.
 There is one actor with 2 methods.
 
 - `activate_account`: activates a Stellar account with a minimal balance.
+  - param `address`: Stellar address to activate
+  - param `tfchain_address`: Source Tfchain address
 - `migrate_tokens`: migrate tokens from a TFChain address to a Stellar address. This includes unlocked and locked tokens. Locked tokens will be held in escrow accounts. This function returns the unlock transactions that come with these escrow accounts.
+  - param `tfchain_address`: Source Tfchain address
+  - param `stellar_address`: Stellar address to transfer funds to
 
 ## Notes
 
