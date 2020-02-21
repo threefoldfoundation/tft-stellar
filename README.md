@@ -12,10 +12,20 @@ Keep in mind that the stellar testnet is [reset every quarter](https://www.stell
 
 - [Jumpscale](https://github.com/threefoldtech/jumpscaleX_libs/tree/development/JumpscaleLibs/clients/stellar)
 
-## tft-stellar tooling on your Threebot
+## tft-stellar tooling
 
 This contains following tools:
 
 - [Conversion Service](ThreeBotPackages/conversion-service/readme.md): Service for converting TFChain TFT's to Stellar TFT's.
 - [Stellar Faucet](ThreeBotPackages/stellar-faucet/readme.md): Faucet for receiving Testnet Stellar TFT's to any testnet Stellar address.
 - [Unlock Service](ThreeBotPackages/unlock-service/readme.md): Service for storing and retrieving unlock transaction for a Stellar Wallet.
+
+## Deployed services
+
+### Testnet services
+
+Url: `https://testnet.threefold.io`
+
+Deployed services:
+
+- Conversion service
