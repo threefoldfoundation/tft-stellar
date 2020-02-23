@@ -2,9 +2,15 @@
 
 Threefoldtoken on the stellar network
 
+## Production network
+
+- assetCode: TFT
+- issuer: GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47
+
 ## Testnet
 
-On the stellar testnet it is known as `TFT` and the issuer is `GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3`.
+- assetCode: TFT
+- issuer: GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3
 
 Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
 
