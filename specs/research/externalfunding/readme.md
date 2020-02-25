@@ -13,7 +13,7 @@ An extra option might be that having the Threefoldfoundation fund the Lumen for 
 
 ## Stellar signatures
 
-In Stellar, there is the notion of a transaction and a transacyion envelope. The transaction contains all information and the transaction envelope contains the transaction + the required signatures.
+In Stellar, there is the notion of a transaction and a transaction envelope. The transaction contains all information and the transaction envelope contains the transaction + the required signatures.
 
 Signatures are made over hash(network id, transaction envelopetype identifier,serialized transaction).
 
