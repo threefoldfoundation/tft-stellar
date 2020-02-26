@@ -1,0 +1,20 @@
+@startuml externalfunding
+
+title Transaction funding
+
+actor Wallet
+participant "Funding service" as fs
+participant "Stellar network" as sn
+
+Wallet-> Wallet: create Payment transaction
+
+Wallet -> fs: Fund Transaction
+activate fs
+fs-> fs: Set source account and sign
+fs->Wallet : Signed transaction envelope
+deactivate fs
+
+Wallet->Wallet : Validate transaction
+Wallet->Wallet: Sign transaction
+Wallet->sn: Submit transacion
+@enduml
