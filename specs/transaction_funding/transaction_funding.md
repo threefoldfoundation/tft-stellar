@@ -7,7 +7,7 @@ It is uncomfortable for users to require and purchase Lumen to be able to do TFT
 
 ## Solution
 
-An solution  is to fund the transactions from the Threefoldfoundation since transaction fees are very low.
+A solution is to fund the transactions from the Threefoldfoundation since transaction fees are very low.
 
 ## Stellar signatures
 
