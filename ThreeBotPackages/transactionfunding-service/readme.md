@@ -25,7 +25,7 @@ JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threef
 JSX> p.threefoldfoundation.transactionfunding_service.start()
 ```
 
-The server will start at `host/threefoldfoundation/_service/`
+The server will start at `host/threefoldfoundation/transactionfunding_service/`
 
 Test out the transfer tokens:
 
