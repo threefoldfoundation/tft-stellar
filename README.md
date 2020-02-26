@@ -25,6 +25,7 @@ This contains following tools:
 - [Conversion Service](ThreeBotPackages/conversion-service/readme.md): Service for converting TFChain TFT's to Stellar TFT's.
 - [Stellar Faucet](ThreeBotPackages/stellar-faucet/readme.md): Faucet for receiving Testnet Stellar TFT's to any testnet Stellar address.
 - [Unlock Service](ThreeBotPackages/unlock-service/readme.md): Service for storing and retrieving unlock transaction for a Stellar Wallet.
+- [Transaction funding service](ThreeBotPackages/transactionfunding-service/readme.md): Service for funding TFT transactions with Lumens(XLM).
 
 ## Deployed services
 
@@ -35,3 +36,4 @@ Url: `https://testnet.threefold.io`
 Deployed services:
 
 - Conversion service
+- Unlock Service

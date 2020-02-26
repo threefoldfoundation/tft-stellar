@@ -1,0 +1,10 @@
+[source]
+name = "transactionfunding_service"
+description = "Package that Lumen funding for TFT transactions"
+threebot = "threefoldfoundation"
+version = "0.0.1"
+
+# [[bcdbs]]
+# namespace = "threefoldfoundation"
+# type = "zdb"
+# instance = "default"
