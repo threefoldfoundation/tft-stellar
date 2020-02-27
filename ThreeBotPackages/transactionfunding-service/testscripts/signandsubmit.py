@@ -16,7 +16,7 @@ def sign_and_submit(transaction,secret):
     horizon_server=stellar_sdk.Server()
 
     txe=stellar_sdk.TransactionEnvelope.from_xdr(transaction,stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE)
-    transaction.sign(kp)
+    txe.sign(kp)
     response=horizon_server.submit_transaction(txe)
     print(response)
    
