@@ -5,6 +5,7 @@ DOMAIN = "testnet.threefoldtoken.io"
 
 class Package(j.baseclasses.threebot_package):
     def start(self):
+        DOMAIN = self.install_kwargs.get("domain") or "testnet.threefoldtoken.io"
         for port in (443, 80):
             website = self.openresty.get_from_port(port)
             website.ssl = port == 443
