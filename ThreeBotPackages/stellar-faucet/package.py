@@ -1,8 +1,6 @@
 from Jumpscale import j
 
 
-DOMAIN = "testnet.threefoldtoken.io"
-
 class Package(j.baseclasses.threebot_package):
     def start(self):
         DOMAIN = self.install_kwargs.get("domain") or "testnet.threefoldtoken.io"

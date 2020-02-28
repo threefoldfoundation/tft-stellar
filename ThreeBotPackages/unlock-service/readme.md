@@ -12,7 +12,7 @@ Once this process is completed, create the stellar and tfchain client and add th
 
 ```python
 JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
-JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/unlock-service")
+JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/unlock-service", install_kwargs={ "domain": "testnet.threefold.io" })
 JSX> p.threefoldfoundation.unlock_service.start()
 ```
 

@@ -21,7 +21,7 @@ JSX> converter = j.clients.stellar.new("txfundingwallet", network="TEST",secret=
 
 
 JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
-JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/transactionfunding-service")
+JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/transactionfunding-service",install_kwargs={ "domain": "testnet.threefold.io" })
 JSX> p.threefoldfoundation.transactionfunding_service.start()
 ```
 
