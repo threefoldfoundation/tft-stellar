@@ -27,3 +27,9 @@ How to sign off on these transactions with this file:
 ```bash 
 bash lock_addresses.txt
 ```
+
+### Verfiying output of lock-all.sh
+
+```bash
+go run verify.go
+```
