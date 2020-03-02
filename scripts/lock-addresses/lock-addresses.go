@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/gomodule/redigo/redis"
 )
@@ -15,6 +16,8 @@ func main() {
 	if len(args) != 0 {
 		panic("usage: " + os.Args[0])
 	}
+
+	excludedAddresses := strings.Split(addressesToExclude, ",")
 
 	conn, err := redis.Dial("tcp", dbAddress, redis.DialDatabase(dbSlot))
 	if err != nil {
@@ -45,8 +48,12 @@ func main() {
 
 	f.WriteString("#!/bin/bash\n")
 	for _, address := range addresses {
-		fstr := fmt.Sprintf("echo \"tfchainc wallet send transaction \\\"\\$(tfchainc wallet sign '$(tfchainc wallet sign \"$(tfchainc wallet authcoin authaddresses --deauth \"%s\")\")')\\\"\" >> lock_adressess.txt\n", address)
-		f.WriteString(fstr)
+		for _, excludedAddress := range excludedAddresses {
+			if address != excludedAddress {
+				fstr := fmt.Sprintf("echo \"tfchainc wallet send transaction \\\"\\$(tfchainc wallet sign '$(tfchainc wallet sign \"$(tfchainc wallet authcoin authaddresses --deauth \"%s\")\")')\\\"\" >> lock_adressess.txt\n", address)
+				f.WriteString(fstr)
+			}
+		}
 	}
 	fmt.Printf("Bash file with all addresses written in: %s \n", outputFilePath)
 }
@@ -62,11 +69,13 @@ func fileExists(filename string) bool {
 }
 
 var (
-	dbAddress string
-	dbSlot    int
+	dbAddress          string
+	dbSlot             int
+	addressesToExclude string
 )
 
 func init() {
 	flag.StringVar(&dbAddress, "redis-addr", ":6379", "(tcp) address of the redis db")
 	flag.IntVar(&dbSlot, "redis-db", 0, "slot/index of the redis db")
+	flag.StringVar(&addressesToExclude, "exclude", "", "addresses to exclude seperated by comma")
 }
