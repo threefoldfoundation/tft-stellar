@@ -57,22 +57,22 @@ class conversion_service(j.baseclasses.threebot_actor):
         if is_authorized:
             raise j.exceptions.Base("Tfchain addressess should be deauthorized first before migrating to Stellar!")
 
-        memo_text = None
+        memo_hash = None
         sorted_transactions = sorted(unlockhash.transactions, key=lambda tx: tx.height, reverse=True)
         for tx in sorted_transactions:
             if tx.version.value == 176:
-                memo_text = tx.id
+                memo_hash = tx.id
 
-        if memo_text is None:
+        if memo_hash is None:
             raise j.exceptions.Base("For some reason ")
 
         stellar_transactions = converter_wallet.list_transactions(address=stellar_address)
         for stellar_tx in stellar_transactions:
-            if stellar_tx.memo_text == memo_text:
+            if stellar_tx.memo_hash == memo_hash:
                 converter_transactions = converter_wallet.list_transactions()
                 # double check if the transaction also already exists in the converter wallet transactions
                 for converter_tx in converter_transactions:
-                    if memo_text == converter_tx.memo_text:
+                    if memo_hash == converter_tx.memo_hash:
                         raise j.exceptions.Base("Migration already executed for address")
 
         # set Decimal precision to 7
@@ -91,7 +91,7 @@ class conversion_service(j.baseclasses.threebot_actor):
             raise Exception("Can't migrate right now, address had unconfirmed locked balance.")
 
         if not unlocked_tokens.is_zero():
-            return converter_wallet.transfer(stellar_address, unlocked_tokens, asset, memo_text=memo_text)
+            return converter_wallet.transfer(stellar_address, unlocked_tokens, asset, memo_hash=memo_hash)
 
         def format_output(lock_time, unlock_tx_xdr):
             return {"unlocks_at": lock_time, "unlock_tx_xdr": unlock_tx_xdr}
@@ -102,7 +102,7 @@ class conversion_service(j.baseclasses.threebot_actor):
                 for coin_output in tx.coin_outputs:
                     lock_time = coin_output.condition.lock.value
                     if time.time() < lock_time:
-                        unlock_tx_xdr = converter_wallet.transfer(stellar_address, coin_output.value, asset, lock_time, memo_text=memo_text)
+                        unlock_tx_xdr = converter_wallet.transfer(stellar_address, coin_output.value, asset, lock_time, memo_hash=memo_hash)
                         unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
 
         return json.dumps(unlock_tx_xdrs)
