@@ -2,6 +2,8 @@ from Jumpscale import j
 from decimal import Decimal, getcontext
 import time
 import json
+import binascii
+import base64
 
 
 _TFT_FULL_ASSETCODES={"TEST":"TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3","STD":"TFT:issuertobefilledin"}
@@ -43,8 +45,8 @@ class conversion_service(j.baseclasses.threebot_actor):
         tfchain_client = j.clients.tfchain.get("tfchain")
 
         #Check after getting the wallets so all required imports are certainly met
-        # if tfchain_address != self._stellar_address_to_tfchain_address(stellar_address):
-        #     raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
+        if tfchain_address != self._stellar_address_to_tfchain_address(stellar_address):
+            raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
 
         asset = _TFT_FULL_ASSETCODES[str(converter_wallet.network)]
 
@@ -64,15 +66,29 @@ class conversion_service(j.baseclasses.threebot_actor):
                 memo_hash = tx.id
 
         if memo_hash is None:
-            raise j.exceptions.Base("For some reason ")
+            raise j.exceptions.Base("Deathorization transaction is still being processed")
+
+        def decode_memo_hash(memo_hash):
+            try:
+                return binascii.hexlify(base64.b64decode(stellar_tx.memo_hash)).decode("utf-8")
+            except Exception:
+                raise j.exceptions.Base("Decoding memo hash failed")
+
 
         stellar_transactions = converter_wallet.list_transactions(address=stellar_address)
         for stellar_tx in stellar_transactions:
-            if stellar_tx.memo_hash == memo_hash:
+            if stellar_tx.memo_hash is None:
+                continue
+
+            decoded_memo_hash = decode_memo_hash(memo_hash)
+            if memo_hash == decoded_memo_hash:
                 converter_transactions = converter_wallet.list_transactions()
                 # double check if the transaction also already exists in the converter wallet transactions
                 for converter_tx in converter_transactions:
-                    if memo_hash == converter_tx.memo_hash:
+                    if converter_tx.memo_hash is None:
+                        continue
+                    converter_tx_decoded_memo_hash = decode_memo_hash(converter_tx.memo_hash)
+                    if memo_hash == converter_tx_decoded_memo_hash:
                         raise j.exceptions.Base("Migration already executed for address")
 
         # set Decimal precision to 7
