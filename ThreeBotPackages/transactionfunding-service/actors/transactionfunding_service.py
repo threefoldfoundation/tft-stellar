@@ -26,10 +26,13 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         source_signing_kp=stellar_sdk.Keypair.from_secret(funding_wallet.secret)
         horizon_server=self._get_horizon_server(funding_wallet.network)
         base_fee=horizon_server.fetch_base_fee()
+
         source_account=horizon_server.load_account(funding_wallet.address)
         source_account.increment_sequence_number()
         txe.transaction.source=source_public_kp
-        txe.transaction.fee=base_fee
+
+        txe.transaction.fee= base_fee * len(txe.transaction.operations)
+        
         txe.transaction.sequence=source_account.sequence
         txe.sign(source_signing_kp)
         return txe.to_xdr()
