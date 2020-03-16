@@ -19,7 +19,7 @@ class activation_service(j.baseclasses.threebot_actor):
                 if not existing:
                     return code
         raise j.exceptions.Base("Failed") 
-    
+
     @j.baseclasses.actor_method
     def create_activation_code(self, address , schema_out, user_session):
         """
@@ -32,15 +32,14 @@ class activation_service(j.baseclasses.threebot_actor):
         phonenumbers= (LS)
         """
         code_address = self.activation_model.new()
-        #TODO: generate random code and check it does not exist yet
 
         activation_code=self._generate_activation_code()
         code_address.code = activation_code
         code_address.address= address
 
         code_address.save()
-
-        return activation_code #TODO: not just return thi but also the possible phonenumbers
+        response=j.data.serializers.json.dumps({"activation_code":code_address,"address", "phonenumbers":["+1234567890"]})
+        return response 
     
     @j.baseclasses.actor_method
     def activate_account(self, activation_code, schema_out, user_session):
