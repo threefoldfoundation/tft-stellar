@@ -1,5 +1,5 @@
 [source]
-name = "activationunlock_service"
+name = "activation_service"
 description = "Package that provides ways to activate new accounts"
 threebot = "threefoldfoundation"
 version = "0.0.1"

@@ -1,8 +1,8 @@
 # Activation Service
 
-Service for new accounts activation as described [in the specs]()../specs/address_activation.md).
-To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
-i
+Service for new accounts activation as described [in the specs](../specs/address_activation.md).
+To be used as a Threebot package. See [jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
+
 
 ## Requirements
 

@@ -38,7 +38,7 @@ class activation_service(j.baseclasses.threebot_actor):
         code_address.address= address
 
         code_address.save()
-        response=j.data.serializers.json.dumps({"activation_code":code_address,"address", "phonenumbers":["+1234567890"]})
+        response=j.data.serializers.json.dumps({"activation_code":code_address,"address":address,"phonenumbers":["+1234567890",]})
         return response 
     
     @j.baseclasses.actor_method
