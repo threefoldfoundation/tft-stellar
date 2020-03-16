@@ -26,6 +26,7 @@ This contains following tools:
 - [Stellar Faucet](ThreeBotPackages/stellar-faucet/readme.md): Faucet for receiving Testnet Stellar TFT's to any testnet Stellar address.
 - [Unlock Service](ThreeBotPackages/unlock-service/readme.md): Service for storing and retrieving unlock transaction for a Stellar Wallet.
 - [Transaction funding service](ThreeBotPackages/transactionfunding-service/readme.md): Service for funding TFT transactions with Lumens(XLM).
+- [ Activation service](ThreeBotPackages/activation-service/readme.md): Service for activation of new accounts. 
 
 ## Deployed services
 
@@ -37,4 +38,4 @@ Deployed services:
 
 - Conversion service
 - Unlock Service
-- Transaction funding service:
+- Transaction funding service
