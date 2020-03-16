@@ -1,5 +1,7 @@
 from Jumpscale import j
 
+import random, string
+
 
 class activation_service(j.baseclasses.threebot_actor):
     def _init(self, **kwargs):
@@ -7,16 +9,32 @@ class activation_service(j.baseclasses.threebot_actor):
             url="threefoldfoundation.activation_service.code_address"
         )
 
+    def _generate_activation_code(self):
+        def create_code(k):
+           return ''.join(random.sample(string.ascii_lowercase,k)) 
+        for codelength in range(5,7):
+            for i in range(3):
+                code=create_code(codelength)
+                existing=self.activation_model.find(code=code)
+                if not existing:
+                    return code
+        raise j.exceptions.Base("Failed") 
+    
     @j.baseclasses.actor_method
     def create_activation_code(self, address , schema_out, user_session):
         """
-      ```in
-      address = (S)
-      ```
+        ```in
+        address = (S)
+        ```
+        ```out
+        activation_code = (S)
+        address = (S)
+        phonenumbers= (LS)
         """
         code_address = self.activation_model.new()
         #TODO: generate random code and check it does not exist yet
-        activation_code="qwertyu"
+
+        activation_code=self._generate_activation_code()
         code_address.code = activation_code
         code_address.address= address
 
@@ -31,7 +49,7 @@ class activation_service(j.baseclasses.threebot_actor):
       activation_code = (S)
       ```
       """
-        addresses= self.unlockhash_transaction_model.find(unlockhash=activation_code)
+        addresses= self.activation_model.find(code=activation_code)
         if not addresses:
             raise j.exceptions.NotFound()
         address_to_activate= addresses[0]
