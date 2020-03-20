@@ -118,7 +118,7 @@ The escrow account has a balance of 100 TFT, needs at least 2 signatures for all
 
 The receiver has to find the escrow account first. This can be done by listing the accounts for which the receiving address is a signer.
 
-url: ` https://horizon-testnet.stellar.org/accounts/?signer=GDA5TMZM2WXZZP4BL4ZKEORZI26SBZN5RVQIU664ULBC7KR4J3NFLX2O`
+url: `https://horizon-testnet.stellar.org/accounts/?signer=GDA5TMZM2WXZZP4BL4ZKEORZI26SBZN5RVQIU664ULBC7KR4J3NFLX2O`
 
 ```json
 {
@@ -312,7 +312,7 @@ Having the hash of the unlocktransaction, the unlock transactionenvelope can be 
 
  `curl -H "Content-Type: application/json" -d '{ "args": { "unlockhash": "TBRWRROFJZ7XITHGYCNI2TMVGSATRAUE5LY2KPBV2RIAVMXUDMTA3APV", }}' -XPOST "https://testnet.threefold.io/threefoldfoundation/unlock_service/get_unlockhash_transaction"`
 
-TODO: [This crashes at the moment](https://github.com/threefoldfoundation/tft-stellar/issues/42) 
+TODO: [This crashes at the moment](https://github.com/threefoldfoundation/tft-stellar/issues/42).
 
 The service returns the transaction envelope:
 `AAAAAOZagjJNeF2pQReStULsfSDHk6WoYTloVY7NBq8AbbgsAAAAZAAMY10AAAADAAAAAQAAAABedOIYAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAFAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAAAAAAAAAAAAAAAAAABAG24LAAAAEDPghy9Oq3+WYK0wTYnj3gyFwYqRzkDxkBWLdQAG8ykZxY+CMLBpz4tW6/M+ctInZNdVu6dzrajSC4mrlBY5uoM`
@@ -354,7 +354,7 @@ So the Timebounds can be seen and the fact that the masterweight is set to 0 and
 When the mintime has expired, this can be submitted to the Stellar network directly
 Let's look at the escrow account after submission:
 
-Url: ` https://horizon-testnet.stellar.org/accounts/GDTFVARSJV4F3KKBC6JLKQXMPUQMPE5FVBQTS2CVR3GQNLYANW4CZ26A`
+Url: `https://horizon-testnet.stellar.org/accounts/GDTFVARSJV4F3KKBC6JLKQXMPUQMPE5FVBQTS2CVR3GQNLYANW4CZ26A`
 
 ```json
 {
