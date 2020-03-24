@@ -310,7 +310,7 @@ If the result is the filtered to exclude it's own address, the escrow account is
 
 Having the hash of the unlocktransaction, the unlock transactionenvelope can be obtained from the [unlocktransaction store service](../ThreeBotPackages/unlock-service/readme.md).
 
- `curl -H "Content-Type: application/json" -d '{ "args": { "unlockhash": "TBRWRROFJZ7XITHGYCNI2TMVGSATRAUE5LY2KPBV2RIAVMXUDMTA3APV", }}' -XPOST "https://testnet.threefold.io/threefoldfoundation/unlock_service/get_unlockhash_transaction"`
+ `curl -H "Content-Type: application/json" -d '{ "args": { "unlockhash": "TBRWRROFJZ7XITHGYCNI2TMVGSATRAUE5LY2KPBV2RIAVMXUDMTA3APV"}}' -XPOST "https://testnet.threefold.io/threefoldfoundation/unlock_service/get_unlockhash_transaction"`
 
 TODO: [This crashes at the moment](https://github.com/threefoldfoundation/tft-stellar/issues/42).
 
