@@ -30,6 +30,6 @@ The server will start at `172.17.0.2/threefoldfoundation/unlock_service/`
 There is one actor with 2 methods.
 
 - `create_activation_code`: Creates an activation code for an address
-  - param `address`: Stellar address to create an activation code foractivate
+  - param `address`: Stellar address to create an activation code for
   - returns an activation code, the stellar address and possible phonenumbers to send the he activation code to via SMS.
   
