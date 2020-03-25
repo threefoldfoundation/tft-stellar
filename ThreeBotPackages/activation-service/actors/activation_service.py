@@ -5,7 +5,7 @@ import random, string
 
 class activation_service(j.baseclasses.threebot_actor):
     def _init(self, **kwargs):
-        self.activation_model = j.threebot.packages.threefoldfoundation.activation_service.bcdb.model_get(
+        self.activation_model = j.tools.threebot_packages.threefoldfoundation__activation_service.bcdb.model_get(
             url="threefoldfoundation.activation_service.code_address"
         )
 
