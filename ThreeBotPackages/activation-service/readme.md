@@ -12,7 +12,10 @@ You need following knowledge to start this server.
 
 ## Running
 
-- execute following:
+Make sure the wallet exists:
+`j.clients.stellar.new("activation_wallet", network="TEST",secret="<activation_secret>")`
+
+ execute following:
 `kosmos -p 'j.servers.threebot.start()'`
 
 Once this process is completed, create the stellar and add this package to the Threebot.

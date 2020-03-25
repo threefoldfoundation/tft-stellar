@@ -43,7 +43,7 @@ class activation_service(j.baseclasses.threebot_actor):
    
     def _stellar_address_used_before(self, stellar_address):
         try:
-           stellar_client= j.clients.stellar.get("converter")
+           stellar_client= j.clients.stellar.get("activation_wallet")
            from stellar_sdk.exceptions import NotFoundError
            stellar_client.list_transactions(address=stellar_address)
         except NotFoundError:
@@ -64,6 +64,6 @@ class activation_service(j.baseclasses.threebot_actor):
         address_to_activate= addresses[0]
         if self._stellar_address_used_before(address_to_activate):
            raise j.exceptions.Base("This address is not new") 
-        converter = j.clients.stellar.get("converter")
+        converter = j.clients.stellar.get("activation_wallet")
         converter.activate_account(address_to_activate, starting_balance="2.6")
         
