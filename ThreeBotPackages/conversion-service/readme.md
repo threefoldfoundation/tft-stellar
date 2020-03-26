@@ -17,9 +17,9 @@ You need following knowledge to start this server.
 Once this process is completed, create the stellar and tfchain client and add this package to the Threebot.
 
 ```python
-JSX> converter = j.clients.stellar.new("converter", network="TEST",secret="<converter_secret>")
+JSX> j.clients.stellar.new("converter", network="TEST",secret="<converter_secret>")
 
-JSX> tfchain = j.clients.tfchain.new(name="tfchain", network_type="TEST")
+JSX> j.clients.tfchain.new(name="tfchain", network_type="TEST")
 
 JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
 JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/conversion-service", install_kwargs={ "domain": "testnet.threefold.io" })

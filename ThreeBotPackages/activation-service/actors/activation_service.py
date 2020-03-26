@@ -38,7 +38,7 @@ class activation_service(j.baseclasses.threebot_actor):
         code_address.address= address
 
         code_address.save()
-        response=j.data.serializers.json.dumps({"activation_code":code_address,"address":address,"phonenumbers":["+1234567890",]})
+        response=j.data.serializers.json.dumps({"activation_code":activation_code,"address":address,"phonenumbers":["+1234567890",]})
         return response 
    
     def _stellar_address_used_before(self, stellar_address):
@@ -61,7 +61,7 @@ class activation_service(j.baseclasses.threebot_actor):
         addresses= self.activation_model.find(code=activation_code)
         if not addresses:
             raise j.exceptions.NotFound()
-        address_to_activate= addresses[0]
+        address_to_activate= addresses[0].address
         if self._stellar_address_used_before(address_to_activate):
            raise j.exceptions.Base("This address is not new") 
         converter = j.clients.stellar.get("activation_wallet")
