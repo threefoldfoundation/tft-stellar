@@ -38,6 +38,9 @@ Keep in mind that the stellar testnet is [reset every quarter](https://www.stell
 
 Testnet tokens can be acquired through the Stellar decentralized exchange. Bots are present to maintain sell orders.
 
+- TFT:  https://stellar.expert/explorer/testnet/asset/TFT-GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3-1?filter=orderbook
+- FreeTFT: https://stellar.expert/explorer/testnet/asset/FreeTFT-GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R-2?filter=orderbook
+
 ## Wallet implementations
 
 - [Jumpscale](https://github.com/threefoldtech/jumpscaleX_libs/tree/development/JumpscaleLibs/clients/stellar)
