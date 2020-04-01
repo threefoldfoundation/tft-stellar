@@ -34,6 +34,10 @@ Keep in mind that the stellar testnet is [reset every quarter](https://www.stell
 
 Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
 
+## Acquiring testnet tokens
+
+Testnet tokens can be acquired through the Stellar decentralized exchange. Bots are present to maintain sell orders.
+
 ## Wallet implementations
 
 - [Jumpscale](https://github.com/threefoldtech/jumpscaleX_libs/tree/development/JumpscaleLibs/clients/stellar)
