@@ -66,3 +66,4 @@ Deployed services:
 - Conversion service
 - Unlock Service
 - Transaction funding service
+- Activation service
