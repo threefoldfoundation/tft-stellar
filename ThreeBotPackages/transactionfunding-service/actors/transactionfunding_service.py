@@ -5,6 +5,13 @@ _TFT_FULL_ASSETCODES = {
     "TEST": "TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3",
     "STD": "TFT:GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47",
 }
+
+_FREETFT_FULL_ASSETCODES = {
+    "TEST": "FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R",
+    "STD": "FreeTFT:GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT",
+}
+_ASSETS = {"TFT": _TFT_FULL_ASSETCODES, "FreeTFT": _FREETFT_FULL_ASSETCODES}
+
 _HORIZON_NETWORKS = {"TEST": "https://horizon-testnet.stellar.org", "STD": "https://horizon.stellar.org"}
 
 
@@ -21,10 +28,8 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         split_code = fullcode.split(":")
         return stellar_sdk.Asset(split_code[0], split_code[1])
 
-    def _create_tft_fee_payment(self, from_address, destination, network):
+    def _create_fee_payment(self, from_address, destination,asset, network):
         import stellar_sdk
-
-        asset = self._get_tft_asset(network)
         return stellar_sdk.Payment(destination, asset, "0.1", from_address)
 
     @j.baseclasses.actor_method
@@ -51,9 +56,20 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
 
         if len(txe.transaction.operations) == 0:
             raise j.exceptions.Base("No operations in the supplied transaction")
+        full_asset_code=""
+        asset=None
+        for op in txe.transaction.operations:
+            if type(op)!= stellar_sdk.operation.Payment:
+                raise j.exceptions.Base("Only payment operations are supported")
+            if op.asset.code not in _ASSETS:
+               raise j.exceptions.Base("Unsupported asset")
+            full_asset_code =op.asset.code+":"+op.asset.issuer
+            if _ASSETS[op.asset.code][str(funding_wallet.network)] != full_asset_code:
+               raise j.exceptions.Base("Unsupported asset") 
+            asset=op.asset
         txe.transaction.operations.append(
-            self._create_tft_fee_payment(
-                txe.transaction.operations[0].source, funding_wallet.address, funding_wallet.network
+            self._create_fee_payment(
+                txe.transaction.operations[0].source, funding_wallet.address,asset, funding_wallet.network
             )
         )
 
