@@ -1,14 +1,17 @@
 <template>
-  <FundAccount/>
+  <v-app>
+    <v-content fill-height>
+      <v-layout justify-center fill-height>
+        <v-layout column align-center justify-center>
+          <router-view/>
+        </v-layout>
+      </v-layout>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
-import FundAccount from './components/fundAccount.vue'
-
 export default {
-  name: 'app',
-  components: {
-    FundAccount
-  }
+  name: 'App'
 }
 </script>

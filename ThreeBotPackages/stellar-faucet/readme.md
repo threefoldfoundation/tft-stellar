@@ -1,6 +1,6 @@
 # Stellar faucet
 
-A faucet for receiving Threefold Stellar tokens (TFT) on the Stellar testnet.
+A faucet for receiving tokens from a specified asset and issuer.
 To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
 
 ## Building frontend
@@ -10,10 +10,11 @@ To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscal
 
 ## Requirements
 
-You need following knowledge to start this server.
+Required install kwargs!!
 
-- `secret`: is the secret key of the faucet account which holds the Stellar TFT's.
-- `issuer`: is the address (public key) of the Stellar TFT issuer.
+- `secret`: is the secret key of the faucet account
+- `network`: network for the faucet account.
+- `asset`: Asset and issuer to be a faucet for as "asset:issuer".
 - `amount`: is the amount of token you wish to drip with each transfer in this faucet.
 
 ## Running
@@ -25,7 +26,7 @@ Once this process is completed, add this package to the Threebot.
 
 ```
 JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
-JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar-faucet", install_kwargs={"secret":"secret", "issuer": "issuer", "amount": "amount", "domain": "testnet.threefold.io"})
+JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar-faucet", install_kwargs={"secret":"secret", "network": "network", "asset": "asset", "amount": "amount", "domain": "testnet.threefold.io"})
 JSX> p.threefoldfoundation.stellar_faucet.start()
 ```
 - server will start at `172.17.0.2/threefoldfoundation/stellar_faucet/`

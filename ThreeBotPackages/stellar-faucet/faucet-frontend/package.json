@@ -9,7 +9,11 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "bip39": "^3.0.2",
     "core-js": "^3.4.4",
+    "libsodium-wrappers": "^0.7.6",
+    "randomstring": "^1.1.5",
+    "tweetnacl-util": "^0.15.1",
     "vue": "^2.6.10",
     "vue-property-decorator": "^8.3.0",
     "vue-router": "^3.1.5",

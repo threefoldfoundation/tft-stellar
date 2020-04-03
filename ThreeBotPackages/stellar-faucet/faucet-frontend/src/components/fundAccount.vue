@@ -60,7 +60,9 @@ export default {
     fundAddress() {
       this.loading = true
       this.error = false
-      fundAccount(this.address)
+      var url = new URL(window.location.href)
+      const username = url.searchParams.get('username')
+      fundAccount(this.address, username)
         .then(res => {
           if (res.status == 200) {
             this.loading = false
@@ -81,5 +83,8 @@ export default {
 <style scoped>
 #errortext {
   color: red;
+}
+#inspire {
+  width: 1200px;
 }
 </style>
