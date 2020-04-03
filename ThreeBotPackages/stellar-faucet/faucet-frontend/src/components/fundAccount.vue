@@ -47,22 +47,109 @@
 </template>
 
 <script lang="ts">
-import { fundAccount } from "../../actions/fundAccount"
+/* eslint-disable */
+import { fundAccount, getUserData } from "../../actions/fundAccount"
+import CryptoService from "../services/CryptoService"
+
 export default {
   data() {
     return {
       error: false,
       address: "",
-      loading: false
+      loading: false,
+      verifiedSignedAttempt: undefined,
+      username: undefined
+    }
+  },
+  async mounted() {
+    let url = new URL(window.location.href)
+
+    let error = url.searchParams.get('error')
+
+    if (error) {
+      console.log('Error: ', error)
+      return
+    }
+
+    let signedAttemptObject = JSON.parse(url.searchParams.get('signedAttempt'));
+
+    let user = signedAttemptObject['doubleName']
+    this.username = user
+    let userPublicKey = (await getUserData(user)).data.publicKey
+
+    let verifiedSignedAttempt
+
+    try {
+
+      var utf8ArrayToStr = (function () {
+        var charCache = new Array(128)
+        var charFromCodePt = String.fromCodePoint || String.fromCharCode
+        var result = []
+
+        return function (array) {
+          var codePt, byte1
+          var buffLen = array.length
+
+          result.length = 0
+
+          for (var i = 0; i < buffLen;) {
+            byte1 = array[i++]
+
+            if (byte1 <= 0x7F) {
+              codePt = byte1
+            } else if (byte1 <= 0xDF) {
+              codePt = ((byte1 & 0x1F) << 6) | (array[i++] & 0x3F)
+            } else if (byte1 <= 0xEF) {
+              codePt = ((byte1 & 0x0F) << 12) | ((array[i++] & 0x3F) << 6) | (array[i++] & 0x3F)
+            } else if (String.fromCodePoint) {
+              codePt = ((byte1 & 0x07) << 18) | ((array[i++] & 0x3F) << 12) | ((array[i++] & 0x3F) << 6) | (array[i++] & 0x3F)
+            } else {
+              codePt = 63
+              i += 3
+            }
+
+            result.push(charCache[codePt] || (charCache[codePt] = charFromCodePt(codePt)))
+          }
+
+          return result.join('')
+        }
+      })()
+
+      verifiedSignedAttempt = JSON.parse(utf8ArrayToStr(await CryptoService.validateSignedAttempt(signedAttemptObject['signedAttempt'], userPublicKey)))
+
+      if (!verifiedSignedAttempt) {
+
+        console.log('The signedAttempt could not be verified.')
+        return
+      }
+
+      let state = window.localStorage.getItem('state')
+
+      if (verifiedSignedAttempt['signedState'] !== state) {
+
+        console.log('The state cannot be matched.')
+        return
+      }
+
+      if (verifiedSignedAttempt['doubleName'] !== user) {
+
+        console.log('The name cannot be matched.')
+        return
+      }
+
+      this.verifiedSignedAttempt = verifiedSignedAttempt
+    } catch (e) {
+      console.log('The signedAttempt could not be verified.')
+      return
     }
   },
   methods: {
     fundAddress() {
       this.loading = true
       this.error = false
-      var url = new URL(window.location.href)
-      const username = url.searchParams.get('username')
-      fundAccount(this.address, username)
+      
+      console.log(this.verifiedSignedAttempt)
+      fundAccount(this.address, this.username, this.verifiedSignedAttempt.signedState)
         .then(res => {
           if (res.status == 200) {
             this.loading = false
