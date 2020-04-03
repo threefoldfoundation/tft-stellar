@@ -27,7 +27,7 @@ install arguments:
 - `wallet`:the wallet to use to transfer from, default: faucetwallet
 - `asset`: default: TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3 .
 - `amount`: is the amount of token you wish to drip with each transfer in this faucet, default: 1000.
-- `domain`
+- `domain`: default: "testnet.threefoldtoken.io"
 
 ```python
 JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
