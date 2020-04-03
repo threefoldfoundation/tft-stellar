@@ -10,7 +10,7 @@ class stellar_faucet(j.baseclasses.threebot_actor):
     def transfer(self, destination, signed_attempt_object, schema_out=None, user_session=None):
         if not is_3bot_user(signed_attempt_object):
             raise Exception("not a valid user")
-        
+
         distributor = j.clients.stellar.get("distributor")
 
         distributor.network = self.package.install_kwargs.get("network")
@@ -20,20 +20,23 @@ class stellar_faucet(j.baseclasses.threebot_actor):
         amount = self.package.install_kwargs.get("amount")
 
         double_name = signed_attempt_object["doubleName"]
+        hashed_double_name = nacl.hash.blake2b(double_name.encode("utf-8"), encoder=nacl.encoding.RawEncoder)
         txes = distributor.list_transaction(address=destination)
         for tx in txes:
-            if tx.memo_text == double_name:
+            if tx.memo_hash == hashed_double_name:
                 raise Exception("user already requested token")
 
         try:
-            distributor.transfer(destination_address=destination, amount=amount, asset=asset, memo_text=double_name)
+            distributor.transfer(
+                destination_address=destination, amount=amount, asset=asset, memo_hash=hashed_double_name
+            )
         except Exception as e:
             raise e
 
     def is_3bot_user(signed_attempt_object):
         auth_response = urlopen("https://login.threefold.me/api/users/{}".format(signed_attempt_object["doubleName"]))
         data = json.loads(auth_response.read())
-        user_public = data['publicKey']
+        user_public = data["publicKey"]
         verify_key = nacl.signing.VerifyKey(user_public, encoder=nacl.encoding.Base64Encoder)
 
         try:
