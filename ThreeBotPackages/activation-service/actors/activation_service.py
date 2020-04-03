@@ -11,17 +11,18 @@ class activation_service(j.baseclasses.threebot_actor):
 
     def _generate_activation_code(self):
         def create_code(k):
-           return ''.join(random.sample(string.ascii_lowercase,k)) 
-        for codelength in range(5,7):
+            return "".join(random.sample(string.ascii_lowercase, k))
+
+        for codelength in range(5, 7):
             for i in range(3):
-                code=create_code(codelength)
-                existing=self.activation_model.find(code=code)
+                code = create_code(codelength)
+                existing = self.activation_model.find(code=code)
                 if not existing:
                     return code
-        raise j.exceptions.Base("Failed") 
+        raise j.exceptions.Base("Failed")
 
     @j.baseclasses.actor_method
-    def create_activation_code(self, address , schema_out, user_session):
+    def create_activation_code(self, address, schema_out, user_session):
         """
         ```in
         address = (S)
@@ -33,19 +34,22 @@ class activation_service(j.baseclasses.threebot_actor):
         """
         code_address = self.activation_model.new()
 
-        activation_code=self._generate_activation_code()
+        activation_code = self._generate_activation_code()
         code_address.code = activation_code
-        code_address.address= address
+        code_address.address = address
 
         code_address.save()
-        response=j.data.serializers.json.dumps({"activation_code":activation_code,"address":address,"phonenumbers":["+1234567890",]})
-        return response 
-   
+        response = j.data.serializers.json.dumps(
+            {"activation_code": activation_code, "address": address, "phonenumbers": ["+1234567890"]}
+        )
+        return response
+
     def _stellar_address_used_before(self, stellar_address):
         try:
-           stellar_client= j.clients.stellar.get("activation_wallet")
-           from stellar_sdk.exceptions import NotFoundError
-           stellar_client.list_transactions(address=stellar_address)
+            stellar_client = j.clients.stellar.get("activation_wallet")
+            from stellar_sdk.exceptions import NotFoundError
+
+            stellar_client.list_transactions(address=stellar_address)
         except NotFoundError:
             return False
         else:
@@ -58,12 +62,11 @@ class activation_service(j.baseclasses.threebot_actor):
       activation_code = (S)
       ```
       """
-        addresses= self.activation_model.find(code=activation_code)
+        addresses = self.activation_model.find(code=activation_code)
         if not addresses:
             raise j.exceptions.NotFound()
-        address_to_activate= addresses[0].address
+        address_to_activate = addresses[0].address
         if self._stellar_address_used_before(address_to_activate):
-           raise j.exceptions.Base("This address is not new") 
+            raise j.exceptions.Base("This address is not new")
         converter = j.clients.stellar.get("activation_wallet")
         converter.activate_account(address_to_activate, starting_balance="2.6")
-        
