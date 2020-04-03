@@ -57,7 +57,7 @@ export default {
       error: false,
       address: "",
       loading: false,
-      verifiedSignedAttempt: undefined,
+      signedAttemptObject: undefined,
       username: undefined
     }
   },
@@ -72,84 +72,15 @@ export default {
     }
 
     let signedAttemptObject = JSON.parse(url.searchParams.get('signedAttempt'));
-
-    let user = signedAttemptObject['doubleName']
-    this.username = user
-    let userPublicKey = (await getUserData(user)).data.publicKey
-
-    let verifiedSignedAttempt
-
-    try {
-
-      var utf8ArrayToStr = (function () {
-        var charCache = new Array(128)
-        var charFromCodePt = String.fromCodePoint || String.fromCharCode
-        var result = []
-
-        return function (array) {
-          var codePt, byte1
-          var buffLen = array.length
-
-          result.length = 0
-
-          for (var i = 0; i < buffLen;) {
-            byte1 = array[i++]
-
-            if (byte1 <= 0x7F) {
-              codePt = byte1
-            } else if (byte1 <= 0xDF) {
-              codePt = ((byte1 & 0x1F) << 6) | (array[i++] & 0x3F)
-            } else if (byte1 <= 0xEF) {
-              codePt = ((byte1 & 0x0F) << 12) | ((array[i++] & 0x3F) << 6) | (array[i++] & 0x3F)
-            } else if (String.fromCodePoint) {
-              codePt = ((byte1 & 0x07) << 18) | ((array[i++] & 0x3F) << 12) | ((array[i++] & 0x3F) << 6) | (array[i++] & 0x3F)
-            } else {
-              codePt = 63
-              i += 3
-            }
-
-            result.push(charCache[codePt] || (charCache[codePt] = charFromCodePt(codePt)))
-          }
-
-          return result.join('')
-        }
-      })()
-
-      verifiedSignedAttempt = JSON.parse(utf8ArrayToStr(await CryptoService.validateSignedAttempt(signedAttemptObject['signedAttempt'], userPublicKey)))
-
-      if (!verifiedSignedAttempt) {
-
-        console.log('The signedAttempt could not be verified.')
-        return
-      }
-
-      let state = window.localStorage.getItem('state')
-
-      if (verifiedSignedAttempt['signedState'] !== state) {
-
-        console.log('The state cannot be matched.')
-        return
-      }
-
-      if (verifiedSignedAttempt['doubleName'] !== user) {
-
-        console.log('The name cannot be matched.')
-        return
-      }
-
-      this.verifiedSignedAttempt = verifiedSignedAttempt
-    } catch (e) {
-      console.log('The signedAttempt could not be verified.')
-      return
-    }
+    this.signedAttemptObject = signedAttemptObject
   },
   methods: {
     fundAddress() {
       this.loading = true
       this.error = false
       
-      console.log(this.verifiedSignedAttempt)
-      fundAccount(this.address, this.username, this.verifiedSignedAttempt.signedState)
+      console.log(this.signedAttemptObject)
+      fundAccount(this.address, this.signedAttemptObject)
         .then(res => {
           if (res.status == 200) {
             this.loading = false
