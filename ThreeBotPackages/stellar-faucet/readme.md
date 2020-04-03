@@ -12,10 +12,8 @@ To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscal
 
 Required install kwargs!!
 
-- `secret`: is the secret key of the faucet account
-- `network`: network for the faucet account.
-- `asset`: Asset and issuer to be a faucet for as "asset:issuer".
-- `amount`: is the amount of token you wish to drip with each transfer in this faucet.
+A wallet for the faucet
+
 
 ## Running
 
@@ -24,11 +22,19 @@ Required install kwargs!!
 
 Once this process is completed, add this package to the Threebot.
 
-```
+install arguments:
+
+- `wallet`:the wallet to use to transfer from, default: faucetwallet
+- `asset`: default: TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3 .
+- `amount`: is the amount of token you wish to drip with each transfer in this faucet, default: 1000.
+- `domain`
+
+```python
 JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
-JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar-faucet", install_kwargs={"secret":"secret", "network": "network", "asset": "asset", "amount": "amount", "domain": "testnet.threefold.io"})
+JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar-faucet", install_kwargs={"domain": "testnet.threefold.io"})
 JSX> p.threefoldfoundation.stellar_faucet.start()
 ```
+
 - server will start at `172.17.0.2/threefoldfoundation/stellar_faucet/`
 
 ## Actors
