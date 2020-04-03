@@ -6,12 +6,15 @@ To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscal
 ## Requirements
 
 You need following knowledge to start this server.
- 
+
+A funding wallet with trustlines to the tokens it funds payment transactions for.
+
 With a new funding wallet:
 
 ```python
 JSX> txfundingwallet = j.clients.stellar.new("txfundingwallet", network="TEST")
 JSX> txfundingwallet.add_trustline('TFT','GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3')
+JSX> txfundingwallet.add_trustline('FreeTFT','GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R')
 ```
 
 With an existing funding wallet:
