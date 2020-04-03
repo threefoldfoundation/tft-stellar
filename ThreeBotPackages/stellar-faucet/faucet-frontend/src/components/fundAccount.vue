@@ -47,22 +47,40 @@
 </template>
 
 <script lang="ts">
-import { fundAccount } from "../../actions/fundAccount"
+/* eslint-disable */
+import { fundAccount, getUserData } from "../../actions/fundAccount"
+import CryptoService from "../services/CryptoService"
+
 export default {
   data() {
     return {
       error: false,
       address: "",
-      loading: false
+      loading: false,
+      signedAttemptObject: undefined,
+      username: undefined
     }
+  },
+  async mounted() {
+    let url = new URL(window.location.href)
+
+    let error = url.searchParams.get('error')
+
+    if (error) {
+      console.log('Error: ', error)
+      return
+    }
+
+    let signedAttemptObject = JSON.parse(url.searchParams.get('signedAttempt'));
+    this.signedAttemptObject = signedAttemptObject
   },
   methods: {
     fundAddress() {
       this.loading = true
       this.error = false
-      var url = new URL(window.location.href)
-      const username = url.searchParams.get('username')
-      fundAccount(this.address, username)
+      
+      console.log(this.signedAttemptObject)
+      fundAccount(this.address, this.signedAttemptObject)
         .then(res => {
           if (res.status == 200) {
             this.loading = false
