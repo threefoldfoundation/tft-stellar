@@ -7,7 +7,7 @@ import json
 class stellar_faucet(j.baseclasses.threebot_actor):
     @j.baseclasses.actor_method
     def transfer(self, destination, username, signed_hash, schema_out=None, user_session=None):
-        if not self.is_3bot_user(username, signed_hash):
+        if not is_3bot_user(username, signed_hash):
             raise Exception("not a valid user")
         
         distributor = j.clients.stellar.get("distributor")
@@ -28,7 +28,7 @@ class stellar_faucet(j.baseclasses.threebot_actor):
         except Exception as e:
             raise e
 
-    def is_3bot_user(self, username, signed_hash):
+    def is_3bot_user(username, signed_hash):
         auth_response = urlopen("https://login.threefold.me/api/users/{}".format(double_name))
         data = json.loads(auth_response.read())
         user_public = data['publicKey']
