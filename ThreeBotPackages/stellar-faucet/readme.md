@@ -10,7 +10,7 @@ To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscal
 
 ## Requirements
 
-Required install kwargs!!
+Required install kwargs
 
 A wallet for the faucet
 
