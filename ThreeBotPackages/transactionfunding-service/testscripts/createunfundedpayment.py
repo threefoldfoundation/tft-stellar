@@ -3,7 +3,7 @@
 
 
 import stellar_sdk
-from stellar_sdk.transaction_builder import Transaction, TransactionEnvelope, Asset, Payment
+from stellar_sdk.transaction_builder import Transaction, TransactionEnvelope, Asset, Payment, Keypair
 import click
 
 
@@ -11,8 +11,13 @@ import click
 @click.argument("destination", type=str)
 @click.option("--amount", type=str, default="1")
 @click.option("--asset", default="TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3")
-@click.option("--from_address", type=str, required=True)
+@click.option("--from_address", type=str, default="")
 def createpayment_transaction(destination, asset, amount, from_address):
+    if from_address=="":
+        keypair=Keypair.random()
+        from_address=keypair.public_key
+        print("Generated Keypair with secret {}".format(keypair.secret))
+
     split_asset = asset.split(":", 1)
     asset_code = split_asset[0]
     asset_issuer = split_asset[1]
