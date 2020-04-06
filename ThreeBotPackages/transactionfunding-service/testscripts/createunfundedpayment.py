@@ -8,7 +8,7 @@ import click
 
 
 @click.command()
-@click.argument("destination", type=str)
+@click.option("--destination", type=str, default="GDAZYYDCTXD6TLMEU3RPG7KOMGKI7RZU676LQMCXO5VOFB4LXVARGMDP")
 @click.option("--amount", type=str, default="1")
 @click.option("--asset", default="TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3")
 @click.option("--from_address", type=str, default="")
@@ -16,7 +16,7 @@ def createpayment_transaction(destination, asset, amount, from_address):
     if from_address=="":
         keypair=Keypair.random()
         from_address=keypair.public_key
-        print("Generated Keypair with secret {}".format(keypair.secret))
+        print("Generated sending keypair with secret {}".format(keypair.secret))
 
     split_asset = asset.split(":", 1)
     asset_code = split_asset[0]
