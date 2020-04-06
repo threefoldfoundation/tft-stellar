@@ -3,17 +3,11 @@
 A faucet for receiving tokens from a specified asset and issuer.
 To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
 
-## Building frontend
-
-- install frontend dependencies: `cd faucet-frontend && npm install`
-- build: `npm run build`
+For developing on this package, see the [Development documentation](./development.md).
 
 ## Requirements
 
-Required install kwargs
-
 A wallet for the faucet
-
 
 ## Running
 
