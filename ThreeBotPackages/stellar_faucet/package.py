@@ -16,14 +16,21 @@ class Package(j.baseclasses.threebot_package):
             faucet_proxy_location.ipaddr_dest = "127.0.0.1"
             faucet_proxy_location.port_dest = 8080
 
-            run_cmd = f"""
-            cd {self.package_root}
-            cd faucet_frontend
-            npm install
-            npm run serve
-            """
-            cmd = j.servers.startupcmd.get(name="faucet", cmd_start=run_cmd, ports=[8080])
-            cmd.start()
-
             locations.configure()
             website.configure()
+
+            # self._start_faucet_app()
+
+    def _start_faucet_app(self, reset=True):
+        s = j.servers.startupcmd.get("faucet")
+        s.cmd_start = f"""
+        cd {self.package_root}
+        cd faucet_frontend
+        npm run serve
+        """
+        s.executor = "tmux"
+        s.interpreter = "bash"
+        s.timeout = 1000
+        s.ports = [8080]
+
+        s.start(reset=reset)
