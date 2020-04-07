@@ -30,12 +30,23 @@ class conversion_service(j.baseclasses.threebot_actor):
         rivine_public_key = PublicKey(PublicKeySpecifier.ED25519, raw_public_key)
         return str(rivine_public_key.unlockhash)
 
+    def _is_zero_balance_tfchain(self, tfchain_address):
+        tfchain_client = j.clients.tfchain.get("tfchain")
+        # get balance from tfchain
+        result = tfchain_client.unlockhash_get(tfchain_address)
+        balance = result.balance()
+        unlocked_tokens = balance.available.value
+        return unlocked_tokens.is_zero()
+
     @j.baseclasses.actor_method
     def activate_account(self, address, tfchain_address, schema_out=None, user_session=None):
         if self._stellar_address_used_before(address):
             raise j.exceptions.Base("This address is not new")
         if tfchain_address != self._stellar_address_to_tfchain_address(address):
             raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
+        if _is_zero_balance_tfchain(tfchain_address):
+            raise j.exceptions.Base("Tfchain address has 0 balance, no need to activate an account")
+        
         converter = j.clients.stellar.get("converter")
         return converter.activate_account(address, starting_balance="2.6")
 
