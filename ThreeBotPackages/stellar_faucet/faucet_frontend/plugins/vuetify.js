@@ -1,15 +1,18 @@
 import Vue from 'vue'
-import Vuetify, { colors } from 'vuetify/lib'
+import Vuetify from 'vuetify/lib'
 
 Vue.use(Vuetify)
 
 
 export default new Vuetify({
     theme: {
-        dark: true,
+        dark: false,
         themes: {
             dark: {
-                primary: colors.purple.accent4,
+                primary: "#57be8e",
+            },
+            light: {
+                primary: "#57be8e",
             }
         }
     },

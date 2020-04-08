@@ -9,18 +9,19 @@
           justify="center"
         >
           <v-col
-            cols="10"
-            sm="12"
-            md="6"
+            cols="4"
+            lg="12"
+            md="10"
+            sm="6"
           >
-            <h1>Stellar Faucet</h1>
+            <h1>FreeTFT Faucet</h1>
             <v-card class="elevation-12">
               <v-toolbar
                 color="primary"
                 dark
                 flat
               >
-                <v-toolbar-title>Fund a Stellar address</v-toolbar-title>
+                <v-toolbar-title class="title">Fund a FreeTFT address</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
                 <v-form v-on:submit.prevent="fundAddress">
@@ -40,6 +41,14 @@
                 </v-btn>
               </v-card-actions>
             </v-card>
+            <br>
+            <br>
+            <v-card class="elevation-12">
+              <v-card-text>
+                <p>Here you can request FreeTFT, you can use this FreeTFT to pay for free capacity. Fill in a valid stellar address that has a trustline to the issuer of FreeTFT tokens.</p>
+              </v-card-text>
+            </v-card>
+            
           </v-col>
         </v-row>
       </v-container>
@@ -104,5 +113,19 @@ export default {
 }
 #inspire {
   width: 1200px;
+}
+h1 {
+  font-family: 'Bebas Neue', cursive;
+  color: #1072ba
+}
+p {
+  font-family: 'Lato', sans-serif;
+}
+.title {
+  font-family: 'Lato', sans-serif;
+}
+.logo {
+  width: 40px;
+  height: 40px;
 }
 </style>
