@@ -35,8 +35,16 @@ class conversion_service(j.baseclasses.threebot_actor):
         # get balance from tfchain
         result = tfchain_client.unlockhash_get(tfchain_address)
         balance = result.balance()
+
         unlocked_tokens = balance.available.value
-        return unlocked_tokens.is_zero()
+        locked_tokens = balance.locked.value
+        unconfirmed_unlocked_tokens = balance.unconfirmed.value
+        unconfirmed_locked_tokens = balance.unconfirmed_locked.value
+
+        if unlocked_tokens.is_zero() & locked_tokens.is_zero() & unconfirmed_unlocked_tokens.is_zero() & unconfirmed_locked_tokens.is_zero():
+            return True
+        else:
+            return False
 
     @j.baseclasses.actor_method
     def activate_account(self, address, tfchain_address, schema_out=None, user_session=None):
