@@ -11,10 +11,16 @@ class Package(j.baseclasses.threebot_package):
 
             locations = website.locations.get(name=f"faucet_locations_{port}")
 
-            faucet_proxy_location = locations.get_location_proxy(f"faucet_location_{port}")
-            faucet_proxy_location.path_url = "/faucet"
-            faucet_proxy_location.ipaddr_dest = "127.0.0.1"
-            faucet_proxy_location.port_dest = 8080
+            # faucet_proxy_location = locations.get_location_proxy(f"faucet_location_{port}")
+            # faucet_proxy_location.path_url = "/faucet"
+            # faucet_proxy_location.ipaddr_dest = "127.0.0.1"
+            # faucet_proxy_location.port_dest = 8080
+            include_location = locations.get_location_custom(f"faucet_includes_{port}")
+            include_location.config = f"""
+            location /threefoldfoundation/stellar_faucet {{
+                try_files $uri $uri/ /index.html;
+            }}"""
+            include_location.is_auth = False 
 
             locations.configure()
             website.configure()
