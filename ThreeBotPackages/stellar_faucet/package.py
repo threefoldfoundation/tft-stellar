@@ -15,6 +15,7 @@ class Package(j.baseclasses.threebot_package):
             faucet_proxy_location.path_url = "/faucet"
             faucet_proxy_location.ipaddr_dest = "127.0.0.1"
             faucet_proxy_location.port_dest = 8080
+            faucet_proxy_location.is_auth = False 
 
             locations.configure()
             website.configure()
