@@ -3,7 +3,7 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
   outputDir: path.resolve(__dirname, "../frontend"),
-  publicPath: '/faucet',
+  publicPath: '/threefoldfoundation/stellar_faucet',
   configureWebpack: {
     plugins: [
       new VuetifyLoaderPlugin()
