@@ -35,7 +35,15 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
 
     @j.baseclasses.actor_method
     def fund_transaction(self, transaction, schema_out=None, user_session=None):
+        """
+        ```in
+        transaction = (S)
+        ```
 
+        ```out
+        transaction_xdr = (S)
+        ```
+        """
         funding_wallet = j.clients.stellar.get("txfundingwallet")
 
         # after getting the wallet, the required imports are available
