@@ -14,19 +14,19 @@
             md="6"
             lg="12"
           >
-            <h1>Stellar Faucet</h1>
+            <h1>FreeTFT Faucet</h1>
             <v-card class="elevation-12">
               <v-toolbar
                 color="primary"
                 dark
                 flat
               >
-                <v-toolbar-title>Fund a Stellar address</v-toolbar-title>
+                <v-toolbar-title>Get your FreeTFT</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
                 <v-form v-on:submit.prevent="fundAddress">
-                  <v-text-field v-model="address" required placeholder="Address" />
-                  <p v-if="error" id="errortext">This address probably does not exist or does not have a trustline with the issuer of our Stellar FreeTFT (Testnet). Or already requested tokens before!</p>
+                  <v-text-field v-model="address" required placeholder="Stellar address" />
+                  <p v-if="error" id="errortext">This address probably does not exist or does not have a trustline with the issuer of our Stellar FreeTFT. Or this address might already have requested tokens before!</p>
                 </v-form>
               </v-card-text>
               <v-card-actions>
@@ -37,9 +37,16 @@
                   :loading="loading"
                   :disabled="loading || address === ''"
                   v-on:click="fundAddress()">
-                  Fund
+                  Submit
                 </v-btn>
               </v-card-actions>
+            </v-card>
+            <br>
+            <br>
+            <v-card class="elevation-12">
+              <v-card-text>
+                <p>Enter a valid Stellar address to receive FreeTFT, this address must have a trustline to the FreeTFT issuer! You will only be able to receive tokens once.</p>
+              </v-card-text>
             </v-card>
           </v-col>
         </v-row>
