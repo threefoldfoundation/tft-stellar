@@ -36,10 +36,14 @@ Keep in mind that the stellar testnet is [reset every quarter](https://www.stell
 
 ## Acquiring testnet tokens
 
-Testnet tokens can be acquired through the Stellar decentralized exchange. Bots are present to maintain sell orders.
+### TFT
 
-- TFT:  https://stellar.expert/explorer/testnet/asset/TFT-GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3-1?filter=orderbook
-- FreeTFT: https://stellar.expert/explorer/testnet/asset/FreeTFT-GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R-2?filter=orderbook
+Dex: https://stellar.expert/explorer/testnet/asset/TFT-GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3-1?filter=orderbook
+
+### FreeTFT
+
+Dex: https://stellar.expert/explorer/testnet/asset/FreeTFT-GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R-2?filter=orderbook
+Faucet: https://testnet.threefold.io
 
 ## Wallet implementations
 
@@ -67,3 +71,4 @@ Deployed services:
 - Unlock Service
 - Transaction funding service
 - Activation service
+- Freetft faucet https://testnet.threefold.io/threefoldfoundation/stellar_faucet
