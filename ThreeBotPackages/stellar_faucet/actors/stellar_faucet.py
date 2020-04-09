@@ -19,7 +19,7 @@ class stellar_faucet(j.baseclasses.threebot_actor):
 
         double_name = signed_attempt_object["doubleName"]
         hashed_double_name = nacl.hash.blake2b(double_name.encode("utf-8"), encoder=nacl.encoding.RawEncoder)
-        txes = distributor.list_transaction(address=destination)
+        txes = distributor.list_transactions(address=destination)
         for tx in txes:
             if tx.memo_hash is not None:
                 decoded_memo_hash = base64.b64decode(tx.memo_hash)
