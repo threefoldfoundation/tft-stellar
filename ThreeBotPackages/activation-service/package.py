@@ -12,6 +12,7 @@ class Package(j.baseclasses.threebot_package):
             locations = website.locations.get(name=f"activation_service_{port}_locations")
 
             include_location = locations.get_location_custom(f"activation_service_includes_{port}")
+            include_location.is_auth = False
             include_location.config = f"""
             location /threefoldfoundation/activation_service {{
                 rewrite /threefoldfoundation/activation_service/(.*)$ /threefoldfoundation/activation_service/actors/activation_service/$1;
