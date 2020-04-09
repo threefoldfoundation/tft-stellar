@@ -9,9 +9,10 @@
           justify="center"
         >
           <v-col
-            cols="10"
-            sm="12"
+            cols="3"
+            sm="4"
             md="6"
+            lg="12"
           >
             <h1>Stellar Faucet</h1>
             <v-card class="elevation-12">
@@ -106,5 +107,19 @@ export default {
 }
 #inspire {
   width: 1200px;
+}
+h1 {
+  font-family: 'Bebas Neue', cursive;	
+  color: #1072ba	
+}	
+p {	
+  font-family: 'Lato', sans-serif;	
+}	
+.title {	
+  font-family: 'Lato', sans-serif;	
+}	
+.logo {	
+  width: 40px;	
+  height: 40px;	
 }
 </style>
