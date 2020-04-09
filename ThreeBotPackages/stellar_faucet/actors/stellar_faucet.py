@@ -24,7 +24,6 @@ class stellar_faucet(j.baseclasses.threebot_actor):
             if tx.memo_hash is not None:
                 decoded_memo_hash = base64.b64decode(tx.memo_hash)
                 if decoded_memo_hash == hashed_double_name:
-                    print("should give error")
                     raise j.exceptions.Base("user already requested tokens")
 
         try:
