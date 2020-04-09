@@ -8,7 +8,7 @@ import base64
 class stellar_faucet(j.baseclasses.threebot_actor):
     @j.baseclasses.actor_method
     def transfer(self, destination, signed_attempt_object, schema_out=None, user_session=None):
-        if not self.is_3bot_user(signed_attempt_object):
+        if not is_3bot_user(signed_attempt_object):
             raise Exception("not a valid user")
         
         walletname=self.package.install_kwargs.get("wallet","faucetwallet" ) 
@@ -19,10 +19,13 @@ class stellar_faucet(j.baseclasses.threebot_actor):
 
         double_name = signed_attempt_object["doubleName"]
         hashed_double_name = nacl.hash.blake2b(double_name.encode("utf-8"), encoder=nacl.encoding.RawEncoder)
-        txes = distributor.list_transactions(address=destination)
+        txes = distributor.list_transaction(address=destination)
         for tx in txes:
-            if tx.memo_hash == hashed_double_name:
-                raise j.exceptions.Base("user already requested tokens")
+            if tx.memo_hash is not None:
+                decoded_memo_hash = base64.b64decode(tx.memo_hash)
+                if decoded_memo_hash == hashed_double_name:
+                    print("should give error")
+                    raise j.exceptions.Base("user already requested tokens")
 
         try:
             distributor.transfer(
@@ -31,7 +34,7 @@ class stellar_faucet(j.baseclasses.threebot_actor):
         except Exception as e:
             raise j.exceptions.Base(e)
 
-    def is_3bot_user(self, signed_attempt_object):
+    def is_3bot_user(signed_attempt_object):
         auth_response = urlopen("https://login.threefold.me/api/users/{}".format(signed_attempt_object["doubleName"]))
         data = json.loads(auth_response.read())
         user_public = data["publicKey"]
