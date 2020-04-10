@@ -52,7 +52,7 @@ class conversion_service(j.baseclasses.threebot_actor):
             raise j.exceptions.Base("This address is not new")
         if tfchain_address != self._stellar_address_to_tfchain_address(address):
             raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
-        if _is_zero_balance_tfchain(tfchain_address):
+        if self._is_zero_balance_tfchain(tfchain_address):
             raise j.exceptions.Base("Tfchain address has 0 balance, no need to activate an account")
         
         converter = j.clients.stellar.get("converter")
