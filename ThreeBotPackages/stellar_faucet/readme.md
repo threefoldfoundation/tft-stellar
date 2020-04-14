@@ -36,6 +36,14 @@ gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfo
 
 - server will start at `172.17.0.2/threefoldfoundation/stellar_faucet/`
 
+### Running on a different path than `/`
+
+If the app needs to be deployed on another path than `/` it must only be configured in 1 place.
+
+https://github.com/threefoldfoundation/tft-stellar/blob/5ded498d881550974e9b3f1c916ff93b484a3392/ThreeBotPackages/stellar_faucet/faucet_frontend/vue.config.js#L6
+
+afterwards run`npm run build`
+
 ## Actors
 
 See [actors](../actors). We have one actor that has one method:
