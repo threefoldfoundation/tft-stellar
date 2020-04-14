@@ -1,0 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato&display=swap');
+
+#app {
+    background-image: url("./faucet-background.png");
+    background-size: cover;
+}
+
+#inspire {
+    background-color:transparent;
+}

@@ -23,7 +23,11 @@ Given the way how signatures work, the transaction needs to be complete before a
 
 It's easier is to have the funding service fill in the source account,sign the transaction envelope and give it back to the client. The client needs to verify if everything is still correct (nothing else has been tempered with), sign and publish it.
 
+
+
 ![External funding sequence diagram](./externalfunding.png)
+
+Since the funding service overwrites the source account of the transaction, the client needs to put it's account on the operation itself.
 
 ## Funding Service
 

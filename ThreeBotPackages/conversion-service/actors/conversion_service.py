@@ -6,16 +6,19 @@ import binascii
 import base64
 
 
-_TFT_FULL_ASSETCODES={"TEST":"TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3","STD":"TFT:issuertobefilledin"}
+_TFT_FULL_ASSETCODES = {
+    "TEST": "TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3",
+    "STD": "TFT:issuertobefilledin",
+}
+
 
 class conversion_service(j.baseclasses.threebot_actor):
-
-
     def _stellar_address_used_before(self, stellar_address):
         try:
-           stellar_client= j.clients.stellar.get("converter")
-           from stellar_sdk.exceptions import NotFoundError
-           stellar_client.list_transactions(address=stellar_address)
+            stellar_client = j.clients.stellar.get("converter")
+            from stellar_sdk.exceptions import NotFoundError
+
+            stellar_client.list_transactions(address=stellar_address)
         except NotFoundError:
             return False
         else:
@@ -29,13 +32,32 @@ class conversion_service(j.baseclasses.threebot_actor):
         rivine_public_key = PublicKey(PublicKeySpecifier.ED25519, raw_public_key)
         return str(rivine_public_key.unlockhash)
 
+    def _is_zero_balance_tfchain(self, tfchain_address):
+        tfchain_client = j.clients.tfchain.get("tfchain")
+        # get balance from tfchain
+        result = tfchain_client.unlockhash_get(tfchain_address)
+        balance = result.balance()
+
+        unlocked_tokens = balance.available.value
+        locked_tokens = balance.locked.value
+        unconfirmed_unlocked_tokens = balance.unconfirmed.value
+        unconfirmed_locked_tokens = balance.unconfirmed_locked.value
+
+        if unlocked_tokens.is_zero() & locked_tokens.is_zero() & unconfirmed_unlocked_tokens.is_zero() & unconfirmed_locked_tokens.is_zero():
+            return True
+        else:
+            return False
 
     @j.baseclasses.actor_method
     def activate_account(self, address, tfchain_address, schema_out=None, user_session=None):
         if self._stellar_address_used_before(address):
-           raise j.exceptions.Base("This address is not new")
+            raise j.exceptions.Base("This address is not new")
+
         if tfchain_address != self._stellar_address_to_tfchain_address(address):
             raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
+        if self._is_zero_balance_tfchain(tfchain_address):
+            raise j.exceptions.Base("Tfchain address has 0 balance, no need to activate an account")
+        
         converter = j.clients.stellar.get("converter")
         return converter.activate_account(address, starting_balance="2.6")
 
@@ -44,7 +66,7 @@ class conversion_service(j.baseclasses.threebot_actor):
         converter_wallet = j.clients.stellar.get("converter")
         tfchain_client = j.clients.tfchain.get("tfchain")
 
-        #Check after getting the wallets so all required imports are certainly met
+        # Check after getting the wallets so all required imports are certainly met
         if tfchain_address != self._stellar_address_to_tfchain_address(stellar_address):
             raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
 

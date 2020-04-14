@@ -30,6 +30,8 @@ This service allows a sender to publish the unlock transaction and allows the re
 
 A working example can be found in the [locked funds research folder](../research/lockedfunds). It also demonstrates how to find the locked funds in the escrow accounts.
 
+[An in depth technical walkthrough is available as well](./lockedfunds_details.md).
+
 ## Implementations
 
 ## Clients

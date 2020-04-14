@@ -3,7 +3,7 @@ from Jumpscale import j
 
 class unlock_service(j.baseclasses.threebot_actor):
     def _init(self, **kwargs):
-        self.unlockhash_transaction_model = j.threebot.packages.threefoldfoundation.unlock_service.bcdb.model_get(
+        self.unlockhash_transaction_model = j.tools.threebot_packages.threefoldfoundation__unlock_service.bcdb.model_get(
             url="threefoldfoundation.unlock_service.unlockhash_transaction"
         )
 
