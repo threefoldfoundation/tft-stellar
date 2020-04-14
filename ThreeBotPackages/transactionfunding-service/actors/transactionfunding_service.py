@@ -86,4 +86,7 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
 
         txe.transaction.sequence = source_account.sequence
         txe.sign(source_signing_kp)
-        return txe.to_xdr()
+
+        out = schema_out.new()
+        out.transaction_xdr = txe.to_xdr()
+        return out
