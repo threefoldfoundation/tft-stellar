@@ -42,8 +42,8 @@ Dex: https://stellar.expert/explorer/testnet/asset/TFT-GA47YZA3PKFUZMPLQ3B5F2E3C
 
 ### FreeTFT
 
-Dex: https://stellar.expert/explorer/testnet/asset/FreeTFT-GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R-2?filter=orderbook
-Faucet: https://getfreetft.testnet.threefold.io
+- Dex: https://stellar.expert/explorer/testnet/asset/FreeTFT-GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R-2?filter=orderbook
+- Faucet: https://getfreetft.testnet.threefold.io
 
 ## Wallet implementations
 
