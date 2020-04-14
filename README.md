@@ -71,4 +71,4 @@ Deployed services:
 - Unlock Service
 - Transaction funding service
 - Activation service
-- Freetft faucet https://testnet.threefold.io/threefoldfoundation/stellar_faucet
+- Freetft faucet https://getfreetft.testnet.threefold.io
