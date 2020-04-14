@@ -107,7 +107,7 @@ class conversion_service(j.baseclasses.threebot_actor):
             raise Exception("Can't migrate right now, address had unconfirmed locked balance.")
 
         if not unlocked_tokens.is_zero():
-            return converter_wallet.transfer(stellar_address, unlocked_tokens, asset, memo_hash=memo_hash)
+            converter_wallet.transfer(stellar_address, unlocked_tokens, asset, memo_hash=memo_hash)
 
         def format_output(lock_time, unlock_tx_xdr):
             return {"unlocks_at": lock_time, "unlock_tx_xdr": unlock_tx_xdr}
