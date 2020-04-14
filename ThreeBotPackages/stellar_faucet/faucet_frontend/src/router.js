@@ -6,7 +6,7 @@ import fundAccount from './components/fundAccount'
 Vue.use(Router)
 
 export default new Router({
-  base: '/threefoldfoundation/stellar_faucet',
+  base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
