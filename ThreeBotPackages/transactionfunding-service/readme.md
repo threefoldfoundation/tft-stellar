@@ -32,6 +32,11 @@ JSX> j.clients.stellar.new("txfundingwallet", network="TEST",secret="<txfundingw
 
 Once this process is completed, create the stellar and tfchain client and add this package to the Threebot.
 
+install arguments:
+
+- `wallet`: the wallet used to fund the transactions, default: `txfundingwallet`
+- `domain`: default: `testnet.threefoldtoken.io`
+
 ```python
 JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
 JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/transactionfunding-service",install_kwargs={ "domain": "testnet.threefold.io" })

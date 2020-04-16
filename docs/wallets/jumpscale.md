@@ -1,5 +1,5 @@
 # Jumpscale wallet
- 
+
 [Jumpscale Wallet](https://github.com/threefoldtech/jumpscaleX_libs/tree/development/JumpscaleLibs/clients/stellar)
 
 ## tricks

@@ -44,7 +44,9 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         transaction_xdr = (S)
         ```
         """
-        funding_wallet = j.clients.stellar.get("txfundingwallet")
+
+        walletname=self.package.install_kwargs.get("wallet","txfundingwallet" ) 
+        funding_wallet = j.clients.stellar.get(walletname)
 
         # after getting the wallet, the required imports are available
         import stellar_sdk
