@@ -16,5 +16,5 @@ As the escrow account is a central account in the payment reservation process an
 - Define asset and issuer for TFTA on Stellar testnet
 - Define asset and issuer for TFTA on Stellar mainnet
 - Replace TFT by TFTA in conversion service (used by 3Bot connect app)
-- Allow a mechanism to convert TFTA to TFT on escrow account when payment is done in TFTA
+- Allow a mechanism to convert TFTA to TFT on escrow account when capacity payment is done in TFTA
 
