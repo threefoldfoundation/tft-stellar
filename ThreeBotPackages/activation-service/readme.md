@@ -20,9 +20,8 @@ Make sure the wallet exists:
 Once this process is completed, create the stellar and add this package to the Threebot.
 
 ```python
-JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
-JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/activation-service", install_kwargs={ "domain": "testnet.threefold.io" })
-JSX> p.threefoldfoundation.unlock_service.start()
+JSX> j.threebot.packages.zerobot.admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/activation-service", install_kwargs={ "domain": "testnet.threefold.io" })
+JSX> j.threebot.packages.threefoldfoundation.unlock_service.start()
 ```
 
 The server will start at `172.17.0.2/threefoldfoundation/unlock_service/`

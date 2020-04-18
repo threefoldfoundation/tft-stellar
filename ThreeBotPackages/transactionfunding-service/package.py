@@ -2,7 +2,18 @@ from Jumpscale import j
 
 
 class Package(j.baseclasses.threebot_package):
+    def ensure_slavewallets(self):
+        main_walletname = self._package.install_kwargs.get("wallet", "txfundingwallet")
+        main_wallet = j.clients.stellar.get(main_walletname)
+        nr_of_slaves = self._package.install_kwargs.get("slaves", 30)
+        for slaveindex in range(nr_of_slaves):
+            walletname = main_walletname + "_" + str(slaveindex)
+            if not j.clients.stellar.exists(walletname):
+                slave_wallet = j.clients.stellar.new(walletname, network=main_wallet.network)
+                main_wallet.activate_account(slave_wallet.address, starting_balance="5")
+
     def start(self):
+        self.ensure_slavewallets()
         DOMAIN = self._package.install_kwargs.get("domain") or "testnet.threefoldtoken.io"
         for port in (443, 80):
             website = self.openresty.get_from_port(port)

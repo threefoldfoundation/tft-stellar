@@ -1,16 +1,16 @@
 from Jumpscale import j
 
-
-_TFT_FULL_ASSETCODES = {
-    "TEST": "TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3",
-    "STD": "TFT:GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47",
+_TFT_ISSUERS = {
+    "TEST": "GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3",
+    "STD": "GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47",
 }
 
-_FREETFT_FULL_ASSETCODES = {
-    "TEST": "FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R",
-    "STD": "FreeTFT:GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT",
+_FREETFT_ISSUERS = {
+    "TEST": "GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R",
+    "STD": "GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT",
 }
-_ASSETS = {"TFT": _TFT_FULL_ASSETCODES, "FreeTFT": _FREETFT_FULL_ASSETCODES}
+
+_ASSET_ISSUERS = {"TFT": _TFT_ISSUERS, "FreeTFT": _FREETFT_ISSUERS}
 
 _HORIZON_NETWORKS = {"TEST": "https://horizon-testnet.stellar.org", "STD": "https://horizon.stellar.org"}
 
@@ -20,13 +20,6 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         import stellar_sdk
 
         return stellar_sdk.Server(horizon_url=_HORIZON_NETWORKS[str(network)])
-
-    def _get_tft_asset(self, network):
-        import stellar_sdk
-
-        fullcode = _TFT_FULL_ASSETCODES[str(network)]
-        split_code = fullcode.split(":")
-        return stellar_sdk.Asset(split_code[0], split_code[1])
 
     def _create_fee_payment(self, from_address, destination, asset, network):
         import stellar_sdk
@@ -45,7 +38,7 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         ```
         """
 
-        walletname=self.package.install_kwargs.get("wallet","txfundingwallet" ) 
+        walletname = self.package.install_kwargs.get("wallet", "txfundingwallet")
         funding_wallet = j.clients.stellar.get(walletname)
 
         # after getting the wallet, the required imports are available
@@ -67,17 +60,19 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
 
         if len(txe.transaction.operations) == 0:
             raise j.exceptions.Base("No operations in the supplied transaction")
-        full_asset_code = ""
         asset = None
         for op in txe.transaction.operations:
             if type(op) != stellar_sdk.operation.Payment:
                 raise j.exceptions.Base("Only payment operations are supported")
-            if op.asset.code not in _ASSETS:
+            if op.asset.code not in _ASSET_ISSUERS:
                 raise j.exceptions.Base("Unsupported asset")
-            full_asset_code = op.asset.code + ":" + op.asset.issuer
-            if _ASSETS[op.asset.code][str(funding_wallet.network)] != full_asset_code:
+            if _ASSET_ISSUERS[op.asset.code][str(funding_wallet.network)] != op.asset.issuer:
                 raise j.exceptions.Base("Unsupported asset")
-            asset = op.asset
+            if asset:
+                if asset != op.asset:
+                    raise j.exceptions.Base("Only 1 type of asset is supported")
+            else:
+                asset = op.asset
         txe.transaction.operations.append(
             self._create_fee_payment(
                 txe.transaction.operations[0].source, funding_wallet.address, asset, funding_wallet.network

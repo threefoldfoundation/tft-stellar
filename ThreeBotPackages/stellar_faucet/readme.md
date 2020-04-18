@@ -25,8 +25,8 @@ install arguments:
 
 ```python
 JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
-JSX> gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar_faucet", install_kwargs={"domain": "testnet.threefold.io"})
-JSX> p.threefoldfoundation.stellar_faucet.start()
+JSX> j.threebot.packages.zerobot.admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar_faucet", install_kwargs={"domain": "testnet.threefold.io"})
+JSX> j.threebot.packages.threefoldfoundation.stellar_faucet.start()
 ```
 
 for a freetft faucet:
