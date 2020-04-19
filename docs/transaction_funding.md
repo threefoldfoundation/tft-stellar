@@ -7,7 +7,11 @@ It is uncomfortable for users to require and purchase Lumen to be able to do TFT
 
 ## Solution
 
-A solution is to fund the transactions from the Threefoldfoundation since transaction fees are very low.
+A funding service accepts transaction envelopes and funds the required lumen.
+
+The funding service adds a payment operation of 0.1 of the token being transferred to itself and then it's up to the client to accept it or not.
+
+This way transaction fees stay  in the same token.
 
 ## Stellar signatures
 
@@ -23,12 +27,14 @@ Given the way how signatures work, the transaction needs to be complete before a
 
 It's easier is to have the funding service fill in the source account,sign the transaction envelope and give it back to the client. The client needs to verify if everything is still correct (nothing else has been tempered with), sign and publish it.
 
-
-
 ![External funding sequence diagram](./externalfunding.png)
+
+### Remarks
 
 Since the funding service overwrites the source account of the transaction, the client needs to put it's account on the operation itself.
 
-## Funding Service
+If the returned transaction is not submitted to the stellar network within the minute, the funding account might be reused, making the returned transaction envelope obsolete.
+
+## Implementations
 
 An implementation of the funding service is [available as a Jumpscale service](../ThreeBotPackages/transactionfunding-service/readme.md).

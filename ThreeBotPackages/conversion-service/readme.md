@@ -25,7 +25,7 @@ JSX> j.threebot.packages.zerobot.admin.actors.package_manager.package_add(git_ur
 JSX> j.threebot.packages.threefoldfoundation.conversion_service.start()
 ```
 
-The server will start at `172.17.0.2/threefoldfoundation/conversion_service/`
+The server will start at `host/threefoldfoundation/conversion_service/`
 
 Test out the transfer tokens:
 

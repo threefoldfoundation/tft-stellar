@@ -34,7 +34,7 @@ for a freetft faucet:
 gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar_faucet", install_kwargs={"domain": "testnet.threefold.io", "asset":"FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R"})
 ```
 
-- server will start at `172.17.0.2/threefoldfoundation/stellar_faucet/`
+- server will start at `host/threefoldfoundation/stellar_faucet/`
 
 ### Running on a different path than `/`
 

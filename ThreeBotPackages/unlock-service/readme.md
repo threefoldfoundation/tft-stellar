@@ -15,7 +15,7 @@ JSX> j.threebot.packages.zerobot.admin.actors.package_manager.package_add(git_ur
 JSX> j.threebot.packages.threefoldfoundation.unlock_service.start()
 ```
 
-The server will start at `172.17.0.2/threefoldfoundation/unlock_service/`
+The server will start at `host/threefoldfoundation/unlock_service/`
 
 Test out the creation of an unlockhash transaction:
 
