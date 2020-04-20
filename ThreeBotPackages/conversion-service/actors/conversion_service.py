@@ -79,7 +79,7 @@ class conversion_service(j.baseclasses.threebot_actor):
         is_authorized = tfchain_client.authcoin.is_authorized(unlockhash.unlockhash)
 
         if is_authorized:
-            raise j.exceptions.Base("Tfchain addressess should be deauthorized first before migrating to Stellar!")
+            raise j.exceptions.Base("Tfchain addressess should be deauthorized first before migrating to Stellar")
 
         memo_hash = None
         sorted_transactions = sorted(unlockhash.transactions, key=lambda tx: tx.height, reverse=True)
