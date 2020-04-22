@@ -83,4 +83,4 @@ Deployed services:
 - Unlock Service
 - Transaction funding service
 - Activation service
-- Freetft faucet https://getfreetft.testnet.threefold.io
+- [Freetft faucet](https://getfreetft.testnet.threefold.io)
