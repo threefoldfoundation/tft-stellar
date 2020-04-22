@@ -11,8 +11,6 @@ Threefoldtoken on the stellar network
 - assetCode: TFT
 - issuer: GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47
 
-## Testnet
-
 ### Testnet
 
 - assetCode: TFT
@@ -47,7 +45,13 @@ Dex: https://stellar.expert/explorer/testnet/asset/TFT-GA47YZA3PKFUZMPLQ3B5F2E3C
 
 ## Wallet implementations
 
+Whil we provide some tooling to make it easier for users of only these tokens, it are regular assets on the Stellar network so any Stellar wallet can be used.
+
 - [Jumpscale](https://github.com/threefoldtech/jumpscaleX_libs/tree/development/JumpscaleLibs/clients/stellar)
+
+## Integration for exchanges
+
+These tokens are regular Stellar custom assets so the normal Stellar documentation for custom assets appplies.
 
 ## tft-stellar tooling
 
@@ -60,6 +64,14 @@ This contains following tools:
 - [Activation service](ThreeBotPackages/activation-service/readme.md): Service for activation of new accounts.
 
 ## Deployed services
+
+### Production services
+
+Url: `https://tokenservices.threefold.io`
+
+Deployed services:
+
+None yet
 
 ### Testnet services
 
