@@ -11,8 +11,8 @@ To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscal
 Once this process is completed, create the stellar and tfchain client and add this package to the Threebot.
 
 ```python
-JSX> j.threebot.packages.zerobot.admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/unlock-service", install_kwargs={ "domain": "testnet.threefold.io" })
-JSX> j.threebot.packages.threefoldfoundation.unlock_service.start()
+JSX> j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/unlock-service", install_kwargs={ "domain": "testnet.threefold.io" })
+JSX>  j.tools.threebot_packages.threefoldfoundation__unlock_service.start()
 ```
 
 The server will start at `host/threefoldfoundation/unlock_service/`

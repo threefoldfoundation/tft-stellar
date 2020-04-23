@@ -11,7 +11,7 @@ You need following knowledge to start this server.
 A funding wallet with trustlines to the tokens it funds payment transactions for.
 It needs trustlines to all tokens it funds transactions for to claim the fee.
 
-With a new funding wallet:
+With a new funding wallet(Testnet):
 
 ```python
 JSX> txfundingwallet = j.clients.stellar.new("txfundingwallet", network="TEST")
@@ -42,8 +42,8 @@ install arguments:
 - `domain`: default: `testnet.threefoldtoken.io`
 
 ```python
-JSX> j.threebot.packages.zerobot.admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/transactionfunding-service",install_kwargs={ "domain": "testnet.threefold.io" })
-JSX> j.threebot.packages.threefoldfoundation.transactionfunding_service.start()
+JSX> j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/transactionfunding-service",install_kwargs={ "domain": "testnet.threefold.io" })
+JSX>  j.tools.threebot_packages.threefoldfoundation__transactionfunding_service.start()
 ```
 
 The server will start at `host/threefoldfoundation/transactionfunding_service/`

@@ -21,7 +21,7 @@ JSX> j.clients.stellar.new("converter", network="TEST",secret="<converter_secret
 
 JSX> j.clients.tfchain.new(name="tfchain", network_type="TEST")
 
-JSX> j.threebot.packages.zerobot.admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/conversion-service", install_kwargs={ "domain": "testnet.threefold.io" })
+JSX> j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/conversion-service", install_kwargs={ "domain": "testnet.threefold.io" })
 JSX> j.threebot.packages.threefoldfoundation.conversion_service.start()
 ```
 

@@ -4,10 +4,9 @@ Assuming the packages are already installed:
 
 ```python
 j.servers.threebot.start(background=True)
-gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
-gedis.actors.package_manager.package_start('threefoldfoundation.unlock_service')
-gedis.actors.package_manager.package_start('threefoldfoundation.conversion_service')
-gedis.actors.package_manager.package_start('threefoldfoundation.transactionfunding_service')
-gedis.actors.package_manager.package_start('threefoldfoundation.activation_service')
-gedis.actors.package_manager.package_start('threefoldfoundation.stellar_faucet')
+j.tools.threebot_packages.threefoldfoundation__unlock_service.start()
+j.tools.threebot_packages.threefoldfoundation__.conversion_service.start()
+j.tools.threebot_packages.threefoldfoundation__transactionfunding_service.start()
+j.tools.threebot_packages.threefoldfoundation__activation_service.start()
+j.tools.threebot_packages.threefoldfoundation__stellar_faucet.start()
 ```

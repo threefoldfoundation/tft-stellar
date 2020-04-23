@@ -24,14 +24,13 @@ install arguments:
 - `domain`: default: "testnet.threefoldtoken.io"
 
 ```python
-JSX> gedis = j.clients.gedis.get("pm", port=8901, package_name="zerobot.packagemanager")
-JSX> j.threebot.packages.zerobot.admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar_faucet", install_kwargs={"domain": "testnet.threefold.io"})
-JSX> j.threebot.packages.threefoldfoundation.stellar_faucet.start()
+JSX> j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar_faucet", install_kwargs={"domain": "testnet.threefold.io"})
+JSX> j.tools.threebot_packages.threefoldfoundation__stellar_faucet.start()
 ```
 
 for a freetft faucet:
 ```python
-gedis.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar_faucet", install_kwargs={"domain": "testnet.threefold.io", "asset":"FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R"})
+j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar_faucet", install_kwargs={"domain": "testnet.threefold.io", "asset":"FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R"})
 ```
 
 - server will start at `host/threefoldfoundation/stellar_faucet/`
