@@ -79,12 +79,7 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
 
         source_public_kp = stellar_sdk.Keypair.from_public_key(funding_wallet.address)
         source_signing_kp = stellar_sdk.Keypair.from_secret(funding_wallet.secret)
-        horizon_server = self._get_horizon_server(funding_wallet.network)
-        base_fee = horizon_server.fetch_base_fee()
-
-        source_account = funding_wallet.load_account()
-        source_account.increment_sequence_number()
-        txe.transaction.source = source_public_kp
+        
 
         if len(txe.transaction.operations) == 0:
             raise j.exceptions.Base("No operations in the supplied transaction")
@@ -104,7 +99,15 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
 
         txe.transaction.operations.append(self._create_fee_payment(txe.transaction.operations[0].source, asset))
 
+        # set the necessary fee
+        horizon_server = self._get_horizon_server(funding_wallet.network)
+        base_fee = horizon_server.fetch_base_fee()
         txe.transaction.fee = base_fee * len(txe.transaction.operations)
+
+        
+        source_account = funding_wallet.load_account()
+        source_account.increment_sequence_number()
+        txe.transaction.source = source_public_kp
 
         txe.transaction.sequence = source_account.sequence
         txe.sign(source_signing_kp)
