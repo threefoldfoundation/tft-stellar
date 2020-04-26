@@ -24,14 +24,14 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         return stellar_sdk.Server(horizon_url=_HORIZON_NETWORKS[str(network)])
 
     def _create_fee_payment(self, from_address, asset):
-        main_walletname = self.package.install_kwargs.get("wallet", "txfundingwallet")
-        fee_target = j.clients.stellar.get(main_walletname).address
+        main_wallet = self.package._package_author.get_main_fundingwallet
+        fee_target = main_wallet.address
 
         import stellar_sdk
 
         return stellar_sdk.Payment(fee_target, asset, "0.1", from_address)
 
-    def _get_fundingwallet(self):
+    def _get_slave_fundingwallet_(self):
         main_walletname = self.package.install_kwargs.get("wallet", "txfundingwallet")
 
         nr_of_slaves = self.package.install_kwargs.get("slaves", 30)
@@ -63,8 +63,7 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         transaction_xdr = (S)
         ```
         """
-
-        funding_wallet = self._get_fundingwallet()
+        funding_wallet = self._get_slave_fundingwallet_()
         if not funding_wallet:
             raise j.exceptions.Base("Service Unavailable")
 
@@ -104,7 +103,7 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         base_fee = horizon_server.fetch_base_fee()
         txe.transaction.fee = base_fee * len(txe.transaction.operations)
 
-        
+
         source_account = funding_wallet.load_account()
         source_account.increment_sequence_number()
         txe.transaction.source = source_public_kp
@@ -114,4 +113,5 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
 
         out = schema_out.new()
         out.transaction_xdr = txe.to_xdr()
+        self.package._package_author.fund_if_needed(funding_wallet.address)
         return out
