@@ -16,13 +16,35 @@ You need following knowledge to start this server.
 
 Once this process is completed, create the stellar and tfchain client and add this package to the Threebot.
 
+Inialize the wallet clients:
+
+testnet:
+
 ```python
 JSX> j.clients.stellar.new("converter", network="TEST",secret="<converter_secret>")
+JSX> j.clients.tfchain.new(name="tfchain", network_type="TEST")
+```
+
+production:
+
+```python
+JSX> j.clients.stellar.new("converter",secret="<converter_secret>")
 
 JSX> j.clients.tfchain.new(name="tfchain", network_type="TEST")
+```
 
+Install the package.
+
+testnet:
+
+```python
 JSX> j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/conversion-service", install_kwargs={ "domain": "testnet.threefold.io" })
-JSX> j.threebot.packages.threefoldfoundation.conversion_service.start()
+```
+
+production:
+
+```python
+JSX> j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/conversion-service", install_kwargs={ "domain": "tokenservices.threefold.io" })
 ```
 
 The server will start at `host/threefoldfoundation/conversion_service/`

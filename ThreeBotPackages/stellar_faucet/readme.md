@@ -7,7 +7,25 @@ For developing on this package, see the [Development documentation](./developmen
 
 ## Requirements
 
-A wallet for the faucet
+For production:
+
+A new wallet for the faucet
+
+```python
+faucetwallet = j.clients.stellar.new('faucetwallet')
+```
+
+Add the trustlines:
+
+```python
+JSX> faucetwallet.add_trustline('FreeTFT','GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT')
+```
+
+Restore an existing wallet:
+
+```python
+j.clients.stellar.new('faucetwallet',secret='<secret>')
+```
 
 ## Running
 
@@ -25,12 +43,20 @@ install arguments:
 
 ```python
 JSX> j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar_faucet", install_kwargs={"domain": "testnet.threefold.io"})
-JSX> j.tools.threebot_packages.threefoldfoundation__stellar_faucet.start()
 ```
 
 for a freetft faucet:
+
+testnet:
+
 ```python
-j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar_faucet", install_kwargs={"domain": "testnet.threefold.io", "asset":"FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R"})
+j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar_faucet", install_kwargs={"domain": "getfreetft.testnet.threefold.io", "asset":"FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R"})
+```
+
+production:
+
+```python
+j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/stellar_faucet", install_kwargs={"domain": "getfreetft.threefold.io", "asset":"FreeTFT:GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT"})
 ```
 
 - server will start at `host/threefoldfoundation/stellar_faucet/`
