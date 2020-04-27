@@ -2,10 +2,4 @@
 name = "activation_service"
 description = "Package that provides ways to activate new accounts"
 threebot = "threefoldfoundation"
-version = "0.0.1"
-
-[[bcdbs]]
-namespace = "threefoldfoundation.activation_service"
-type = "zdb"
-instance = "default"
-name="threefoldfoundation.activation_service"
+version = "0.0.2"
