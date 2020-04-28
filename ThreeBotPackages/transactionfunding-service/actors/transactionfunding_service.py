@@ -30,7 +30,7 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         return stellar_sdk.Server(horizon_url=_HORIZON_NETWORKS[str(network)])
 
     def _create_fee_payment(self, from_address, asset):
-        main_wallet = self.package._package_author.get_main_fundingwallet
+        main_wallet = self.package._package_author.get_main_fundingwallet()
         fee_target = main_wallet.address
 
         import stellar_sdk

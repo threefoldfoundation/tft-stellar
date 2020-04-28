@@ -16,6 +16,7 @@ class Package(j.baseclasses.threebot_package):
         for slaveindex in range(nr_of_slaves):
             walletname = str(main_wallet.name) + "_" + str(slaveindex)
             if not j.clients.stellar.exists(walletname):
+                print(f"activating slave {walletname}")
                 slave_wallet = j.clients.stellar.new(walletname, network=main_wallet.network)
                 main_wallet.activate_account(slave_wallet.address, starting_balance="5")
 
@@ -38,7 +39,7 @@ class Package(j.baseclasses.threebot_package):
 
             locations.configure()
             website.configure()
-        self.start_funding_loop()
+        self._start_funding_loop()
 
     def _start_funding_loop(self):
         print("Starting transaction funding service refund loop")
@@ -52,7 +53,7 @@ class Package(j.baseclasses.threebot_package):
             print(f"(Re)funding {walletname}")
             wallet = j.clients.stellar.get(walletname)
             balances = wallet.get_balance()
-            xlmbalance = [b for b in balances.balances if b.is_native()][0]
+            xlmbalance = [b for b in balances.balances if b.is_native][0]
             xlmbalance = Decimal(xlmbalance.balance)
             # if xlmbalance< 3 add 2 from main fundingwallet
             if xlmbalance < Decimal("3"):
