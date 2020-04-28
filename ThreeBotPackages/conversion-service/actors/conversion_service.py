@@ -141,21 +141,21 @@ class conversion_service(j.baseclasses.threebot_actor):
 
         unlock_tx_xdrs = []
         if not locked_tokens.is_zero():
-        for tx in unlockhash.transactions:
-            for coin_output in tx.coin_outputs:
-                lock_time = coin_output.condition.lock.value
-                if lock_time == 0:
-                    break
-                lock_time_date = datetime.fromtimestamp(lock_time)
-                # if lock time year is before 2021 be convert to TFTA
-                if lock_time_date.year < 2021:
-                    asset = _TFTA_FULL_ASSETCODES[str(converter_wallet.network)]
-                # else we convert to TFT
-                else:
-                    asset = _TFT_FULL_ASSETCODES[str(converter_wallet.network)]
+            for tx in unlockhash.transactions:
+                for coin_output in tx.coin_outputs:
+                    lock_time = coin_output.condition.lock.value
+                    if lock_time == 0:
+                        break
+                    lock_time_date = datetime.fromtimestamp(lock_time)
+                    # if lock time year is before 2021 be convert to TFTA
+                    if lock_time_date.year < 2021:
+                        asset = _TFTA_FULL_ASSETCODES[str(converter_wallet.network)]
+                    # else we convert to TFT
+                    else:
+                        asset = _TFT_FULL_ASSETCODES[str(converter_wallet.network)]
 
-                if time.time() < lock_time:
-                    unlock_tx_xdr = converter_wallet.transfer(stellar_address, coin_output.value, asset, lock_time, memo_hash=memo_hash)
-                    unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
+                    if time.time() < lock_time:
+                        unlock_tx_xdr = converter_wallet.transfer(stellar_address, coin_output.value, asset, lock_time, memo_hash=memo_hash)
+                        unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
 
         return json.dumps(unlock_tx_xdrs)
