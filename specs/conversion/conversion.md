@@ -9,6 +9,10 @@ A possible solution is to provide a service to migrate the funds on demand, acti
 
 Before the conversion, all addresses on tfchain will be locked by unauthorizing them. [A separate document explains why and the details](./locked_conversion_transaction.md).
 
+## TFTA
+
+TFTA is 100% the same as a TFT, this is just a technical detail for migrating all TFT's from one blockchain to the other and at the end of 2020 all TFTA will become TFT. Using 2 currency names TFT & TFTA allows to provide some price protection during 2020 which is to the benefit of the full ThreeFold community.
+
 ## Process
 
 - at conversion time, ALL the Rivine blockchain accounts get locked, this means no-one can transact on Rivine any longer.
