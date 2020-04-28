@@ -4,13 +4,18 @@ import time
 import json
 import binascii
 import base64
+from datetime import datetime
 
 
 _TFT_FULL_ASSETCODES = {
     "TEST": "TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3",
-    "STD": "TFT:issuertobefilledin",
+    "STD": "TFT:GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47",
 }
 
+_TFTA_FULL_ASSETCODES = {
+    "TEST": "TFTA:GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT",
+    "STD": "TFTA:GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2",
+}
 
 class conversion_service(j.baseclasses.threebot_actor):
     def _stellar_address_used_before(self, stellar_address):
@@ -70,7 +75,7 @@ class conversion_service(j.baseclasses.threebot_actor):
         if tfchain_address != self._stellar_address_to_tfchain_address(stellar_address):
             raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
 
-        asset = _TFT_FULL_ASSETCODES[str(converter_wallet.network)]
+        asset = _TFTA_FULL_ASSETCODES[str(converter_wallet.network)]
 
         # get balance from tfchain
         unlockhash = tfchain_client.unlockhash_get(tfchain_address)
@@ -136,11 +141,21 @@ class conversion_service(j.baseclasses.threebot_actor):
 
         unlock_tx_xdrs = []
         if not locked_tokens.is_zero():
-            for tx in unlockhash.transactions:
-                for coin_output in tx.coin_outputs:
-                    lock_time = coin_output.condition.lock.value
-                    if time.time() < lock_time:
-                        unlock_tx_xdr = converter_wallet.transfer(stellar_address, coin_output.value, asset, lock_time, memo_hash=memo_hash)
-                        unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
+        for tx in unlockhash.transactions:
+            for coin_output in tx.coin_outputs:
+                lock_time = coin_output.condition.lock.value
+                if lock_time == 0:
+                    break
+                lock_time_date = datetime.fromtimestamp(lock_time)
+                # if lock time year is before 2021 be convert to TFTA
+                if lock_time_date.year < 2021:
+                    asset = _TFTA_FULL_ASSETCODES[str(converter_wallet.network)]
+                # else we convert to TFT
+                else:
+                    asset = _TFT_FULL_ASSETCODES[str(converter_wallet.network)]
+
+                if time.time() < lock_time:
+                    unlock_tx_xdr = converter_wallet.transfer(stellar_address, coin_output.value, asset, lock_time, memo_hash=memo_hash)
+                    unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
 
         return json.dumps(unlock_tx_xdrs)
