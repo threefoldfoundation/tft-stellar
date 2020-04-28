@@ -113,5 +113,5 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
 
         out = schema_out.new()
         out.transaction_xdr = txe.to_xdr()
-        self.package._package_author.fund_if_needed(funding_wallet.address)
+        self.package._package_author.fund_if_needed(funding_wallet.name)
         return out

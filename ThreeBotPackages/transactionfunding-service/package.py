@@ -1,6 +1,7 @@
 from Jumpscale import j
 import gevent
 import gevent.queue
+from decimal import Decimal
 
 
 class Package(j.baseclasses.threebot_package):
@@ -45,7 +46,7 @@ class Package(j.baseclasses.threebot_package):
 
             locations.configure()
             website.configure()
-            self.start_funding_loop()
+        self.start_funding_loop()
 
     def _start_funding_loop(self):
         print("Starting transaction funding service refund loop")
@@ -59,8 +60,11 @@ class Package(j.baseclasses.threebot_package):
             print(f"(Re)funding {walletname}")
             wallet = j.clients.stellar.get(walletname)
             balances = wallet.get_balance()
-            xlmbalance = [b for b in balances if b.is_native][0]
+            xlmbalance = [b for b in balances.balances if b.is_native()][0]
+            xlmbalance = Decimal(xlmbalance.balance)
             # if xlmbalance< 3 add 2 from main fundingwallet
+            if xlmbalance < Decimal("3"):
+                self.get_main_fundingwallet().transfer(wallet.address, "2", asset="XLM", fund_transaction=False)
 
     def fund_if_needed(self, walletname):
         # add walletname to gevent queue
