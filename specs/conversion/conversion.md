@@ -22,6 +22,7 @@ TFTA is 100% the same as a TFT, this is just a technical detail for migrating al
     - the stellar account creation can only happen by the wallet on the phone for security purposes and is 100% decentralized.
     - a [Locked Conversion Transaction](./locked_conversion_transaction.md) is started to allow the funds to switch blockchain.
     - the TFTA is created on Stellar and send to the users stellar account, the rivine lock transaction hash is attached to this stellar transaction to make sure there is 100% transparancy while the switch happens.
+    - time locked TFT on the rivine chain become time locked TFTA if the locktime expires before 2021. I the locktime expires after 2020,  they become time locked TFT on the Stellar blockchain.
 
 ## Flow
 
