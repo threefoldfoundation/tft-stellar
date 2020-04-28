@@ -18,6 +18,20 @@ Threefoldtoken on the stellar network
 
 Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
 
+## TFTA
+
+### Production network
+
+- assetCode: TFTA
+- issuer: GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2
+
+### Testnet
+
+- assetCode: TFTA
+- issuer: GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT
+
+Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
+
 ## FreeTFT
 
 ### Production network
