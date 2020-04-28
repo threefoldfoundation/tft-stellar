@@ -6,6 +6,13 @@ name="ThreeFold Token"
 desc="A digital currency used to buy autonomous and decentralized Internet services (compute, storage, and application) on the ThreeFold Network"
 image="https://www2.threefold.io/assets/3fold_icon.png"
 
+[[CURRENCIES]]
+code="TFTA"
+issuer="GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT"
+display_decimals=2 
+name="ThreeFold Token"
+desc="A digital currency used to buy autonomous and decentralized Internet services (compute, storage, and application) on the ThreeFold Network"
+image="https://www2.threefold.io/assets/3fold_icon.png"
 
 [[CURRENCIES]]
 code="FreeTFT"
