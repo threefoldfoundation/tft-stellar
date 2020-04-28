@@ -16,28 +16,20 @@ class Package(j.baseclasses.threebot_package):
         for slaveindex in range(nr_of_slaves):
             walletname = str(main_wallet.name) + "_" + str(slaveindex)
             if not j.clients.stellar.exists(walletname):
-                slave_wallet = j.clients.stellar.new(
-                    walletname, network=main_wallet.network
-                )
+                slave_wallet = j.clients.stellar.new(walletname, network=main_wallet.network)
                 main_wallet.activate_account(slave_wallet.address, starting_balance="5")
 
     def start(self):
         self.ensure_slavewallets()
-        DOMAIN = (
-            self._package.install_kwargs.get("domain") or "testnet.threefoldtoken.io"
-        )
+        DOMAIN = self._package.install_kwargs.get("domain") or "testnet.threefoldtoken.io"
         for port in (443, 80):
             website = self.openresty.get_from_port(port)
             website.ssl = port == 443
             website.domain = DOMAIN
 
-            locations = website.locations.get(
-                name=f"transactionfunding_service_{port}_locations"
-            )
+            locations = website.locations.get(name=f"transactionfunding_service_{port}_locations")
 
-            include_location = locations.get_location_custom(
-                f"transactionfunding_service_includes_{port}"
-            )
+            include_location = locations.get_location_custom(f"transactionfunding_service_includes_{port}")
             include_location.is_auth = False
             include_location.config = """
             location /threefoldfoundation/transactionfunding_service {{

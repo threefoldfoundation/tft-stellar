@@ -18,5 +18,6 @@ def create_keypair():
 def create_account():
     create_keypair()
 
+
 if __name__ == "__main__":
     create_account()

@@ -7,12 +7,18 @@ _TFT_ISSUERS = {
     "STD": "GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47",
 }
 
+
+_TFTA_ISSUERS = {
+    "TEST": "GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT",
+    "STD": "GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2",
+}
+
 _FREETFT_ISSUERS = {
     "TEST": "GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R",
     "STD": "GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT",
 }
 
-_ASSET_ISSUERS = {"TFT": _TFT_ISSUERS, "FreeTFT": _FREETFT_ISSUERS}
+_ASSET_ISSUERS = {"TFT": _TFT_ISSUERS, "TFTA": _TFTA_ISSUERS, "FreeTFT": _FREETFT_ISSUERS}
 
 _HORIZON_NETWORKS = {"TEST": "https://horizon-testnet.stellar.org", "STD": "https://horizon.stellar.org"}
 
@@ -78,7 +84,6 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
 
         source_public_kp = stellar_sdk.Keypair.from_public_key(funding_wallet.address)
         source_signing_kp = stellar_sdk.Keypair.from_secret(funding_wallet.secret)
-        
 
         if len(txe.transaction.operations) == 0:
             raise j.exceptions.Base("No operations in the supplied transaction")
@@ -102,7 +107,6 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         horizon_server = self._get_horizon_server(funding_wallet.network)
         base_fee = horizon_server.fetch_base_fee()
         txe.transaction.fee = base_fee * len(txe.transaction.operations)
-
 
         source_account = funding_wallet.load_account()
         source_account.increment_sequence_number()

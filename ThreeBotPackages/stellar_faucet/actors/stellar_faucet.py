@@ -10,8 +10,8 @@ class stellar_faucet(j.baseclasses.threebot_actor):
     def transfer(self, destination, signed_attempt_object, schema_out=None, user_session=None):
         if not self.is_3bot_user(signed_attempt_object):
             raise Exception("not a valid user")
-        
-        walletname=self.package.install_kwargs.get("wallet","faucetwallet" ) 
+
+        walletname = self.package.install_kwargs.get("wallet", "faucetwallet")
         distributor = j.clients.stellar.get(walletname)
 
         asset = self.package.install_kwargs.get("asset", "TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3")
