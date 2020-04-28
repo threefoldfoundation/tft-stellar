@@ -1,10 +1,16 @@
 # Locking of tchain accounts during the conversion
 
-In the v1.3 release of tfchain, locking of accounts has been added to support the transition to a different blockchain platform.
+## Migration from Rivine to Stellar
 
-## Why
+We will use a process we called "locked Conversion Transaction".
 
-Eventually, all TFT have to be migrated after which no TFT remains on tchain, the problem is solved then.
+This is basically a controlled process in which we lock the account on Rivine before the transaction, metadata is inserted in the Stellar minting action which points back to the originating funds, once the transaction succeeded the account gets permanently locked and metadata written to point to the new account on Stellar. The account address on Stellar is a derivate from the account on Rivine which makes it easy for everyone to follow the flow.
+
+We first wanted to use atomic swaps for this but this had some issues to do with transparancy and complexity for the user.
+
+## Why did we choose this path
+
+Rule nr 1 all TFT have to be migrated after which no TFT remains on the rivine chain (TF Chain).
 
 During the transition, the wallet of the user needs to initiate the conversion as explained in the [conversion document](./conversion.md).
 
@@ -28,8 +34,8 @@ Essentially the same but not so graceful and no hashes to include in the coin is
 
 As explained in the "why", this means having TFT running on both platforms and the traceability of coin creation because of the migration is far less.
 
-## Process
+## Info
 
-## Distinction between locked and unlocked addresses
+In the v1.3 release of tfchain, locking of accounts has been added to support the transition to a different blockchain platform.
 
-Through the explorer: `https://explorer.testnet.threefoldtoken.com/explorer/authcoin/status?addr=address`
+See the info in the explorer: `https://explorer.testnet.threefoldtoken.com/explorer/authcoin/status?addr=address`
