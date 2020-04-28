@@ -21,7 +21,11 @@ Before the conversion, all addresses on tfchain will be locked by unauthorizing 
     
 ## TFTA
 
-TFTA is 100% the same as a TFT, this is just a technical detail for migrating all TFT's from one blockchain to the other and at the end of 2020 all TFTA will become TFT. Using 2 currency names TFT & TFTA allows to provide some price protection during 2020 which is to the benefit of the full ThreeFold community.
+From a valuation perspective TFTA is 100% the same as a TFT, this is just a technical detail for migrating all TFT's from one blockchain to the other and at the end of 2020 all TFTA will become TFT. Using 2 currency names TFT & TFTA allows to provide some price protection during 2020 which is to the benefit of the full ThreeFold community.
+
+This means that during 2020 everyone who wants to know the full marketcap of TFT needs to make the sum of TFTA and TFT !!!
+From 2021, this no longer needed, then TFTA will stop to exist.
+
 
 
 ## Flow
