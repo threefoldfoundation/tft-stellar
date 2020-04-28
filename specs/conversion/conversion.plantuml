@@ -3,7 +3,7 @@
 title Conversion flow
 
 actor Wallet
-participant "Conversion service" as cs
+participant "Locked conversion transaction" as cs
 participant "Stellar network" as sn
 
 Wallet-> Wallet: create Stellar address
