@@ -59,7 +59,7 @@ class conversion_service(j.baseclasses.threebot_actor):
             raise j.exceptions.Base("Tfchain address has 0 balance, no need to activate an account")
         
         converter = j.clients.stellar.get("converter")
-        return converter.activate_account(address, starting_balance="2.6")
+        return converter.activate_account(address, starting_balance="3.6")
 
     @j.baseclasses.actor_method
     def migrate_tokens(self, tfchain_address, stellar_address, schema_out=None, user_session=None):

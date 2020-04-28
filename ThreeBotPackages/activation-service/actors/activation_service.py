@@ -19,7 +19,7 @@ class activation_service(j.baseclasses.threebot_actor):
         if self._stellar_address_used_before(address):
             raise j.exceptions.Base("This address is not new")
         activationwallet = j.clients.stellar.get("activation_wallet")
-        activationwallet.activate_account(address, starting_balance="3.1")
+        activationwallet.activate_account(address, starting_balance="3.6")
     
     @j.baseclasses.actor_method
     def create_activation_code(self, address, schema_out, user_session):
