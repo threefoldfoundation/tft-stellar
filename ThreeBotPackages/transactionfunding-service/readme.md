@@ -20,9 +20,24 @@ JSX> txfundingwallet.add_trustline('TFT','GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPC
 JSX> txfundingwallet.add_trustline('FreeTFT','GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R')
 ```
 
+for production:
+
+```python
+JSX> txfundingwallet = j.clients.stellar.new("txfundingwallet", network="TEST")
+```
+
+Activate it from another wallet
+
+Add the trustlines:
+
+```python
+JSX> txfundingwallet.add_trustline('TFT','GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47')
+JSX> txfundingwallet.add_trustline('FreeTFT','GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT')
+```
+
 With an existing funding wallet:
 
-`txfundingwallet_secret`: is the secret key of the funding account which holds the Lumens.
+`txfundingwallet_secret`: is the secret key of the funding account which holds the Lumens and already has the trustlines.
 
 ```python
 JSX> j.clients.stellar.new("txfundingwallet", network="TEST",secret="<txfundingwallet_secret>")
