@@ -75,7 +75,7 @@ class conversion_service(j.baseclasses.threebot_actor):
         if tfchain_address != self._stellar_address_to_tfchain_address(stellar_address):
             raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
 
-        asset = _TFT_FULL_ASSETCODES[str(converter_wallet.network)]
+        asset = _TFTA_FULL_ASSETCODES[str(converter_wallet.network)]
 
         # get balance from tfchain
         unlockhash = tfchain_client.unlockhash_get(tfchain_address)
