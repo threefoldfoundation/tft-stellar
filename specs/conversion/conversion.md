@@ -16,7 +16,7 @@ Before the conversion, all addresses on tfchain will be locked by unauthorizing 
 - at time of the users convenience a user logs into the ThreeFold Wallet (3bot connect) and the following process happens
     - the wallet creates an account on Stellar with same private key (which is only visible by the user !!!)
     - the stellar account creation can only happen by the wallet on the phone for security purposes and is 100% decentralized.
-    - a [Locked Conversion Transaction]() is started to allow the funds to switch blockchain.
+    - a [Locked Conversion Transaction](./locked_conversion_transaction.md) is started to allow the funds to switch blockchain.
     - the TFTA is created on Stellar and send to the users stellar account, the rivine lock transaction hash is attached to this stellar transaction to make sure there is 100% transparancy while the switch happens.
 
 ## Flow
