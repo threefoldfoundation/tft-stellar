@@ -31,6 +31,7 @@ class activation_service(j.baseclasses.threebot_actor):
         activation_code = (S)
         address = (S)
         phonenumbers= (LS)
+        ```
         """
         self._activate_account(address)
         response = j.data.serializers.json.dumps(

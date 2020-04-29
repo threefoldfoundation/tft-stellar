@@ -21,5 +21,5 @@ curl -v -H "Content-Type: application/json" -d '{ "args": { "activation_code": "
 ## Submit to the service
 
 ```sh
-curl -H "Content-Type: application/json" -d '{ "args": { "address": "<newaddress>"  }}' "http://localhost:7000/threefoldfoundation/activation_service/create_activation_code
+curl -H "Content-Type: application/json" -d '{ "args": { "address": "<newaddress>"  }}' "http://localhost:7000/threefoldfoundation/activation_service/create_activation_code"
 ```
