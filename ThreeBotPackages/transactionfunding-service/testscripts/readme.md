@@ -28,3 +28,13 @@ testnet:
 ```sh
 curl -v -H "Content-Type: application/json" -d '{ "args": { "transaction": "" }}' "https://testnet.threefold.io/threefoldfoundation/transactionfunding_service/fund_transaction"
 ```
+
+## Production
+
+Generate an unfunded TFTA payment:
+
+`./createunfundedpayment.py --asset="TFTA:GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2"`
+
+```sh
+curl -v -H "Content-Type: application/json" -d '{ "args": { "transaction": "" }}' "https://tokenservices.threefold.io/threefoldfoundation/transactionfunding_service/fund_transaction"
+```
