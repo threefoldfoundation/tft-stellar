@@ -33,9 +33,9 @@ class Package(j.baseclasses.threebot_package):
             include_location = locations.get_location_custom(f"transactionfunding_service_includes_{port}")
             include_location.is_auth = False
             include_location.config = """
-            location /threefoldfoundation/transactionfunding_service {{
+            location /threefoldfoundation/transactionfunding_service {
                 rewrite /threefoldfoundation/transactionfunding_service/(.*)$ /threefoldfoundation/transactionfunding_service/actors/transactionfunding_service/$1;
-            }}"""
+            }"""
 
             locations.configure()
             website.configure()
@@ -50,19 +50,17 @@ class Package(j.baseclasses.threebot_package):
 
     def _funding_loop(self):
         for walletname in self.queue:
-            print(f"(Re)funding {walletname}")
             wallet = j.clients.stellar.get(walletname)
             balances = wallet.get_balance()
             xlmbalance = [b for b in balances.balances if b.is_native][0]
             xlmbalance = Decimal(xlmbalance.balance)
             # if xlmbalance< 3 add 2 from main fundingwallet
             if xlmbalance < Decimal("3"):
+                print(f"Refunding {walletname}")
                 self.get_main_fundingwallet().transfer(wallet.address, "2", asset="XLM", fund_transaction=False)
 
     def fund_if_needed(self, walletname):
         # add walletname to gevent queue
-        # TODO: does this need a condition?
-        # TODO: do we need the result?
         self.queue.put(walletname)
 
         return None
