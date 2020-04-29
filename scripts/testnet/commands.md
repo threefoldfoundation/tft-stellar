@@ -32,7 +32,28 @@ See the [readme](../readme.md) on how to run these scripts.
 ../publishdomain.py --network=test FreeTFT www2.threefold.io --issuer_secret=<Issuer secret>
 ```
 
-
 ## after network reset
 
-activate accounts again, publish home domains
+activate issuer accounts again, publish home domains
+
+service accounts:
+
+```python
+j.clients.stellar.new('txfundingwallet',network='TEST',secret='')
+j.clients.stellar.new('converter',network='TEST',secret='')
+j.clients.stellar.new('activation_wallet',network='TEST',secret='')
+j.clients.stellar.new('faucetwallet',network='TEST',secret='')
+```
+
+```python
+j.clients.stellar.txfundingwallet.activate_through_friendbot()
+j.clients.stellar.converter.activate_through_friendbot()
+j.clients.stellar.activation_wallet.activate_through_friendbot()
+j.clients.stellar.faucetwallet.activate_through_friendbot()
+j.clients.stellar.faucetwallet.add_known_trustline('FreeTFT')
+j.clients.stellar.txfundingwallet.add_known_trustline('TFT')
+j.clients.stellar.txfundingwallet.add_known_trustline('FreeTFT')
+j.clients.stellar.txfundingwallet.add_trustline('TFTA','GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT')
+j.clients.stellar.converter.add_known_trustline('TFT')
+j.clients.stellar.converter.add_trustline('TFTA','GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT')
+```

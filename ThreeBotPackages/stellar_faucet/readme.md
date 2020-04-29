@@ -15,16 +15,25 @@ A new wallet for the faucet
 faucetwallet = j.clients.stellar.new('faucetwallet')
 ```
 
+Restore an existing wallet:
+
+```python
+j.clients.stellar.new('faucetwallet',secret='<secret>')
+```
+
 Add the trustlines:
 
 ```python
 JSX> faucetwallet.add_trustline('FreeTFT','GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT')
 ```
 
-Restore an existing wallet:
+For testnet:
+
+
+Add the trustlines:
 
 ```python
-j.clients.stellar.new('faucetwallet',secret='<secret>')
+JSX> faucetwallet.add_trustline('FreeTFT','GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R')
 ```
 
 ## Running
