@@ -23,5 +23,5 @@ Once this is done, conversion is simple : after installation of the 3Bot Connect
 
 During the conversion, you will see the process is ongoing. It is important not to close the app during this conversion process (if there are locked tokens, it can take a while) !
 
-![](img/import_process.png)
+![](img/import_process.PNG)
 
