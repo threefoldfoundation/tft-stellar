@@ -57,3 +57,16 @@ j.clients.stellar.txfundingwallet.add_trustline('TFTA','GB55A4RR4G2MIORJTQA4L6FE
 j.clients.stellar.converter.add_known_trustline('TFT')
 j.clients.stellar.converter.add_trustline('TFTA','GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT')
 ```
+
+Trader accounts:
+
+```python
+j.clients.stellar.new('tfttraderwallet',network='TEST',secret='')
+j.clients.stellar.new('freetfttraderwallet',network='TEST',secret='')
+j.clients.stellar.tfttraderwallet.activate_through_friendbot()
+j.clients.stellar.freetfttraderwallet.activate_through_friendbot()
+j.clients.stellar.tfttraderwallet.add_known_trustline('TFT')
+j.clients.stellar.freetfttraderwallet.add_known_trustline('FreeTFT')
+j.clients.stellar.issuerwallet.transfer(j.clients.stellar.tfttraderwallet.address, amount="500000",asset='TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3',fund_transaction=False)
+j.clients.stellar.freeetftissuerwallet.transfer(j.clients.stellar.freetfttraderwallet.address,amount="500000",asset='FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R', fund_transaction=False)
+```
