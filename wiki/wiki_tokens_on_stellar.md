@@ -25,3 +25,6 @@ During the conversion, you will see the process is ongoing. It is important not 
 
 ![](img/import_process.PNG)
 
+Once the conversion process has ended, you will arrive in the accounts overview page. Done !
+
+![](img/accounts_overview.PNG)
