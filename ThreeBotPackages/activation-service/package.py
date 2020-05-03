@@ -1,10 +1,11 @@
 from Jumpscale import j
+import gevent
 
 
 class Package(j.baseclasses.threebot_package):
     def start(self):
 
-        activation_wallet_name= = self._package.install_kwargs.get("wallet","activation_wallet")
+        activation_wallet_name = self._package.install_kwargs.get("wallet","activation_wallet")
         
         self.activation_wallet= j.clients.stellar.get(activation_wallet_name)
 
@@ -25,32 +26,15 @@ class Package(j.baseclasses.threebot_package):
 
             locations.configure()
             website.configure()
-         self._start_activation_loop()
+        self.pool= gevent.pool.Pool(1)
 
-    def _start_activation_loop():
-        print("Starting activation service loop")
-        # create gevent queueu
-        self.queue = gevent.queue.Queue()
-        # start gevent loop at _funding_loop
-        self._activation_greenlet = gevent.spawn(self._activation_loop)
-
-    def _activation_loop(self)
-        for address in self.queue:
-            try:
-                self.activation_wallet.activate_account(address, starting_balance="3.6")
-                 #TODO signal caller
-            except Exception e:
-                #TODO: return exception to caller
-    
+    def _activate_account(self, address):
+        self.activation_wallet.activate_account(address, starting_balance="3.6")
+                
     def activate_account(self, address):
-         # add address to gevent queue
-        self.queue.put(address)
-        #TODO wait for processing to finish
-
-
-    def _stop_activation_loop(self):
-        print("Halting activation service loop")
-        self._activation_greenlet.kill()
+        self.pool.apply(self._activate_account, args=(address,))
 
     def stop(self):
-        self._stop_activation_loop()
+        if self.pool:
+            self.pool.kill()
+            self.pool = None

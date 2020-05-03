@@ -4,7 +4,7 @@ from Jumpscale import j
 class activation_service(j.baseclasses.threebot_actor):
     def _stellar_address_used_before(self, stellar_address):
         try:
-            stellar_client = j.clients.stellar.get("activation_wallet")
+            stellar_client = self.package_author.activation_wallet
             from stellar_sdk.exceptions import NotFoundError
 
             stellar_client.list_transactions(address=stellar_address)
@@ -16,8 +16,7 @@ class activation_service(j.baseclasses.threebot_actor):
     def _activate_account(self, address):
         if self._stellar_address_used_before(address):
             raise j.exceptions.Base("This address is not new")
-        activationwallet = j.clients.stellar.get("activation_wallet")
-        activationwallet.activate_account(address, starting_balance="3.6")
+        self.package_author.activate_account(address)
 
     @j.baseclasses.actor_method
     def create_activation_code(self, address, schema_out, user_session):
