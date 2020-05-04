@@ -21,7 +21,7 @@ _TFTA_FULL_ASSETCODES = {
 class conversion_service(j.baseclasses.threebot_actor):
     def _stellar_address_used_before(self, stellar_address):
         try:
-            stellar_client = j.clients.stellar.get("converter")
+            stellar_client = self.package_author.conversion_wallet
             from stellar_sdk.exceptions import NotFoundError
 
             stellar_client.list_transactions(address=stellar_address)
@@ -69,12 +69,11 @@ class conversion_service(j.baseclasses.threebot_actor):
         if self._is_zero_balance_tfchain(tfchain_address):
             raise j.exceptions.Base("Tfchain address has 0 balance, no need to activate an account")
 
-        converter = j.clients.stellar.get("converter")
-        return converter.activate_account(address, starting_balance="3.6")
+        return self.package_author.activate_account(address)
 
     @j.baseclasses.actor_method
     def migrate_tokens(self, tfchain_address, stellar_address, schema_out=None, user_session=None):
-        converter_wallet = j.clients.stellar.get("converter")
+        converter_wallet = self.package_author.conversion_wallet
         tfchain_client = j.clients.tfchain.get("tfchain")
 
         # Check after getting the wallets so all required imports are certainly met
@@ -139,7 +138,7 @@ class conversion_service(j.baseclasses.threebot_actor):
             raise Exception("Can't migrate right now, address had unconfirmed locked balance.")
 
         if not unlocked_tokens.is_zero():
-            converter_wallet.transfer(stellar_address, unlocked_tokens, asset, memo_hash=memo_hash)
+            self.package_author.transfer(stellar_address, unlocked_tokens, asset, memo_hash=memo_hash)
 
         def format_output(lock_time, unlock_tx_xdr):
             return {"unlocks_at": lock_time, "unlock_tx_xdr": unlock_tx_xdr}
@@ -160,7 +159,7 @@ class conversion_service(j.baseclasses.threebot_actor):
                         asset = _TFT_FULL_ASSETCODES[str(converter_wallet.network)]
 
                     if time.time() < lock_time:
-                        unlock_tx_xdr = converter_wallet.transfer(
+                        unlock_tx_xdr = self.package_author.transfer(
                             stellar_address, coin_output.value, asset, lock_time, memo_hash=memo_hash
                         )
                         unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
