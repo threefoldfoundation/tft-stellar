@@ -78,3 +78,12 @@ In Stellar sequence numbers for an account must increase.
 If only 1 account would be used, all request must essentially be executed in sequence and transmitted to the Stellar network before the next request to fund a transaction can be done.
 
 Ths package creates extra slave wallets with the name of the basewallet appended with `_index`. It loops over the slaves to search for one where the last sequence is already accepted by the network and if not found, takes the slave that was least recently used, given that it was longer than a minute ago.
+
+### Slave cleanup
+
+```python
+walletnames=j.clients.stellar._children_names_get()
+slaves=[w for w in walletnames if 'txfundingwallet_' in w]
+for slavename in slaves:
+    j.clients.stellar.delete(slavename)
+```
