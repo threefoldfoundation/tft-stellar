@@ -42,7 +42,7 @@ class Package(j.baseclasses.threebot_package):
         locked_until=None,
         memo_hash=None,
     ):
-        return self.conversion_wallet.transfer(destination_address,amount,asset,locked_until, memo_hash=memo_hash) 
+        return self.conversion_wallet.transfer(destination_address,amount,asset,locked_until, memo_hash=memo_hash,fund_transaction=False) 
 
     def transfer(
         self,

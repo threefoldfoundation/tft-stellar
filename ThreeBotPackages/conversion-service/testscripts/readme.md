@@ -17,7 +17,27 @@ with the commandline client:
 send some unlocked tokens:
 
 ```sh
-tfchainc wallet send coins address amount
+./tfchainc wallet send coins address amount
+```
+
+send some locked tokens:
+
+with a lock until November 1 2020:
+
+```sh
+./tfchainc wallet send coins '{"type": 3,"data": {"locktime": 1604188800,"condition": {"type":1,"data":{ "unlockhash":"<address>"}}}}' 11
+```
+
+with a lock until November 1 2021:
+
+```sh
+./tfchainc wallet send coins '{"type": 3,"data": {"locktime": 1635724800,"condition": {"type":1,{ "unlockhash":"<address>"}}}}' 12
+```
+
+Deauthorize the account:
+
+```sh
+./tfchainc wallet send transaction "$(./tfchainc wallet sign "$(./tfchainc wallet authcoin authaddresses --deauth <address>)")"
 ```
 
 ## Account activation
@@ -27,14 +47,6 @@ curl -H "Content-Type: application/json" -d '{ "args": { "address": "","tfchain_
 ```
 
 ## Token migration
-
-Comment out lines 80-81, 92-93, 96-102 in `./actors/conversion_service.py`
-
-The reason we comment this out is to skip folowing steps for easy testing:
-
-- lock tfchain address
-
-Start the Threebot server with these lines commented out
 
 - Import the converter wallet in JSX
 - Create a stellar account with secret from the first step in JSX to addthe  trustlines to TFT and TFTA:
@@ -54,7 +66,7 @@ p.threefoldfoundation.conversion_service.actors.conversion_service.migrate_token
 **through curl:**
 
 ```sh
-curl -H "Content-Type: application/json" -d '{ "args": { "tfchain_address": "", "stellar_address": "" }}' "http://localhost/threefoldfoundation/conversion_service/migrate_tokens"
+curl -H "Content-Type: application/json" -d '{ "args": { "tfchain_address": "", "stellar_address": "" }}' "http://localhost:7000/threefoldfoundation/conversion_service/migrate_tokens"
 ```
 
 This result is an array of unlock transactionenvelopes in xdr format.
