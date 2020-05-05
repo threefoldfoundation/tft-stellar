@@ -26,35 +26,39 @@ class Package(j.baseclasses.threebot_package):
 
             locations.configure()
             website.configure()
-        self.pool= gevent.pool.Pool(1)
+        self.activation_pool= gevent.pool.Pool(1)
+        self.issuing_pool = gevent.pool.Pool(1)
 
     def _activate_account(self, address):
         self.conversion_wallet.activate_account(address, starting_balance="3.6")
                 
     def activate_account(self, address):
-        self.pool.apply(self._activate_account, args=(address,))
+        self.activation_pool.apply(self._activate_account, args=(address,))
 
     def _transfer(
         self,
         destination_address,
         amount,
-        asset="XLM",
+        asset: str,
         locked_until=None,
         memo_hash=None,
     ):
-        return self.conversion_wallet.transfer(destination_address,amount,asset,locked_until, memo_hash=memo_hash,fund_transaction=False) 
+        issuer_address = asset.split(':')[1]
+        return self.conversion_wallet.transfer(destination_address,amount,asset,locked_until, memo_hash=memo_hash,fund_transaction=False,from_address=issuer_address) 
 
     def transfer(
         self,
         destination_address,
         amount,
-        asset="XLM",
+        asset: str,
         locked_until=None,
         memo_hash=None,
     ):
-        return self.pool.apply(self._transfer, args=(destination_address,amount,asset,locked_until,memo_hash))
+        return self.issuing_pool.apply(self._transfer, args=(destination_address,amount,asset,locked_until,memo_hash))
 
     def stop(self):
-        if self.pool:
-            self.pool.kill()
-            self.pool = None
+        if self.activation_pool:
+            self.activation_pool = None
+        
+        if self.issuing_pool:
+            self.issuing_pool = None

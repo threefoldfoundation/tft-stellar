@@ -29,8 +29,14 @@ production:
 
 ```python
 JSX> j.clients.stellar.new("converter",secret="<converter_secret>")
+JSX> j.clients.tfchain.new(name="tfchain")
+```
 
-JSX> j.clients.tfchain.new(name="tfchain", network_type="TEST")
+Make sure that for both TFT and TFTA, the converter account can issue tokens:
+
+```python
+tftissuerwallet.modify_signing_requirements((j.clients.stellar.converter.address,),1,0,3,3)
+tftaissuerwallet.modify_signing_requirements((j.clients.stellar.converter.address,),1,0,3,3)
 ```
 
 Install the package.
