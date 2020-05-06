@@ -4,6 +4,7 @@ import time
 import json
 import binascii
 import base64
+import math
 from datetime import datetime
 
 
@@ -160,7 +161,7 @@ class conversion_service(j.baseclasses.threebot_actor):
 
                     if time.time() < lock_time:
                         unlock_tx_xdr = self.package_author.transfer(
-                            stellar_address, coin_output.value, asset, lock_time, memo_hash=memo_hash
+                            stellar_address, coin_output.value, asset, math.ceil(lock_time), memo_hash=memo_hash
                         )
                         unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
 

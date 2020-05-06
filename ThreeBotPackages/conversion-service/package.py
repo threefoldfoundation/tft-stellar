@@ -54,7 +54,39 @@ class Package(j.baseclasses.threebot_package):
         locked_until=None,
         memo_hash=None,
     ):
-        return self.issuing_pool.apply(self._transfer, args=(destination_address,amount,asset,locked_until,memo_hash))
+        if locked_until:
+            return self._transfer_locked_tokens(destination_address,amount,asset,locked_until,memo_hash)
+        else:
+            return self.issuing_pool.apply(self._transfer, args=(destination_address,amount,asset,locked_until,memo_hash))
+    
+    def _transfer_locked_tokens(
+        self,
+        destination_address,
+        amount,
+        asset: str,
+        locked_until=None,
+        memo_hash=None,
+     ):
+        asset_code =asset.split(':')[0] 
+        asset_issuer = asset.split(':')[1] 
+        import stellar_sdk
+        escrow_kp = stellar_sdk.Keypair.random()
+
+        # delegate to the activation pool
+        self.activate_account(escrow_kp.public_key)
+
+        # no problem using the conversion wallet, just use it's code
+        self.conversion_wallet.add_trustline(asset_code, asset_issuer, escrow_kp.secret)
+        preauth_tx = self.conversion_wallet._create_unlock_transaction(escrow_kp, locked_until)
+        preauth_tx_hash = preauth_tx.hash()
+        unlock_hash = stellar_sdk.strkey.StrKey.encode_pre_auth_tx(preauth_tx_hash)
+        self.conversion_wallet._create_unlockhash_transaction(unlock_hash=unlock_hash, transaction_xdr=preauth_tx.to_xdr())
+        self.conversion_wallet._set_escrow_account_signers(escrow_kp.public_key, destination_address, preauth_tx_hash, escrow_kp)
+        
+        # delegate to the issuing pool
+        self.transfer(escrow_kp.public_key, amount, asset, memo_hash=memo_hash)
+
+        return preauth_tx.to_xdr()
 
     def stop(self):
         if self.activation_pool:
