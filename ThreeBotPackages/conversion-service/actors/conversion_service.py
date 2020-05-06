@@ -157,7 +157,7 @@ class conversion_service(j.baseclasses.threebot_actor):
 
                     if time.time() < lock_time:
                         unlock_tx_xdr = self.package_author.transfer(
-                            stellar_address, '{0:.7f}'.format(coin_output.value), asset, math.ceil(lock_time), memo_hash=memo_hash
+                            stellar_address, '{0:.7f}'.format(coin_output.value.value), asset, math.ceil(lock_time), memo_hash=memo_hash
                         )
                         unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
 
