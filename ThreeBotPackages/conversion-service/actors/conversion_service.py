@@ -4,6 +4,7 @@ import json
 import binascii
 import base64
 import math
+import gevent
 from datetime import datetime
 
 
@@ -137,11 +138,8 @@ class conversion_service(j.baseclasses.threebot_actor):
         if not unlocked_tokens.is_zero():
             self.package_author.transfer(stellar_address, '{0:.7f}'.format(unlocked_tokens), asset, memo_hash=memo_hash)
 
-        def format_output(lock_time, unlock_tx_xdr):
-            return {"unlocks_at": lock_time, "unlock_tx_xdr": unlock_tx_xdr}
-
-        unlock_tx_xdrs = []
         if not locked_tokens.is_zero():
+            conversion_group = gevent.pool.Group()
             for tx in unlockhash.transactions:
                 for coin_output in tx.coin_outputs:
                     lock_time = coin_output.condition.lock.value
@@ -156,9 +154,7 @@ class conversion_service(j.baseclasses.threebot_actor):
                         asset = _TFT_FULL_ASSETCODES[str(converter_wallet.network)]
 
                     if time.time() < lock_time:
-                        unlock_tx_xdr = self.package_author.transfer(
-                            stellar_address, '{0:.7f}'.format(coin_output.value.value), asset, math.ceil(lock_time), memo_hash=memo_hash
+                        conversion_group.apply_async(self.package_author.transfer,(stellar_address, '{0:.7f}'.format(coin_output.value.value), asset, math.ceil(lock_time), memo_hash)
                         )
-                        unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
-
-        return json.dumps(unlock_tx_xdrs)
+            conversion_group.join()
+        return json.dumps([])
