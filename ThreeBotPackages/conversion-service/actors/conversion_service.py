@@ -1,5 +1,4 @@
 from Jumpscale import j
-from decimal import Decimal, getcontext
 import time
 import json
 import binascii
@@ -122,9 +121,6 @@ class conversion_service(j.baseclasses.threebot_actor):
                     converter_tx_decoded_memo_hash = decode_memo_hash(converter_tx.memo_hash)
                     if memo_hash == converter_tx_decoded_memo_hash:
                         raise j.exceptions.Base("Migration already executed for address")
-
-        # set Decimal precision to 7
-        getcontext().prec = 7
 
         unlocked_tokens = balance.available.value
         locked_tokens = balance.locked.value
