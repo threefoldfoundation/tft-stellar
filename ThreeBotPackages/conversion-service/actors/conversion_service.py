@@ -135,7 +135,7 @@ class conversion_service(j.baseclasses.threebot_actor):
             raise Exception("Can't migrate right now, address had unconfirmed locked balance.")
 
         if not unlocked_tokens.is_zero():
-            self.package_author.transfer(stellar_address, unlocked_tokens, asset, memo_hash=memo_hash)
+            self.package_author.transfer(stellar_address, '{0:.7f}'.format(unlocked_tokens), asset, memo_hash=memo_hash)
 
         def format_output(lock_time, unlock_tx_xdr):
             return {"unlocks_at": lock_time, "unlock_tx_xdr": unlock_tx_xdr}
@@ -157,7 +157,7 @@ class conversion_service(j.baseclasses.threebot_actor):
 
                     if time.time() < lock_time:
                         unlock_tx_xdr = self.package_author.transfer(
-                            stellar_address, coin_output.value, asset, math.ceil(lock_time), memo_hash=memo_hash
+                            stellar_address, '{0:.7f}'.format(coin_output.value), asset, math.ceil(lock_time), memo_hash=memo_hash
                         )
                         unlock_tx_xdrs.append(format_output(lock_time, unlock_tx_xdr))
 
