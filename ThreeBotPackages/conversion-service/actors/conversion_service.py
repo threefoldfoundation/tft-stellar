@@ -20,6 +20,11 @@ _TFTA_FULL_ASSETCODES = {
 
 
 class conversion_service(j.baseclasses.threebot_actor):
+    def _init(self, **kwargs):
+        self.converted_addresses_model = j.tools.threebot_packages.threefoldfoundation__unlock_service.bcdb_model_get(
+            url="threefoldfoundation.conversion_service.converted_address"
+        )
+
     def _stellar_address_used_before(self, stellar_address):
         try:
             stellar_client = self.package_author.conversion_wallet
@@ -72,6 +77,15 @@ class conversion_service(j.baseclasses.threebot_actor):
 
         return self.package_author.activate_account(address)
 
+    def _address_converted_before(self, address:str):
+        convertedaddresses=self.converted_addresses_model.find(stellaraddress=address)
+        if convertedaddresses:
+            return True
+        converted_address=self.converted_addresses_model.new()
+        converted_address.stellaraddress=address
+        converted_address.save()
+        return False
+
     @j.baseclasses.actor_method
     def migrate_tokens(self, tfchain_address, stellar_address, schema_out=None, user_session=None):
         converter_wallet = self.package_author.conversion_wallet
@@ -101,7 +115,24 @@ class conversion_service(j.baseclasses.threebot_actor):
         if memo_hash is None:
             raise j.exceptions.Base("Deathorization transaction is still being processed")
 
+        unlocked_tokens = balance.available.value
+        locked_tokens = balance.locked.value
+
+        unconfirmed_unlocked_tokens = balance.unconfirmed.value
+        unconfirmed_locked_tokens = balance.unconfirmed_locked.value
+
+        if not unconfirmed_unlocked_tokens.is_zero():
+            raise Exception("Can't migrate right now, address had unconfirmed unlocked balance.")
+
+        if not unconfirmed_locked_tokens.is_zero():
+            raise Exception("Can't migrate right now, address had unconfirmed locked balance.")
+
         # check if the conversion already happened
+        #First look in our internal db
+        if self.package_author.db_pool.apply(self._address_converted_before,(stellar_address,)):
+           raise j.exceptions.Base("Migration already executed for address") 
+        
+        #check the stellar network to be sure
         def decode_memo_hash(memo_hash):
             try:
                 return binascii.hexlify(base64.b64decode(memo_hash)).decode("utf-8")
@@ -117,18 +148,6 @@ class conversion_service(j.baseclasses.threebot_actor):
                 converter_tx_decoded_memo_hash = decode_memo_hash(converter_tx.memo_hash)
                 if memo_hash == converter_tx_decoded_memo_hash:
                     raise j.exceptions.Base("Migration already executed for address")
-
-        unlocked_tokens = balance.available.value
-        locked_tokens = balance.locked.value
-
-        unconfirmed_unlocked_tokens = balance.unconfirmed.value
-        unconfirmed_locked_tokens = balance.unconfirmed_locked.value
-
-        if not unconfirmed_unlocked_tokens.is_zero():
-            raise Exception("Can't migrate right now, address had unconfirmed unlocked balance.")
-
-        if not unconfirmed_locked_tokens.is_zero():
-            raise Exception("Can't migrate right now, address had unconfirmed locked balance.")
 
         if not unlocked_tokens.is_zero():
             self.package_author.transfer(stellar_address, '{0:.7f}'.format(unlocked_tokens), asset, memo_hash=memo_hash)

@@ -4,7 +4,9 @@ description = "Package that provides tooling for stellar conversion"
 threebot = "threefoldfoundation"
 version = "0.0.1"
 
-# [[bcdbs]]
-# namespace = "threefoldfoundation"
-# type = "zdb"
-# instance = "default"
+
+[[bcdbs]]
+namespace = "threefoldfoundation.conversion_service"
+type = "zdb"
+instance = "default"
+name = "threefoldfoundation.conversion_service"

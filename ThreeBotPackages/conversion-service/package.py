@@ -29,6 +29,7 @@ class Package(j.baseclasses.threebot_package):
         self.activation_pool= gevent.pool.Pool(1)
         self._tft_issuing_pool = gevent.pool.Pool(1)
         self._tfta_issuing_pool = gevent.pool.Pool(1)
+        self.db_pool = gevent.pool.Pool(1)
 
     def _activate_account(self, address):
         self.conversion_wallet.activate_account(address, starting_balance="3.6")
