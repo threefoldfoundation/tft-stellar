@@ -101,27 +101,22 @@ class conversion_service(j.baseclasses.threebot_actor):
         if memo_hash is None:
             raise j.exceptions.Base("Deathorization transaction is still being processed")
 
+        # check if the conversion already happened
         def decode_memo_hash(memo_hash):
             try:
-                return binascii.hexlify(base64.b64decode(stellar_tx.memo_hash)).decode("utf-8")
+                return binascii.hexlify(base64.b64decode(memo_hash)).decode("utf-8")
             except Exception:
                 raise j.exceptions.Base("Decoding memo hash failed")
-
-        stellar_transactions = converter_wallet.list_transactions(address=stellar_address)
-        for stellar_tx in stellar_transactions:
-            if stellar_tx.memo_hash is None:
-                continue
-
-            decoded_memo_hash = decode_memo_hash(memo_hash)
-            if memo_hash == decoded_memo_hash:
-                converter_transactions = converter_wallet.list_transactions()
-                # double check if the transaction also already exists in the converter wallet transactions
-                for converter_tx in converter_transactions:
-                    if converter_tx.memo_hash is None:
-                        continue
-                    converter_tx_decoded_memo_hash = decode_memo_hash(converter_tx.memo_hash)
-                    if memo_hash == converter_tx_decoded_memo_hash:
-                        raise j.exceptions.Base("Migration already executed for address")
+        tft_asset_issuer = _TFT_FULL_ASSETCODES[str(converter_wallet.network)].split(':')[1]
+        tfta_asset_issuer= _TFTA_FULL_ASSETCODES[str(converter_wallet.network)].split(':')[1]
+        for asset_issuer in (tfta_asset_issuer,tft_asset_issuer):
+            converter_transactions = converter_wallet.list_transactions(asset_issuer)
+            for converter_tx in converter_transactions:
+                if converter_tx.memo_hash is None:
+                    continue
+                converter_tx_decoded_memo_hash = decode_memo_hash(converter_tx.memo_hash)
+                if memo_hash == converter_tx_decoded_memo_hash:
+                    raise j.exceptions.Base("Migration already executed for address")
 
         unlocked_tokens = balance.available.value
         locked_tokens = balance.locked.value

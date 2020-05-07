@@ -27,7 +27,8 @@ class Package(j.baseclasses.threebot_package):
             locations.configure()
             website.configure()
         self.activation_pool= gevent.pool.Pool(1)
-        self.issuing_pool = gevent.pool.Pool(1)
+        self._tft_issuing_pool = gevent.pool.Pool(1)
+        self._tfta_issuing_pool = gevent.pool.Pool(1)
 
     def _activate_account(self, address):
         self.conversion_wallet.activate_account(address, starting_balance="3.6")
@@ -57,7 +58,9 @@ class Package(j.baseclasses.threebot_package):
         if locked_until:
             return self._transfer_locked_tokens(destination_address,amount,asset,locked_until,memo_hash)
         else:
-            return self.issuing_pool.apply(self._transfer, args=(destination_address,amount,asset,locked_until,memo_hash))
+            asset_code = asset.split(':')[0]
+            pool = self._tft_issuing_pool if asset_code=='TFT' else self._tfta_issuing_pool
+            return pool.apply(self._transfer, args=(destination_address,amount,asset,locked_until,memo_hash))
     
     def _transfer_locked_tokens(
         self,
@@ -87,10 +90,3 @@ class Package(j.baseclasses.threebot_package):
         self.transfer(escrow_kp.public_key, amount, asset, memo_hash=memo_hash)
 
         return preauth_tx.to_xdr()
-
-    def stop(self):
-        if self.activation_pool:
-            self.activation_pool = None
-        
-        if self.issuing_pool:
-            self.issuing_pool = None
