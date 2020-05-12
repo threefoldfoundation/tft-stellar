@@ -5,13 +5,13 @@
 testnet:
 
 ```sh
-curl -v -H "Content-Type: application/json" -d '{ "args": { "activation_code": "abcd"  }}' "https:/testnet.threefold.io//threefoldfoundation/activation_service/activate_account"
+curl -v -H "Content-Type: application/json" -d '{ "args": { "activation_code": "abcd"  }}' "https:/testnet.threefold.io/threefoldfoundation/activation_service/activate_account"
 ```
 
 production:
 
 ```sh
-curl -v -H "Content-Type: application/json" -d '{ "args": { "activation_code": "abcd"  }}' "https:/tokenservices.threefold.io//threefoldfoundation/activation_service/activate_account"
+curl -v -H "Content-Type: application/json" -d '{ "args": { "activation_code": "abcd"  }}' "https:/tokenservices.threefold.io/threefoldfoundation/activation_service/activate_account"
 ```
 
 ## Generate an account
