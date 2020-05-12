@@ -5,9 +5,9 @@ import gevent
 class Package(j.baseclasses.threebot_package):
     def start(self):
 
-        activation_wallet_name = self._package.install_kwargs.get("wallet","activation_wallet")
-        
-        self.activation_wallet= j.clients.stellar.get(activation_wallet_name)
+        activation_wallet_name = self._package.install_kwargs.get("wallet", "activation_wallet")
+
+        self.activation_wallet = j.clients.stellar.get(activation_wallet_name)
 
         DOMAIN = self._package.install_kwargs.get("domain") or "testnet.threefoldtoken.io"
         for port in (443, 80):
@@ -26,15 +26,13 @@ class Package(j.baseclasses.threebot_package):
 
             locations.configure()
             website.configure()
-        self.pool= gevent.pool.Pool(1)
+        self.pool = gevent.pool.Pool(1)
 
     def _activate_account(self, address):
         self.activation_wallet.activate_account(address, starting_balance="3.6")
-                
+
     def activate_account(self, address):
         self.pool.apply(self._activate_account, args=(address,))
 
     def stop(self):
-        if self.pool:
-            self.pool.kill()
-            self.pool = None
+        self.pool = None

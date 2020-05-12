@@ -77,12 +77,12 @@ class conversion_service(j.baseclasses.threebot_actor):
 
         return self.package_author.activate_account(address)
 
-    def _address_converted_before(self, address:str):
-        convertedaddresses=self.converted_addresses_model.find(stellaraddress=address)
+    def _address_converted_before(self, address: str):
+        convertedaddresses = self.converted_addresses_model.find(stellaraddress=address)
         if convertedaddresses:
             return True
-        converted_address=self.converted_addresses_model.new()
-        converted_address.stellaraddress=address
+        converted_address = self.converted_addresses_model.new()
+        converted_address.stellaraddress = address
         converted_address.save()
         return False
 
@@ -128,19 +128,20 @@ class conversion_service(j.baseclasses.threebot_actor):
             raise Exception("Can't migrate right now, address had unconfirmed locked balance.")
 
         # check if the conversion already happened
-        #First look in our internal db
-        if self.package_author.db_pool.apply(self._address_converted_before,(stellar_address,)):
-           raise j.exceptions.Base("Migration already executed for address") 
-        
-        #check the stellar network to be sure
+        # First look in our internal db
+        if self.package_author.db_pool.apply(self._address_converted_before, (stellar_address,)):
+            raise j.exceptions.Base("Migration already executed for address")
+
+        # check the stellar network to be sure
         def decode_memo_hash(memo_hash):
             try:
                 return binascii.hexlify(base64.b64decode(memo_hash)).decode("utf-8")
             except Exception:
                 raise j.exceptions.Base("Decoding memo hash failed")
-        tft_asset_issuer = _TFT_FULL_ASSETCODES[str(converter_wallet.network)].split(':')[1]
-        tfta_asset_issuer= _TFTA_FULL_ASSETCODES[str(converter_wallet.network)].split(':')[1]
-        for asset_issuer in (tfta_asset_issuer,tft_asset_issuer):
+
+        tft_asset_issuer = _TFT_FULL_ASSETCODES[str(converter_wallet.network)].split(":")[1]
+        tfta_asset_issuer = _TFTA_FULL_ASSETCODES[str(converter_wallet.network)].split(":")[1]
+        for asset_issuer in (tfta_asset_issuer, tft_asset_issuer):
             converter_transactions = converter_wallet.list_transactions(asset_issuer)
             for converter_tx in converter_transactions:
                 if converter_tx.memo_hash is None:
@@ -150,7 +151,7 @@ class conversion_service(j.baseclasses.threebot_actor):
                     raise j.exceptions.Base("Migration already executed for address")
 
         if not unlocked_tokens.is_zero():
-            self.package_author.transfer(stellar_address, '{0:.7f}'.format(unlocked_tokens), asset, memo_hash=memo_hash)
+            self.package_author.transfer(stellar_address, "{0:.7f}".format(unlocked_tokens), asset, memo_hash=memo_hash)
 
         if not locked_tokens.is_zero():
             conversion_group = gevent.pool.Group()
@@ -168,7 +169,15 @@ class conversion_service(j.baseclasses.threebot_actor):
                         asset = _TFT_FULL_ASSETCODES[str(converter_wallet.network)]
 
                     if time.time() < lock_time:
-                        conversion_group.apply_async(self.package_author.transfer,(stellar_address, '{0:.7f}'.format(coin_output.value.value), asset, math.ceil(lock_time), memo_hash)
+                        conversion_group.apply_async(
+                            self.package_author.transfer,
+                            (
+                                stellar_address,
+                                "{0:.7f}".format(coin_output.value.value),
+                                asset,
+                                math.ceil(lock_time),
+                                memo_hash,
+                            ),
                         )
             conversion_group.join()
         return json.dumps([])

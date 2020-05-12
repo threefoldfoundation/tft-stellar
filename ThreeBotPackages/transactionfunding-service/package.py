@@ -50,14 +50,17 @@ class Package(j.baseclasses.threebot_package):
 
     def _funding_loop(self):
         for walletname in self.queue:
-            wallet = j.clients.stellar.get(walletname)
-            balances = wallet.get_balance()
-            xlmbalance = [b for b in balances.balances if b.is_native][0]
-            xlmbalance = Decimal(xlmbalance.balance)
-            # if xlmbalance< 3 add 2 from main fundingwallet
-            if xlmbalance < Decimal("3"):
-                print(f"Refunding {walletname}")
-                self.get_main_fundingwallet().transfer(wallet.address, "2", asset="XLM", fund_transaction=False)
+            try:
+                wallet = j.clients.stellar.get(walletname)
+                balances = wallet.get_balance()
+                xlmbalance = [b for b in balances.balances if b.is_native][0]
+                xlmbalance = Decimal(xlmbalance.balance)
+                # if xlmbalance< 3 add 2 from main fundingwallet
+                if xlmbalance < Decimal("3"):
+                    print(f"Refunding {walletname}")
+                    self.get_main_fundingwallet().transfer(wallet.address, "2", asset="XLM", fund_transaction=False)
+            except Exception as e:
+                print(f"Exception in transaction funding service loop: {e}")
 
     def fund_if_needed(self, walletname):
         # add walletname to gevent queue
