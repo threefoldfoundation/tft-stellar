@@ -4,6 +4,7 @@
 
 - Rexplorer: [https://github.com/threefoldfoundation/rexplorer](https://github.com/threefoldfoundation/rexplorer)
 - Redis: to store addresses
+- Synced consensus db, places in the root of this folder with the name: `consensus.db`
 
 ### Usage
 
