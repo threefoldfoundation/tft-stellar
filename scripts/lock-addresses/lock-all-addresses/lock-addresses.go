@@ -73,8 +73,10 @@ func main() {
 		}
 		excludedBlockStakeAddresses = string(blockCreatorsData)
 	}
-	fmt.Println(len(addresses))
 
+	fmt.Printf("%d addresses were found on the rexplorer \n", len(addresses))
+
+	excludedCount := 0
 	f.WriteString("#!/bin/bash\n")
 	for _, address := range addresses {
 		for _, excludedAddress := range excludedAddresses {
@@ -84,10 +86,14 @@ func main() {
 				if !containsBlockCreator {
 					fstr := fmt.Sprintf("echo \"tfchainc wallet send transaction \\\"\\$(tfchainc wallet sign '$(tfchainc wallet sign \"$(tfchainc wallet authcoin authaddresses --deauth \"%s\")\")')\\\"\" >> lock_adressess.txt\n", address)
 					f.WriteString(fstr)
+				} else {
+					excludedCount++
 				}
 			}
 		}
 	}
+	fmt.Printf("%d addresses were excluded \n \n", excludedCount)
+
 	fmt.Printf("output written in %s \n", outputFilePath)
 }
 

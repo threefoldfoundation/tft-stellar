@@ -3,14 +3,23 @@
 ### Requirements
 
 - Rexplorer: [https://github.com/threefoldfoundation/rexplorer](https://github.com/threefoldfoundation/rexplorer)
-- Redis: to store addresses
-- Synced consensus db, places in the root of this folder with the name: `consensus.db`
+- Redis: to store addresses (if you wish to connect to the production rexplorer that is setup you need a wireguard to the office!)
+- Synced consensus db, placed in the root of this folder with the name: `consensus.db`
 
 ### Usage
 
+If you wish to exclude the blockcreator addresses, execute following first:
+
 ```golang
-go build ./lock-addresses.go
-go run ./lock-addresses.go [--redis-addr] [--redis-db]
+go run ./blockcreators.go
+```
+This will create an output file `blockcreators.txt` with all the blockcreator addresses inside. It also prints the amount of blockstakes. 
+If the amount is not 500 you probably don't have a synced consensusdb. 
+
+Now if you want to exclude them from the locking script:
+
+```golang
+go run ./lock-addresses.go [--redis-addr] [--redis-db] [--exclude-blockcreators blockcreators.txt]
 ```
 
 This will create an output file `lock-all.sh` and prepare an authcoin transaction for each address that is fetched from the redis db. 
@@ -31,6 +40,8 @@ bash lock_addresses.txt
 
 ### Verfiying output of lock-all.sh
 
+Verifying the output with or without the excluded blockcreator addresses:
+
 ```bash
-go run verify.go
+go run verify.go [[--redis-addr] [--redis-db] [--exclude-blockcreators blockcreators.txt]
 ```
