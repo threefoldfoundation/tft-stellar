@@ -8,8 +8,9 @@ import click
 def createlockingscript(outputfile,tfchainaddresses):
     outputfile.write("#!/bin/bash\n")
     for address in tfchainaddresses:
-       outputfile.write(f'deauthtx= "$(tfchainc wallet sign "$(tfchainc wallet authcoin authaddresses --deauth {address})")"\n')
-       outputfile.write('echo "tfchainc wallet send transaction \\"\$(./tfchainc wallet sign $deauthtx)\\""\n') 
+       outputfile.write(f'deauthtx="$(tfchainc wallet authcoin authaddresses --deauth {address})"\n')
+       outputfile.write(f'signeddeauthtx="$(tfchainc wallet sign $deauthtx)"\n')
+       outputfile.write('echo "tfchainc wallet send transaction \\"\\$(tfchainc wallet sign $signeddeauthtx)\\""\n') 
 
 if __name__ == "__main__":
     createlockingscript()
