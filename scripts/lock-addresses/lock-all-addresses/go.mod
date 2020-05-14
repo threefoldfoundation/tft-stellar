@@ -19,5 +19,6 @@ require (
 	github.com/threefoldtech/rivine v1.3.1 // indirect
 	github.com/tinylib/msgp v1.1.1 // indirect
 	github.com/tyler-smith/go-bip39 v1.0.2 // indirect
+	go.etcd.io/bbolt v1.3.4 // indirect
 	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d // indirect
 )

@@ -118,6 +118,8 @@ github.com/threefoldfoundation/tfchain v1.3.0 h1:dbZND6ORpqATkSfGYVyKOS+wJiPSsGt
 github.com/threefoldfoundation/tfchain v1.3.0/go.mod h1:HI95XQMC1sZbV787FpetVjtkLOwTim1cYtPurwV56U0=
 github.com/threefoldfoundation/tfchain v1.3.1-0.20200513095852-d1d151647aaf h1:MQvs+KVMBerGXhfvuslSWVKARy7Kp73c+q9TofTO/UA=
 github.com/threefoldfoundation/tfchain v1.3.1-0.20200513095852-d1d151647aaf/go.mod h1:HI95XQMC1sZbV787FpetVjtkLOwTim1cYtPurwV56U0=
+github.com/threefoldfoundation/tft-stellar v0.0.0-20200513122758-a1e36ee73872 h1:g+KrUaPYAbG7QV+hGB/Z5Ruh8v1xugCWFTLR9EXvv/s=
+github.com/threefoldfoundation/tft-stellar/scripts/lock-addresses/lock-all-addresses v0.0.0-20200513122758-a1e36ee73872 h1:lnkCKasmPj6fQKX2e22A3xeHpJXkyTyh03lSYfbdW/s=
 github.com/threefoldtech/rivine v1.3.1 h1:AIEi60mpmhhGUtTZC56D7U9ncfs5YKoJ82miWAH5f5g=
 github.com/threefoldtech/rivine v1.3.1/go.mod h1:6h06+WCYf87MfBnSFBXrcgwOrYCMzBAka+lKqOXgyjY=
 github.com/tinylib/msgp v1.1.1 h1:TnCZ3FIuKeaIy+F45+Cnp+caqdXGy4z74HvwXN+570Y=
@@ -129,6 +131,7 @@ github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGr
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
+go.etcd.io/bbolt v1.3.4 h1:hi1bXHMVrlQh6WwxAy+qZCV/SYIlqo+Ushwdpa4tAKg=
 go.etcd.io/bbolt v1.3.4/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=
 go.uber.org/atomic v1.4.0/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=
 go.uber.org/multierr v1.1.0/go.mod h1:wR5kodmAFQ0UK8QlbwjlSNy0Z68gJhDJUG5sjR94q/0=
