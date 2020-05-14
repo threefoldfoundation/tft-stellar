@@ -6,9 +6,9 @@ import (
 	"os"
 	"time"
 
-	bolt "github.com/coreos/bbolt"
 	"github.com/threefoldtech/rivine/pkg/encoding/siabin"
 	"github.com/threefoldtech/rivine/types"
+	bolt "go.etcd.io/bbolt"
 )
 
 // Metadata contains the header and version of the data being stored.
