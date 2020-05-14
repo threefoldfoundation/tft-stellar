@@ -22,6 +22,12 @@ github.com/threefoldfoundation/rexplorer v0.4.0 h1:pzK4ninQpDt1xKnxrZuC3i7RSjx3A
 github.com/threefoldfoundation/rexplorer v0.4.0/go.mod h1:KqucwayZzWVvAYKpWh/3+CiEAcwwhh3/qqzGeCjs66E=
 github.com/threefoldfoundation/tfchain v1.2.1 h1:zLTAa+1pEsEHcA6i6fwKOtovOcIVjU2CUvK1Ls4LsN4=
 github.com/threefoldfoundation/tfchain v1.2.1/go.mod h1:HI95XQMC1sZbV787FpetVjtkLOwTim1cYtPurwV56U0=
+github.com/threefoldfoundation/tfchain v1.3.0 h1:dbZND6ORpqATkSfGYVyKOS+wJiPSsGtxBMARWilzrew=
+github.com/threefoldfoundation/tfchain v1.3.0/go.mod h1:HI95XQMC1sZbV787FpetVjtkLOwTim1cYtPurwV56U0=
+github.com/threefoldfoundation/tfchain v1.3.1-0.20200513095852-d1d151647aaf h1:MQvs+KVMBerGXhfvuslSWVKARy7Kp73c+q9TofTO/UA=
+github.com/threefoldfoundation/tfchain v1.3.1-0.20200513095852-d1d151647aaf/go.mod h1:HI95XQMC1sZbV787FpetVjtkLOwTim1cYtPurwV56U0=
+github.com/threefoldfoundation/tft-stellar v0.0.0-20200513122758-a1e36ee73872 h1:g+KrUaPYAbG7QV+hGB/Z5Ruh8v1xugCWFTLR9EXvv/s=
+github.com/threefoldfoundation/tft-stellar/scripts/lock-addresses/lock-all-addresses v0.0.0-20200513122758-a1e36ee73872 h1:lnkCKasmPj6fQKX2e22A3xeHpJXkyTyh03lSYfbdW/s=
 github.com/threefoldtech/rivine v1.3.1 h1:AIEi60mpmhhGUtTZC56D7U9ncfs5YKoJ82miWAH5f5g=
 github.com/threefoldtech/rivine v1.3.1/go.mod h1:6h06+WCYf87MfBnSFBXrcgwOrYCMzBAka+lKqOXgyjY=
 github.com/tinylib/msgp v1.1.1 h1:TnCZ3FIuKeaIy+F45+Cnp+caqdXGy4z74HvwXN+570Y=

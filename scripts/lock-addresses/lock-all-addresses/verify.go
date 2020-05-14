@@ -18,7 +18,10 @@ func main() {
 		panic("usage: " + os.Args[0])
 	}
 
-	excludedAddresses := strings.Split(addressesToExclude, ",")
+	var excludedAddresses []string
+	if addressesToExclude != "" {
+		excludedAddresses = strings.Split(addressesToExclude, ",")
+	}
 
 	conn, err := redis.Dial("tcp", dbAddress, redis.DialDatabase(dbSlot))
 	if err != nil {
@@ -42,13 +45,28 @@ func main() {
 	}
 	file := string(data)
 
+	excludedBlockStakeAddresses := ""
+	if excludedBlockcreators != "" {
+		blockCreatorsData, err := ioutil.ReadFile(excludedBlockcreators)
+		if err != nil {
+			fmt.Println(err)
+			panic(err)
+		}
+		excludedBlockStakeAddresses = string(blockCreatorsData)
+	}
+	excludedBlockcreatorAddresses := strings.Split(excludedBlockStakeAddresses, "\n")
+
+	if excludedBlockStakeAddresses != "" {
+		excludedAddresses = append(excludedAddresses, excludedBlockcreatorAddresses...)
+	}
+	// exclude free for all address
+	excludedAddresses = append(excludedAddresses, "000000000000000000000000000000000000000000000000000000000000000000000000000000")
+
 	for _, address := range addresses {
 		for _, excludedAddress := range excludedAddresses {
-			if address != excludedAddress && address != "000000000000000000000000000000000000000000000000000000000000000000000000000000" {
-				contains := strings.Contains(file, address)
-				if !contains {
-					errorStr := fmt.Sprintf("Address %s does not exist in %s", address, filePath)
-					panic(errorStr)
+			if address == excludedAddress {
+				if strings.Contains(file, address) {
+					fmt.Printf("excluded addr %s contained \n", excludedAddress)
 				}
 			}
 		}
@@ -57,10 +75,11 @@ func main() {
 }
 
 var (
-	dbAddress          string
-	dbSlot             int
-	filePath           string
-	addressesToExclude string
+	dbAddress             string
+	dbSlot                int
+	filePath              string
+	addressesToExclude    string
+	excludedBlockcreators string
 )
 
 func init() {
@@ -68,4 +87,5 @@ func init() {
 	flag.IntVar(&dbSlot, "redis-db", 0, "slot/index of the redis db")
 	flag.StringVar(&filePath, "file", "./lock_adressess.txt", "file to verify")
 	flag.StringVar(&addressesToExclude, "exclude", "", "addresses to exclude seperated by comma")
+	flag.StringVar(&excludedBlockcreators, "exclude-blockcreators", "", "blokcreator addresses to exclude")
 }

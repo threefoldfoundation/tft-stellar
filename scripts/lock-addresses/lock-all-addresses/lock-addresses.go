@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 
@@ -46,12 +47,27 @@ func main() {
 		panic(err)
 	}
 
+	excludedBlockStakeAddresses := ""
+	if excludedBlockcreators != "" {
+		blockCreatorsData, err := ioutil.ReadFile(excludedBlockcreators)
+		if err != nil {
+			fmt.Println(err)
+			panic(err)
+		}
+		excludedBlockStakeAddresses = string(blockCreatorsData)
+	}
+	fmt.Println(len(addresses))
+
 	f.WriteString("#!/bin/bash\n")
 	for _, address := range addresses {
 		for _, excludedAddress := range excludedAddresses {
 			if address != excludedAddress {
-				fstr := fmt.Sprintf("echo \"tfchainc wallet send transaction \\\"\\$(tfchainc wallet sign '$(tfchainc wallet sign \"$(tfchainc wallet authcoin authaddresses --deauth \"%s\")\")')\\\"\" >> lock_adressess.txt\n", address)
-				f.WriteString(fstr)
+				// if the file path is passed only then check if it contains a block creator address
+				containsBlockCreator := strings.Contains(excludedBlockStakeAddresses, address)
+				if !containsBlockCreator {
+					fstr := fmt.Sprintf("echo \"tfchainc wallet send transaction \\\"\\$(tfchainc wallet sign '$(tfchainc wallet sign \"$(tfchainc wallet authcoin authaddresses --deauth \"%s\")\")')\\\"\" >> lock_adressess.txt\n", address)
+					f.WriteString(fstr)
+				}
 			}
 		}
 	}
@@ -69,13 +85,15 @@ func fileExists(filename string) bool {
 }
 
 var (
-	dbAddress          string
-	dbSlot             int
-	addressesToExclude string
+	dbAddress             string
+	dbSlot                int
+	addressesToExclude    string
+	excludedBlockcreators string
 )
 
 func init() {
 	flag.StringVar(&dbAddress, "redis-addr", ":6379", "(tcp) address of the redis db")
 	flag.IntVar(&dbSlot, "redis-db", 0, "slot/index of the redis db")
 	flag.StringVar(&addressesToExclude, "exclude", "", "addresses to exclude seperated by comma")
+	flag.StringVar(&excludedBlockcreators, "exclude-blockcreators", "", "blokcreator addresses to exclude")
 }
