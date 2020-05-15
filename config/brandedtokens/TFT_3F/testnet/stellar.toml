@@ -1,0 +1,8 @@
+[[CURRENCIES]]
+code = "TFT_3F"
+issuer = "GCBQ37WUJD4VWS2LCS2QSESPQFNTBPN4BSDNUH6WAYSRZ3NO5SFHTEAA"
+display_decimals = 2
+name = "Threefold 3bot Files Project"
+desc = "Our personal cloud on the TF Grid"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
