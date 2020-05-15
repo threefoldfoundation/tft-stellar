@@ -23,8 +23,8 @@ Once this is done, conversion is simple : after installation of the 3Bot Connect
 
 During the conversion, you will see the process is ongoing. It is important not to close the app during this conversion process (if there are locked tokens, it can take a while) !
 
-![](img/import_process.PNG)
+<img src="img/import_process.PNG" width="300">
 
 Once the conversion process has ended, you will arrive in the accounts overview page. Done !
 
-![](img/accounts_overview.PNG)
+<img src="img/accounts_overview_stellar_mainnet.PNG" width="300">
