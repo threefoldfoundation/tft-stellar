@@ -1,0 +1,2 @@
+PUBLIC_HORIZON_SERVER = "https://horizon.stellar.org/"
+DEFAULT_TRANSACTION_TIMEOUT = 30

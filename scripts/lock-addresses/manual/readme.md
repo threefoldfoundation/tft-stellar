@@ -11,4 +11,3 @@ for example:
 ```
 
 and then send the `cosignlocks.sh` script to a valid cosigner to execute.
-
