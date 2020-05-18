@@ -35,11 +35,6 @@ func main() {
 		panic("usage: " + os.Args[0])
 	}
 
-	var excludedAddresses []string
-	if addressesToExclude != "" {
-		excludedAddresses = strings.Split(addressesToExclude, ",")
-	}
-
 	conn, err := redis.Dial("tcp", dbAddress, redis.DialDatabase(dbSlot))
 	if err != nil {
 		panic(err)
@@ -62,29 +57,23 @@ func main() {
 	}
 	file := string(data)
 
-	excludedBlockStakeAddresses := ""
-	if excludedBlockcreators != "" {
-		blockCreatorsData, err := ioutil.ReadFile(excludedBlockcreators)
-		if err != nil {
-			fmt.Println(err)
-			panic(err)
+	addressesToExclude := ""
+	if len(filesToExclude) != 0 {
+		for _, file := range filesToExclude {
+			data, err := ioutil.ReadFile(file)
+			if err != nil {
+				panic(err)
+			}
+			addressesToExclude += string(data)
 		}
-		excludedBlockStakeAddresses = string(blockCreatorsData)
-	}
-	excludedBlockcreatorAddresses := strings.Split(excludedBlockStakeAddresses, "\n")
-
-	if excludedBlockStakeAddresses != "" {
-		excludedAddresses = append(excludedAddresses, excludedBlockcreatorAddresses...)
 	}
 	// exclude free for all address
-	excludedAddresses = append(excludedAddresses, "000000000000000000000000000000000000000000000000000000000000000000000000000000")
+	addressesToExclude += "000000000000000000000000000000000000000000000000000000000000000000000000000000"
 
 	for _, address := range addresses {
-		for _, excludedAddress := range excludedAddresses {
-			if address == excludedAddress {
-				if strings.Contains(file, address) {
-					fmt.Printf("excluded addr %s contained \n", excludedAddress)
-				}
+		if strings.Contains(file, address) {
+			if strings.Contains(addressesToExclude, address) {
+				fmt.Printf("excluded addr %s contained \n", address)
 			}
 		}
 	}
@@ -92,19 +81,28 @@ func main() {
 }
 
 var (
-	dbAddress             string
-	dbSlot                int
-	filePath              string
-	addressesToExclude    string
-	excludedBlockcreators string
+	dbAddress      string
+	dbSlot         int
+	filePath       string
+	filesToExclude files
 )
+
+type files []string
+
+func (i *files) String() string {
+	return "my string representation"
+}
+
+func (i *files) Set(value string) error {
+	*i = append(*i, value)
+	return nil
+}
 
 func init() {
 	flag.StringVar(&dbAddress, "redis-addr", ":6379", "(tcp) address of the redis db")
 	flag.IntVar(&dbSlot, "redis-db", 0, "slot/index of the redis db")
 	flag.StringVar(&filePath, "file", "./lock_adressess.txt", "file to verify")
-	flag.StringVar(&addressesToExclude, "exclude", "", "addresses to exclude seperated by comma")
-	flag.StringVar(&excludedBlockcreators, "exclude-blockcreators", "", "blokcreator addresses to exclude")
+	flag.Var(&filesToExclude, "exclude", "repeatable flag, points to a file which contains addresses to exclude")
 }
 
 // updateMetadata will set the contents of the metadata bucket to the values
