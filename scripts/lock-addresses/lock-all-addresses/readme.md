@@ -27,24 +27,20 @@ go run ./lock-addresses.go [--redis-addr] [--redis-db] [--exclude blockcreators.
 for production
 
 ```sh
-go run lock-addresses.go --exclude "../../../config/public/conversion/foundation.txt" --exclude "../../../config/public/conversion/exclude.txt"
+go run lock-addresses.go  --exclude "../../../config/public/conversion/foundation.txt" --exclude "../../../config/public/conversion/exclude.txt" --exclude "../../../config/public/conversion/technical.txt" --exclude "../../../config/public/conversion/blockcreators.txt" --exclude "../../../config/public/conversion/done.txt"
 ```
 
 This will create an output file `lock-all.sh` and prepare an authcoin transaction for each address that is fetched from the redis db. 
 
-Executing this file can be done as:
-
 ```bash
 chmod +x lock-all.sh
-./lock-all.sh
+./lock-all.sh > cosignlocks.sh
 ```
+
+and then send the `cosignlocks.sh` script to a valid cosigner to execute.
+Executing this file can be done as:
 
 This script will create another file called `lock_addresses.txt`, this file is to be passed to the other person that need to sign off on these transactions.
-
-How to sign off on these transactions with this file: 
-```bash 
-bash lock_addresses.txt
-```
 
 ### Verfiying output of lock-all.sh
 

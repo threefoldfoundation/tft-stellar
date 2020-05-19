@@ -74,8 +74,10 @@ func main() {
 		if dryRun {
 			fmt.Printf("%s\n", address)
 		}
-		fstr := fmt.Sprintf("echo \"tfchainc wallet send transaction \\\"\\$(tfchainc wallet sign '$(tfchainc wallet sign \"$(tfchainc wallet authcoin authaddresses --deauth \"%s\")\")')\\\"\" >> lock_adressess.txt\n", address)
+		fstr := fmt.Sprintf("deauthtx=\"$(tfchainc wallet authcoin authaddresses --deauth %s)\"\n", address)
 		f.WriteString(fstr)
+		f.WriteString("signeddeauthtx=\"$(tfchainc wallet sign $deauthtx)\"\n")
+		f.WriteString("echo \"tfchainc wallet send transaction \\\"\\$(tfchainc wallet sign $signeddeauthtx)\\\"\"\n")
 
 	}
 	if !dryRun {
