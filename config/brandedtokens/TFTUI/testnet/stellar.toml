@@ -1,0 +1,8 @@
+[[CURRENCIES]]
+code = "TFTUI"
+issuer = "GDG44AEQHFJR35HINIFCXTJCEPJ5LPKPMR447GXI3PI62IBEQJZYOZMV"
+display_decimals = 2
+name = "Threefold TF Grid User Interface Project"
+desc = "Easy-to-use interface to provision IT workloads on the grid"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+

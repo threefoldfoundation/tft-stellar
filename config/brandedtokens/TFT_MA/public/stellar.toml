@@ -1,8 +1,0 @@
-[[CURRENCIES]]
-code = "TFT_MA"
-issuer = "GC7NPQ6Y7BPGFS2LQ5KIHMLR2K5RNUBC33AEZ4YOHVGWXIPRA5W6FS6T"
-display_decimals = 2
-name = "Threefold 3bot Marketing / Prod mgmt Project"
-desc = "Bring the 3bot alive as a digital twin"
-image = "https://www.threefold.io/assets/3fold_icon.png"
-

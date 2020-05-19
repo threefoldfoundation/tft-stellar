@@ -1,8 +1,0 @@
-[[CURRENCIES]]
-code = "TFT_FC"
-issuer = "GCCKI7BIIYGHXMKDZBVX5Y6EEYOS3CPMNPBGJVTZLEK7ZC2WQHXAXWUA"
-display_decimals = 2
-name = "Threefold FreeFlow connect Project"
-desc = "Peer-to-peer video conferencing"
-image = "https://www.threefold.io/assets/3fold_icon.png"
-

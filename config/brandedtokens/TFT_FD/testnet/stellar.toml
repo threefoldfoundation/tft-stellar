@@ -1,8 +1,0 @@
-[[CURRENCIES]]
-code = "TFT_FD"
-issuer = "GB437RSTO5UQ67CXI2EHB3Q64LV4WZTPLGJ34KFVYK4INSXQXV4FUESI"
-display_decimals = 2
-name = "Threefold TF Foundation Project"
-desc = "Foundation funding (marketing, operations team, grid roll out, roadshows, …)"
-image = "https://www.threefold.io/assets/3fold_icon.png"
-

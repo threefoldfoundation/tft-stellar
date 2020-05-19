@@ -1,8 +1,0 @@
-[[CURRENCIES]]
-code = "TFT_BR"
-issuer = "GCURX5AW2KIU523GAUCUMKRQLP7YX5OUX2QD3JWL6IN7URIYN52YOHHH"
-display_decimals = 2
-name = "Threefold 3bot Browser Project"
-desc = "Personal browser running close to our 3bot"
-image = "https://www.threefold.io/assets/3fold_icon.png"
-

@@ -1,0 +1,8 @@
+[[CURRENCIES]]
+code = "TFTEDU"
+issuer = "GD6YVKYYSOH445GRVMFSBZKH3KL43EJQPVZIU4NKNW7VFO4H752EMMFG"
+display_decimals = 2
+name = "Threefold P2P Education Project"
+desc = "World’s first true peer-to-peer education system on top of TF Grid"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+

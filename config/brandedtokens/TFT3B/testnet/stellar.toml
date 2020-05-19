@@ -1,0 +1,8 @@
+[[CURRENCIES]]
+code = "TFT3B"
+issuer = "GDXK3HPD5IXKGIYEOXE57XYIOBJ7RFU66JMZ7Q3BZJ4TZELL65O5P3WX"
+display_decimals = 2
+name = "Threefold 3bot (Digital Twin)Project"
+desc = "80% of our digital life implemented on top of the 3bot"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+

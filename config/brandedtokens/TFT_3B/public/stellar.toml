@@ -1,8 +1,0 @@
-[[CURRENCIES]]
-code = "TFT_3B"
-issuer = "GD7BYGCLWN42RBL5PODZ527KJVQYUPOKAPZU3NEOKZQMPXWI7BUAH4YH"
-display_decimals = 2
-name = "Threefold 3bot (Digital Twin)Project"
-desc = "80% of our digital life implemented on top of the 3bot"
-image = "https://www.threefold.io/assets/3fold_icon.png"
-
