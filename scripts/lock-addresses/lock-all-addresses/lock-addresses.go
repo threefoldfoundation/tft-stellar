@@ -35,14 +35,16 @@ func main() {
 	}
 
 	outputFilePath := "lock-all.sh"
+	var f *os.File
+	if !dryRun {
+		if fileExists(outputFilePath) {
+			os.Remove(outputFilePath)
+		}
 
-	if fileExists(outputFilePath) {
-		os.Remove(outputFilePath)
-	}
-
-	f, err := os.Create(outputFilePath)
-	if err != nil {
-		panic(err)
+		f, err = os.Create(outputFilePath)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	addressesToExclude := ""
@@ -55,24 +57,31 @@ func main() {
 			addressesToExclude += string(data)
 		}
 	}
-
-	fmt.Printf("%d addresses were found on the rexplorer \n", len(addresses))
-
+	if !dryRun {
+		fmt.Printf("%d addresses were found on the rexplorer \n", len(addresses))
+	}
 	excludedCount := 0
-	f.WriteString("#!/bin/bash\n")
+	if !dryRun {
+		f.WriteString("#!/bin/bash\n")
+	}
 	for _, address := range addresses {
 		// if the file path is passed only then check if it contains a block creator address
 		containsBlockCreator := strings.Contains(addressesToExclude, address)
-		if !containsBlockCreator {
-			fstr := fmt.Sprintf("echo \"tfchainc wallet send transaction \\\"\\$(tfchainc wallet sign '$(tfchainc wallet sign \"$(tfchainc wallet authcoin authaddresses --deauth \"%s\")\")')\\\"\" >> lock_adressess.txt\n", address)
-			f.WriteString(fstr)
-		} else {
+		if containsBlockCreator {
 			excludedCount++
+			continue
 		}
-	}
-	fmt.Printf("%d addresses were excluded \n \n", excludedCount)
+		if dryRun {
+			fmt.Printf("%s\n", address)
+		}
+		fstr := fmt.Sprintf("echo \"tfchainc wallet send transaction \\\"\\$(tfchainc wallet sign '$(tfchainc wallet sign \"$(tfchainc wallet authcoin authaddresses --deauth \"%s\")\")')\\\"\" >> lock_adressess.txt\n", address)
+		f.WriteString(fstr)
 
-	fmt.Printf("output written in %s \n", outputFilePath)
+	}
+	if !dryRun {
+		fmt.Printf("%d addresses were excluded \n \n", excludedCount)
+		fmt.Printf("output written in %s \n", outputFilePath)
+	}
 }
 
 // fileExists checks if a file exists and is not a directory before we
@@ -100,10 +109,12 @@ var (
 	dbAddress      string
 	dbSlot         int
 	filesToExclude files
+	dryRun         bool
 )
 
 func init() {
 	flag.StringVar(&dbAddress, "redis-addr", ":6379", "(tcp) address of the redis db")
 	flag.IntVar(&dbSlot, "redis-db", 0, "slot/index of the redis db")
 	flag.Var(&filesToExclude, "exclude", "repeatable flag, points to a file which contains addresses to exclude")
+	flag.BoolVar(&dryRun, "dryrun", false, "Outputs the addresses that would be locked instead of creating a script")
 }
