@@ -1,0 +1,8 @@
+[[CURRENCIES]]
+code = "TFT_GS"
+issuer = "GCE2F7IIXZMR4KWPE53VVJMY6ZDS5CLRPS4DMYAKAWMJSGNPYHSZ3VWG"
+display_decimals = 2
+name = "Threefold TF Grid Solutions Project"
+desc = "Open source solutions ported to the grid"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+

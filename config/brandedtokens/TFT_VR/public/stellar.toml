@@ -1,0 +1,8 @@
+[[CURRENCIES]]
+code = "TFT_VR"
+issuer = "GBPU7QTFORIQNCIKIJ2ABG33BLROQ3LL2GKAMZQ2JTWN4X4IL2AVM7BX"
+display_decimals = 2
+name = "Threefold Virtual Reality Museum Project"
+desc = "Virtual reality museum online of 500.000 artworks as part of TF Grid"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+

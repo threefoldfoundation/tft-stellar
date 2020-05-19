@@ -51,7 +51,7 @@ def activate_account(address, activator_secret, network):
             else stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE,
             base_fee=base_fee,
         )
-        .append_create_account_op(address, "10")
+        .append_create_account_op(address, "5")
         .build()
     )
     transaction.sign(activator_keypair)
@@ -93,11 +93,6 @@ def update_stellar_configs(brandedtokenconfig: dict, tokencode, network, home_do
         toml.dump(globalconfig, configfile)
 
 
-@click.command(help="Create a Threefold project branded token")
-@click.argument("tokencode", type=str, required=True)
-@click.option("--home_domain", type=str, required=False)
-@click.option("--network", type=click.Choice(["public", "test"], case_sensitive=False), default="test")
-@click.option("--activator_secret", type=str, required=True, help="The secret key of the activating account")
 def create_branded_token(tokencode, home_domain, activator_secret, network):
     if not home_domain:
         home_domain = DEFAULT_HOME_DOMAINS[network]
@@ -121,5 +116,14 @@ def create_branded_token(tokencode, home_domain, activator_secret, network):
     update_stellar_configs(brandedtokenconfig, tokencode, network, home_domain)
 
 
+@click.command(help="Create a Threefold project branded token")
+@click.argument("tokencode", type=str, required=True)
+@click.option("--home_domain", type=str, required=False)
+@click.option("--network", type=click.Choice(["public", "test"], case_sensitive=False), default="test")
+@click.option("--activator_secret", type=str, required=True, help="The secret key of the activating account")
+def create_branded_token_command(tokencode, home_domain, activator_secret, network):
+    create_branded_token(tokencode,home_domain,activator_secret,network)
+
+
 if __name__ == "__main__":
-    create_branded_token()
+    create_branded_token_command()

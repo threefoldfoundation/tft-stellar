@@ -1,0 +1,8 @@
+[[CURRENCIES]]
+code = "TFT_FD"
+issuer = "GBSN5UBAHCDTQIQHZ3PZUJ2PWUTR4RRIAC4VVTUM3G44ERW667J3INZD"
+display_decimals = 2
+name = "Threefold TF Foundation Project"
+desc = "Foundation funding (marketing, operations team, grid roll out, roadshows, …)"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+

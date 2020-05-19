@@ -1,23 +1,144 @@
 [[CURRENCIES]]
-code="TFT"
-issuer="GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47"
-display_decimals=2 
-name="ThreeFold Token"
-desc="A digital currency used to buy autonomous and decentralized Internet services (compute, storage, and application) on the ThreeFold Network"
-image="https://www.threefold.io/assets/3fold_icon.png"
+code = "TFT"
+issuer = "GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47"
+display_decimals = 2
+name = "ThreeFold Token"
+desc = "A digital currency used to buy autonomous and decentralized Internet services (compute, storage, and application) on the ThreeFold Network"
+image = "https://www.threefold.io/assets/3fold_icon.png"
 
 [[CURRENCIES]]
-code="TFTA"
-issuer="GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2"
-display_decimals=2 
-name="ThreeFold Token"
-desc="A digital currency used to buy autonomous and decentralized Internet services (compute, storage, and application) on the ThreeFold Network"
-image="https://www.threefold.io/assets/3fold_icon.png"
+code = "TFTA"
+issuer = "GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2"
+display_decimals = 2
+name = "ThreeFold Token"
+desc = "A digital currency used to buy autonomous and decentralized Internet services (compute, storage, and application) on the ThreeFold Network"
+image = "https://www.threefold.io/assets/3fold_icon.png"
 
 [[CURRENCIES]]
-code="FreeTFT"
-issuer="GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT"
-display_decimals=2 
-name="Free ThreeFold Token"
-desc="A free digital currency used to buy free autonomous and decentralized Internet services (compute, storage, and application) on the ThreeFold Network"
-image="https://www.threefold.io/assets/3fold_icon.png"
+code = "FreeTFT"
+issuer = "GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT"
+display_decimals = 2
+name = "Free ThreeFold Token"
+desc = "A free digital currency used to buy free autonomous and decentralized Internet services (compute, storage, and application) on the ThreeFold Network"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_UI"
+issuer = "GA23P37BIHIPEYYZPT45NODLR344H7VBFZPCZJESYGU6WZ23DMAJDMJA"
+display_decimals = 2
+name = "Threefold TF Grid User Interface Project"
+desc = "Easy-to-use interface to provision IT workloads on the grid"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_3B"
+issuer = "GD7BYGCLWN42RBL5PODZ527KJVQYUPOKAPZU3NEOKZQMPXWI7BUAH4YH"
+display_decimals = 2
+name = "Threefold 3bot (Digital Twin)Project"
+desc = "80% of our digital life implemented on top of the 3bot"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_VR"
+issuer = "GBPU7QTFORIQNCIKIJ2ABG33BLROQ3LL2GKAMZQ2JTWN4X4IL2AVM7BX"
+display_decimals = 2
+name = "Threefold Virtual Reality Museum Project"
+desc = "Virtual reality museum online of 500.000 artworks as part of TF Grid"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_SM"
+issuer = "GATPWDG2T7JTRV3AYFU5FUWSEVZOLQRH6POG5F2CYETNQZ6FSIKAXLBP"
+display_decimals = 2
+name = "Threefold Social Media / Collaboration Project"
+desc = "Combination of social media / productivity & collaboration tools"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_GS"
+issuer = "GCE2F7IIXZMR4KWPE53VVJMY6ZDS5CLRPS4DMYAKAWMJSGNPYHSZ3VWG"
+display_decimals = 2
+name = "Threefold TF Grid Solutions Project"
+desc = "Open source solutions ported to the grid"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_MA"
+issuer = "GC7NPQ6Y7BPGFS2LQ5KIHMLR2K5RNUBC33AEZ4YOHVGWXIPRA5W6FS6T"
+display_decimals = 2
+name = "Threefold 3bot Marketing / Prod mgmt Project"
+desc = "Bring the 3bot alive as a digital twin"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_FC"
+issuer = "GC7MY6I2MFDFW5DNLPAYTJWNEGWTEGEF5X2BFP6KE6X2H6CJNA6FRIUN"
+display_decimals = 2
+name = "Threefold FreeFlow connect Project"
+desc = "Peer-to-peer video conferencing"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_FD"
+issuer = "GBSN5UBAHCDTQIQHZ3PZUJ2PWUTR4RRIAC4VVTUM3G44ERW667J3INZD"
+display_decimals = 2
+name = "Threefold TF Foundation Project"
+desc = "Foundation funding (marketing, operations team, grid roll out, roadshows, …)"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_TB"
+issuer = "GAKNUHLTV7LFSDZFUVNTFPB34VVGJS6PKOXD5FS4Z5TKNWQ3FYII7I6U"
+display_decimals = 2
+name = "Threefold TimeBank Project"
+desc = "World first global time token, on top of TF Grid, +200k users today"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_3O"
+issuer = "GC7VVHXKHPM2YOQW3PM46PYQF3IBTHSLVVBNWAR4SZMWOFVVKZNXHCAA"
+display_decimals = 2
+name = "Threefold 3bot Office Project"
+desc = "100% compatible office suite running on top of your 3bot"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_EDU"
+issuer = "GAY5NVAB2UPJPL2FCJM6Z7FFNWI4MTHWF52LLUYEXNRY7IEEGZYWJMWK"
+display_decimals = 2
+name = "Threefold P2P Education Project"
+desc = "World’s first true peer-to-peer education system on top of TF Grid"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_3F"
+issuer = "GDLCTAG5ECTX4MLOPC5ZVTSNMOJ56KV5LERL2ZDUOMYGHW7I6ERRPTKX"
+display_decimals = 2
+name = "Threefold 3bot Files Project"
+desc = "Our personal cloud on the TF Grid"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_GE"
+issuer = "GCHJIR7HR2XYVSZ7B27CSKYOXVLDCVQLROEXHPRAA6DAJREELUC4YCHR"
+display_decimals = 2
+name = "Threefold TF Grid enhancements Project"
+desc = "Further improvements to the grid as sponsored by the TF Foundation"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_BR"
+issuer = "GCURX5AW2KIU523GAUCUMKRQLP7YX5OUX2QD3JWL6IN7URIYN52YOHHH"
+display_decimals = 2
+name = "Threefold 3bot Browser Project"
+desc = "Personal browser running close to our 3bot"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
+[[CURRENCIES]]
+code = "TFT_CL"
+issuer = "GBTHGYJIC5IADXDKB6SVJDF7LCVY5NQTWAWM4G6JVQW2GA4CBY2YWYAT"
+display_decimals = 2
+name = "Threefold Crystal Language Project"
+desc = "Core language used to implement the 3bot and future SDK for ThreeFold"
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
