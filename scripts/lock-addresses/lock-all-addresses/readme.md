@@ -24,6 +24,12 @@ Now if you want to exclude them from the locking script:
 go run ./lock-addresses.go [--redis-addr] [--redis-db] [--exclude blockcreators.txt] [--exclude file.txt] ...
 ```
 
+for production
+
+```sh
+go run lock-addresses.go --exclude "../../../config/public/conversion/foundation.txt" --exclude "../../../config/public/conversion/exclude.txt"
+```
+
 This will create an output file `lock-all.sh` and prepare an authcoin transaction for each address that is fetched from the redis db. 
 
 Executing this file can be done as:
