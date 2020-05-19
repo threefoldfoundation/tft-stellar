@@ -17,7 +17,7 @@ with the commandline client:
 send some unlocked tokens:
 
 ```sh
-./tfchainc wallet send coins address amount
+./tfchainc wallet send coins <address> 10
 ```
 
 send some locked tokens:
@@ -31,7 +31,7 @@ with a lock until November 1 2020:
 with a lock until November 1 2021:
 
 ```sh
-./tfchainc wallet send coins '{"type": 3,"data": {"locktime": 1635724800,"condition": {"type":1,{ "unlockhash":"<address>"}}}}' 12
+./tfchainc wallet send coins '{"type": 3,"data": {"locktime": 1635724800,"condition": {"type":1,"data":{ "unlockhash":"<address>"}}}}' 12
 ```
 
 Deauthorize the account:
@@ -49,7 +49,7 @@ curl -H "Content-Type: application/json" -d '{ "args": { "address": "","tfchain_
 ## Token migration
 
 - Import the converter wallet in JSX
-- Create a stellar account with secret from the first step in JSX to addthe  trustlines to TFT and TFTA:
+- Create a stellar account with secret from the first step in JSX to add the trustlines to TFT and TFTA:
 
 ```python
 a= j.clients.stellar.new('migrating',network='TEST',secret='')

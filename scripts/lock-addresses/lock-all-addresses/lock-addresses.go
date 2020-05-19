@@ -78,7 +78,6 @@ func main() {
 		f.WriteString(fstr)
 		f.WriteString("signeddeauthtx=\"$(tfchainc wallet sign $deauthtx)\"\n")
 		f.WriteString("echo \"tfchainc wallet send transaction \\\"\\$(tfchainc wallet sign $signeddeauthtx)\\\"\"\n")
-
 	}
 	if !dryRun {
 		fmt.Printf("%d addresses were excluded \n \n", excludedCount)
