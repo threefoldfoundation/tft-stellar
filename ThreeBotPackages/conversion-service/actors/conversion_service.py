@@ -30,11 +30,10 @@ class conversion_service(j.baseclasses.threebot_actor):
             stellar_client = self.package_author.conversion_wallet
             from stellar_sdk.exceptions import NotFoundError
 
-            stellar_client.list_transactions(address=stellar_address)
+            transactions=stellar_client.list_transactions(address=stellar_address)
+            return len(transactions)!=0
         except NotFoundError:
             return False
-        else:
-            return True
 
     def _stellar_address_to_tfchain_address(self, stellar_address):
         from JumpscaleLibs.clients.tfchain.types.CryptoTypes import PublicKey, PublicKeySpecifier
