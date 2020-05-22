@@ -67,15 +67,16 @@ class conversion_service(j.baseclasses.threebot_actor):
 
     @j.baseclasses.actor_method
     def activate_account(self, address, tfchain_address, schema_out=None, user_session=None):
-        if self._stellar_address_used_before(address):
-            raise j.exceptions.Base("This address is not new")
-
+        
         if tfchain_address != self._stellar_address_to_tfchain_address(address):
             raise j.exceptions.Base("The stellar and tfchain addresses are not created from the same private key")
         if self._is_zero_balance_tfchain(tfchain_address):
             raise j.exceptions.Base("Tfchain address has 0 balance, no need to activate an account")
+        if self._stellar_address_used_before(address):
+            raise j.exceptions.Base("This address is not new")
 
         return self.package_author.activate_account(address)
+    
 
     def _address_converted_before(self, address: str):
         convertedaddresses = self.converted_addresses_model.find(stellaraddress=address)
