@@ -1,4 +1,4 @@
-# Scripts to see the status od the conversion
+# Scripts to see the status of the conversion
 
 ## List locked accounts
 
@@ -15,3 +15,9 @@ This will create a file with a `transactionid tfchainaddress` combination per li
 ```
 
 This will create a file with a `memo amount tokencode destination transactionid` combination per line.
+
+## Check the status
+
+```sh
+./check.py
+```
