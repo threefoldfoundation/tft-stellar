@@ -7,11 +7,10 @@ class activation_service(j.baseclasses.threebot_actor):
             stellar_client = self.package_author.activation_wallet
             from stellar_sdk.exceptions import NotFoundError
 
-            stellar_client.list_transactions(address=stellar_address)
+            transactions=stellar_client.list_transactions(address=stellar_address)
+            return len(transactions)!=0
         except NotFoundError:
             return False
-        else:
-            return True
 
     def _activate_account(self, address):
         if self._stellar_address_used_before(address):
