@@ -35,9 +35,7 @@ class TransactionV1(TransactionBaseClass):
         txn = cls()
 
         if "data" not in obj:
-            raise Exception(
-                "no data object found in Legacy Transaction (v{})".format(TransactionVersion.LEGACY)
-            )
+            raise Exception("no data object found in Legacy Transaction (v{})".format(TransactionVersion.LEGACY))
         txn_data = obj["data"]
         if "coininputs" in txn_data:
             for legacy_ci_info in txn_data["coininputs"] or []:

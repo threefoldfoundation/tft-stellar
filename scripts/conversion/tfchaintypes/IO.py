@@ -1,13 +1,13 @@
 from .BaseDataType import BaseDataTypeClass
 
 from .PrimitiveTypes import BinaryData, Hash, Currency, Blockstake
-from .FulfillmentTypes import FulfillmentBaseClass, FulfillmentSingleSignature
-from .ConditionTypes import ConditionBaseClass, ConditionNil
+from .FulfillmentTypes import FulfillmentBaseClass, FulfillmentSingleSignature, FulfillmentFactory
+from .ConditionTypes import ConditionBaseClass, ConditionNil, ConditionFactory
 
 
 class CoinInput(BaseDataTypeClass):
     """
-    CoinIput class
+    CoinInput class
     """
 
     def __init__(self, parentid=None, fulfillment=None, parent_output=None):
@@ -22,15 +22,14 @@ class CoinInput(BaseDataTypeClass):
     @classmethod
     def from_json(cls, obj):
         return cls(
-            parentid=Hash.from_json(obj["parentid"]),
-            fulfillment=j.clients.tfchain.types.fulfillments.from_json(obj["fulfillment"]),
+            parentid=Hash.from_json(obj["parentid"]), fulfillment=FulfillmentFactory.from_json(obj["fulfillment"])
         )
 
     @classmethod
     def from_coin_output(cls, co):
         if not isinstance(co, CoinOutput):
-            raise j.exceptions.Value("invalid co parameter, expected value of type CoinOutput, not {}".format(type(co)))
-        ci = cls(parentid=co.id, fulfillment=j.clients.tfchain.types.fulfillments.from_condition(co.condition))
+            raise Exception("invalid co parameter, expected value of type CoinOutput, not {}".format(type(co)))
+        ci = cls(parentid=co.id, fulfillment=FulfillmentFactory.from_condition(co.condition))
         ci.parent_output = co
         return ci
 
@@ -55,7 +54,7 @@ class CoinInput(BaseDataTypeClass):
             self._fulfillment = FulfillmentSingleSignature()
             return
         if not isinstance(value, FulfillmentBaseClass):
-            raise j.exceptions.Value(
+            raise Exception(
                 "cannot assign value of type {} as a  CoinInput's fulfillment (expected: FulfillmentBaseClass)".format(
                     type(value)
                 )
@@ -72,7 +71,7 @@ class CoinInput(BaseDataTypeClass):
             self._parent_output = None
             return
         if not isinstance(value, CoinOutput):
-            raise j.exceptions.Value(
+            raise Exception(
                 "cannot assign value of type {} as a CoinInput's parent output (expected: CoinOutput)".format(
                     type(value)
                 )
@@ -133,10 +132,7 @@ class CoinOutput(BaseDataTypeClass):
 
     @classmethod
     def from_json(cls, obj):
-        return cls(
-            value=Currency.from_json(obj["value"]),
-            condition=j.clients.tfchain.types.conditions.from_json(obj["condition"]),
-        )
+        return cls(value=Currency.from_json(obj["value"]), condition=ConditionFactory.from_json(obj["condition"]))
 
     @property
     def value(self):

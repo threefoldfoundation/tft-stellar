@@ -1,11 +1,10 @@
 import random
 from .Base import TransactionBaseClass, TransactionVersion
 
-from ..FulfillmentTypes import FulfillmentBaseClass, FulfillmentSingleSignature
+from ..FulfillmentTypes import FulfillmentBaseClass, FulfillmentSingleSignature, FulfillmentFactory
 from ..ConditionTypes import ConditionBaseClass, ConditionNil
 from ..PrimitiveTypes import BinaryData, Currency
 from ..IO import CoinInput, CoinOutput
-
 
 
 def _generateXByteID(x):
@@ -23,14 +22,13 @@ class TransactionV128(TransactionBaseClass):
         self._mint_condition = None
         self._miner_fees = []
         self._data = None
-        
+
         self._nonce = BinaryData(_generateXByteID(8), strencoding="base64")
 
         # current mint condition
         self._parent_mint_condition = None
 
         super().__init__()
-
 
     @property
     def version(self):
@@ -216,7 +214,7 @@ class TransactionV129(TransactionBaseClass):
         self._coin_outputs = []
         self._miner_fees = []
         self._data = None
-        self._nonce = BinaryData(j.data.idgenerator.generateXByteID(8), strencoding="base64")
+        self._nonce = BinaryData(_generateXByteID(8), strencoding="base64")
 
         # current mint condition
         self._parent_mint_condition = None
@@ -370,7 +368,7 @@ class TransactionV129(TransactionBaseClass):
 
     def _from_json_data_object(self, data):
         self._nonce = BinaryData.from_json(data.get("nonce", ""), strencoding="base64")
-        self._mint_fulfillment = j.clients.tfchain.types.fulfillments.from_json(data.get("mintfulfillment", {}))
+        self._mint_fulfillment = FulfillmentFactory.from_json(data.get("mintfulfillment", {}))
         self._coin_outputs = [CoinOutput.from_json(co) for co in data.get("coinoutputs", []) or []]
         self._miner_fees = [Currency.from_json(fee) for fee in data.get("minerfees", []) or []]
         self._data = BinaryData.from_json(data.get("arbitrarydata", None) or "", strencoding="base64")

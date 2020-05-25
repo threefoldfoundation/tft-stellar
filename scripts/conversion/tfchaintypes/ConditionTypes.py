@@ -1,7 +1,10 @@
 import hashlib
+from pyblake2 import blake2b
 from datetime import datetime, timedelta
 
-from .PrimitiveTypes import BinaryData
+from .PrimitiveTypes import BinaryData, Hash
+from .rivine.RivineDataFactory import RivineDataFactory
+
 
 _CONDITION_TYPE_NIL = 0
 _CONDITION_TYPE_UNLOCK_HASH = 1
@@ -15,7 +18,8 @@ class ConditionFactory(object):
     Condition Factory class
     """
 
-    def from_json(self, obj):
+    @classmethod
+    def from_json(cls, obj):
         ct = obj.get("type", 0)
         if ct == _CONDITION_TYPE_NIL:
             return ConditionNil.from_json(obj)
@@ -27,9 +31,10 @@ class ConditionFactory(object):
             return ConditionLockTime.from_json(obj)
         if ct == _CONDITION_TYPE_MULTI_SIG:
             return ConditionMultiSignature.from_json(obj)
-        raise j.exceptions.Value("unsupport condition type {}".format(ct))
+        raise Exception("unsupport condition type {}".format(ct))
 
-    def from_recipient(self, recipient, lock=None):
+    @classmethod
+    def from_recipient(cls, recipient, lock=None):
         """
         Create automatically a recipient condition based on any accepted pythonic value (combo).
         """
@@ -41,16 +46,16 @@ class ConditionFactory(object):
             condition = None
             if recipient is None:
                 # free-for-all wallet
-                condition = self.nil_new()
+                condition = cls.nil_new()
             elif isinstance(recipient, (UnlockHash, str)):
                 # single sig wallet
-                condition = self.unlockhash_new(unlockhash=recipient)
+                condition = cls.unlockhash_new(unlockhash=recipient)
             elif isinstance(recipient, (bytes, bytearray)):
                 # single sig wallet
-                condition = self.unlockhash_new(unlockhash=recipient.hex())
+                condition = cls.unlockhash_new(unlockhash=recipient.hex())
             elif isinstance(recipient, list):
                 # multisig to an all-for-all wallet
-                condition = self.multi_signature_new(min_nr_sig=len(recipient), unlockhashes=recipient)
+                condition = cls.multi_signature_new(min_nr_sig=len(recipient), unlockhashes=recipient)
             elif isinstance(recipient, tuple):
                 # multisig wallet with custom x-of-n definition
                 if len(recipient) != 2:
@@ -61,53 +66,59 @@ class ConditionFactory(object):
                     )
                 # allow (sigs,hashes) as well as (hashes,sigs)
                 if isinstance(recipient[0], int):
-                    condition = self.multi_signature_new(min_nr_sig=recipient[0], unlockhashes=recipient[1])
+                    condition = cls.multi_signature_new(min_nr_sig=recipient[0], unlockhashes=recipient[1])
                 else:
-                    condition = self.multi_signature_new(min_nr_sig=recipient[1], unlockhashes=recipient[0])
+                    condition = cls.multi_signature_new(min_nr_sig=recipient[1], unlockhashes=recipient[0])
             else:
                 raise Exception("invalid type for recipient parameter: {}".format(type(recipient)))
 
         # if lock is defined, define it as a locktime value
         if lock is not None:
-            condition = self.locktime_new(lock=lock, condition=condition)
+            condition = cls.locktime_new(lock=lock, condition=condition)
 
         # return condition
         return condition
 
-    def nil_new(self):
+    @classmethod
+    def nil_new(cls):
         """
         Create a new Nil Condition, which can be fulfilled by any SingleSig. Fulfillment.
         """
         return ConditionNil()
 
-    def unlockhash_new(self, unlockhash=None):
+    @classmethod
+    def unlockhash_new(cls, unlockhash=None):
         """
         Create a new UnlockHash Condition, which can be
         fulfilled by the matching SingleSig. Fulfillment.
         """
         return ConditionUnlockHash(unlockhash=unlockhash)
 
-    def atomic_swap_new(self, sender=None, receiver=None, hashed_secret=None, lock_time=None):
+    @classmethod
+    def atomic_swap_new(cls, sender=None, receiver=None, hashed_secret=None, lock_time=None):
         """
         Create a new AtomicSwap Condition, which can be
         fulfilled by the AtomicSwap Fulfillment.
         """
         return ConditionAtomicSwap(sender=sender, receiver=receiver, hashed_secret=hashed_secret, lock_time=lock_time)
 
-    def locktime_new(self, lock=None, condition=None):
+    @classmethod
+    def locktime_new(cls, lock=None, condition=None):
         """
         Create a new LockTime Condition, which can be fulfilled by a fulfillment
         when the relevant timestamp/block has been reached as well as the fulfillment fulfills the internal condition.
         """
         return ConditionLockTime(lock=lock, condition=condition)
 
-    def multi_signature_new(self, min_nr_sig=0, unlockhashes=None):
+    @classmethod
+    def multi_signature_new(cls, min_nr_sig=0, unlockhashes=None):
         """
         Create a new MultiSignature Condition, which can be fulfilled by a matching MultiSignature Fulfillment.
         """
         return ConditionMultiSignature(unlockhashes=unlockhashes, min_nr_sig=min_nr_sig)
 
-    def output_lock_new(self, value):
+    @classmethod
+    def output_lock_new(cls, value):
         """
         Creates a new output lock.
         """
@@ -301,7 +312,7 @@ class UnlockHash(BaseDataTypeClass):
     def __init__(self, type=None, hash=None):
         self._type = UnlockHashType.NIL
         self.type = type
-        self._hash = j.clients.tfchain.types.hash_new()
+        self._hash = Hash()
         self.hash = hash
 
     @classmethod
@@ -316,9 +327,7 @@ class UnlockHash(BaseDataTypeClass):
             )
 
         t = UnlockHashType(int(obj[: UnlockHash._TYPE_SIZE_HEX]))
-        h = j.clients.tfchain.types.hash_new(
-            value=obj[UnlockHash._TYPE_SIZE_HEX : UnlockHash._TYPE_SIZE_HEX + UnlockHash._HASH_SIZE_HEX]
-        )
+        h = Hash(obj[UnlockHash._TYPE_SIZE_HEX : UnlockHash._TYPE_SIZE_HEX + UnlockHash._HASH_SIZE_HEX])
         uh = cls(type=t, hash=h)
 
         if t == UnlockHashType.NIL:
@@ -360,10 +369,11 @@ class UnlockHash(BaseDataTypeClass):
     def _checksum(self):
         if self._type == UnlockHashType.NIL:
             return b"\x00" * UnlockHash._CHECKSUM_SIZE
-        e = j.data.rivine.encoder_rivine_get()
+        e = RivineDataFactory.encoder_rivine_get()
         e.add_int8(int(self._type))
         e.add(self._hash)
-        return bytearray.fromhex(j.data.hash.blake2_string(e.data))
+        h = blake2b(e.data, digest_size=32)
+        return bytearray.fromhex(h.hexdigest())
 
     __repr__ = __str__
 
@@ -695,7 +705,7 @@ class ConditionLockTime(ConditionBaseClass):
             self._condition = None
             return
         if not isinstance(value, ConditionBaseClass):
-            raise j.exceptions.Value(
+            raise Exception(
                 "ConditionLockTime's condition is expected to be a subtype of ConditionBaseClass, not of type {}".format(
                     type(value)
                 )
@@ -707,9 +717,9 @@ class ConditionLockTime(ConditionBaseClass):
 
     def from_json_data_object(self, data):
         self.lock = int(data["locktime"])
-        cond = j.clients.tfchain.types.conditions.from_json(obj=data["condition"])
+        cond = ConditionFactory.from_json(obj=data["condition"])
         if cond.type not in (_CONDITION_TYPE_UNLOCK_HASH, _CONDITION_TYPE_MULTI_SIG, _CONDITION_TYPE_NIL):
-            raise j.exceptions.Value("internal condition of ConditionLockTime cannot be of type {}".format(cond.type))
+            raise Exception("internal condition of ConditionLockTime cannot be of type {}".format(cond.type))
         self.condition = cond
 
     def json_data_object(self):

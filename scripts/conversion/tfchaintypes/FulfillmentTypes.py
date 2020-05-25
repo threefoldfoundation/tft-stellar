@@ -81,9 +81,7 @@ class SignatureRequest:
             )
         self._unlockhash = unlockhash
         if not callable(input_hash_gen):
-            raise Exception(
-                "signature request requires a generator function with the signature `f(PublicKey) -> Hash"
-            )
+            raise Exception("signature request requires a generator function with the signature `f(PublicKey) -> Hash")
         self._input_hash_gen = input_hash_gen
         if not isinstance(callback, SignatureCallbackBase):
             raise Exception(
@@ -116,9 +114,7 @@ class SignatureRequest:
         if isinstance(input_hash, (str, bytearray, bytes)):
             input_hash = Hash(value=input_hash)
         elif not isinstance(input_hash, Hash):
-            raise Exception(
-                "signature request requires an input hash of Type Hash, not: {}".format(type(input_hash))
-            )
+            raise Exception("signature request requires an input hash of Type Hash, not: {}".format(type(input_hash)))
         return input_hash
 
     def signature_fulfill(self, public_key, signature):
@@ -127,9 +123,7 @@ class SignatureRequest:
         """
         # guarantee base conditions
         if self.fulfilled:
-            raise Exception(
-                "SignatureRequest is already fulfilled for address {}".format(self.wallet_address)
-            )
+            raise Exception("SignatureRequest is already fulfilled for address {}".format(self.wallet_address))
 
         # ensure public key is the key of the wallet who owns this request
         if not isinstance(public_key, PublicKey):
@@ -155,7 +149,8 @@ class FulfillmentFactory(object):
     Fulfillment Factory class
     """
 
-    def from_json(self, obj):
+    @staticmethod
+    def from_json(obj):
         ft = obj.get("type", 0)
         if ft == _FULFULLMENT_TYPE_SINGLE_SIG:
             return FulfillmentSingleSignature.from_json(obj)
@@ -165,7 +160,8 @@ class FulfillmentFactory(object):
             return FulfillmentAtomicSwap.from_json(obj)
         raise Exception("unsupport fulfillment type {}".format(ft))
 
-    def from_condition(self, condition):
+    @staticmethod
+    def from_condition(condition):
         """
         Create a fresh fulfillment from its parent condition.
         """
@@ -178,31 +174,31 @@ class FulfillmentFactory(object):
             return FulfillmentSingleSignature()
         if isinstance(icondition, ConditionMultiSignature):
             return FulfillmentMultiSignature()
-        raise j.exceptions.Value(
-            "invalid condition type {} cannot be used to create a fulfillment".format(type(condition))
-        )
+        raise Exception("invalid condition type {} cannot be used to create a fulfillment".format(type(condition)))
 
-    def single_signature_new(self, pub_key=None, signature=None):
+    @staticmethod
+    def single_signature_new(pub_key=None, signature=None):
         """
         Create a new single signature fulfillment,
         used to unlock an UnlockHash Condition of type 1.
         """
         return FulfillmentSingleSignature(pub_key=pub_key, signature=signature)
 
-    def atomic_swap_new(self, pub_key=None, signature=None, secret=None):
+    @staticmethod
+    def atomic_swap_new(pub_key=None, signature=None, secret=None):
         """
         Create a new atomic swap fulfillment,
         used to unlock an atomic swap condition.
         """
         return FulfillmentAtomicSwap(pub_key=pub_key, signature=signature, secret=secret)
 
-    def multi_signature_new(self, pairs=None):
+    @staticmethod
+    def multi_signature_new(pairs=None):
         """
         Create a new multi signature fulfillment,
         used to unlock a multi signature condition.
         """
         return FulfillmentMultiSignature(pairs=pairs)
-
 
 
 class FulfillmentBaseClass(SignatureCallbackBase, BaseDataTypeClass):

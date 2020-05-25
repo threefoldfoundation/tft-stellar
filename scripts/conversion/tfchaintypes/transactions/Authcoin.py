@@ -2,7 +2,7 @@ import random
 
 from .Base import TransactionBaseClass, TransactionVersion
 
-from ..FulfillmentTypes import FulfillmentBaseClass, FulfillmentSingleSignature
+from ..FulfillmentTypes import FulfillmentBaseClass, FulfillmentSingleSignature,FulfillmentFactory
 from ..ConditionTypes import ConditionBaseClass, ConditionNil, UnlockHash
 from ..PrimitiveTypes import BinaryData, Currency
 from ..IO import CoinInput, CoinOutput
@@ -13,6 +13,7 @@ def _generateXByteID(x):
     for i in range(0, x):
         out.append(random.randint(0, 255))
     return out
+
 
 class TransactionV176(TransactionBaseClass):
     _SPECIFIER = b"auth addr update"
@@ -208,7 +209,7 @@ class TransactionV176(TransactionBaseClass):
         self._nonce = BinaryData.from_json(data.get("nonce", ""), strencoding="base64")
         self._auth_addresses = [UnlockHash.from_json(uh) for uh in data.get("authaddresses", []) or []]
         self._deauth_addresses = [UnlockHash.from_json(uh) for uh in data.get("deauthaddresses", []) or []]
-        self._auth_fulfillment = j.clients.tfchain.types.fulfillments.from_json(data.get("authfulfillment", {}))
+        self._auth_fulfillment = FulfillmentFactory.from_json(data.get("authfulfillment", {}))
         self._miner_fees = [Currency.from_json(fee) for fee in data.get("minerfees", []) or []]
         self._data = BinaryData.from_json(data.get("arbitrarydata", None) or "", strencoding="base64")
 

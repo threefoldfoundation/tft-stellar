@@ -43,9 +43,7 @@ class TransactionBaseClass(ABC):
         txn = cls()
         tv = obj.get("version", -1)
         if txn.version != tv:
-            raise Exception(
-                "transaction is expected to be of version {}, not version {}".format(txn.version, tv)
-            )
+            raise Exception("transaction is expected to be of version {}, not version {}".format(txn.version, tv))
         txn._from_json_data_object(obj.get("data", {}))
         return txn
 

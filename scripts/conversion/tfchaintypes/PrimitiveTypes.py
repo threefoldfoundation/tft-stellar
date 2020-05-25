@@ -1,6 +1,5 @@
-
 from enum import IntEnum
-
+import base64
 from .BaseDataType import BaseDataTypeClass
 
 
@@ -17,13 +16,13 @@ class BinaryData(BaseDataTypeClass):
             self._from_str = lambda s: bytearray.fromhex(s)
             self._to_str = lambda value: value.hex()
         elif strencoding.lower().strip() == "base64":
-            self._from_str = lambda s: bytearray(j.data.serializers.base64.decode(s))
-            self._to_str = lambda value: j.data.serializers.base64.dumps(value)
+            self._from_str = lambda s: bytearray(base64.b64decode(s.encode()))
+            self._to_str = lambda value: base64.b64encode(value).decode()
         elif strencoding.lower().strip() == "hexprefix":
             self._from_str = lambda s: bytearray.fromhex(s[2:] if (s.startswith("0x") or s.startswith("0X")) else s)
             self._to_str = lambda value: "0x" + value.hex()
         else:
-            raise j.exceptions.Value("{} is not a valid string encoding".format(strencoding))
+            raise Exception("{} is not a valid string encoding".format(strencoding))
         self._strencoding = strencoding
 
         # define fixed size
@@ -220,7 +219,7 @@ class Currency(BaseDataTypeClass):
             d = Decimal(value)
             sign, _, exp = d.as_tuple()
             if exp < -9:
-                raise  Exception("CurrencyPrecisionOverflow")
+                raise Exception("CurrencyPrecisionOverflow")
             if sign != 0:
                 raise Exception("Negative currency")
             self._value = d
