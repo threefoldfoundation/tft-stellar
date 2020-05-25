@@ -1,6 +1,7 @@
 from .crypto.MerkleTree import Tree
 from pyblake2 import blake2b
 
+
 class TFChainTypesFactory(object):
     """
     TFChain Types Factory class
@@ -11,6 +12,7 @@ class TFChainTypesFactory(object):
         """
         Create a new MerkleTree
         """
+
         def blake2(s, digest_size=32):
             """Calculate blake2 hash of input string
 

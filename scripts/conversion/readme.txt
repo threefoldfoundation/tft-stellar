@@ -21,3 +21,12 @@ This will create a file with a `memo amount tokencode destination transactionid`
 ```sh
 ./check.py
 ```
+
+## List deauthorized balances
+
+```sh
+./tfchainbalances.py
+```
+
+This will create a file called `deauthorizedbalances.txt` with a `address Free: amount Locked: amount` combination per line.
+

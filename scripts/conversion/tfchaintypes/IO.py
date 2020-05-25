@@ -206,8 +206,7 @@ class BlockstakeInput(BaseDataTypeClass):
     @classmethod
     def from_json(cls, obj):
         return cls(
-            parentid=Hash.from_json(obj["parentid"]),
-            fulfillment=FulfillmentFactory.from_json(obj["fulfillment"]),
+            parentid=Hash.from_json(obj["parentid"]), fulfillment=FulfillmentFactory.from_json(obj["fulfillment"])
         )
 
     @classmethod
@@ -317,10 +316,7 @@ class BlockstakeOutput(BaseDataTypeClass):
 
     @classmethod
     def from_json(cls, obj):
-        return cls(
-            value=Blockstake.from_json(obj["value"]),
-            condition=ConditionFactory.from_json(obj["condition"]),
-        )
+        return cls(value=Blockstake.from_json(obj["value"]), condition=ConditionFactory.from_json(obj["condition"]))
 
     @property
     def value(self):

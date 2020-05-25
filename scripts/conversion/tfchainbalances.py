@@ -17,6 +17,7 @@ TFCHAIN_EXPLORER = "https://explorer2.threefoldtoken.com"
 @click.argument("output", default="deauthorizedbalances.txt", type=click.File("w"))
 def tfchain_balances(deauthorizationsfile, output):
     counter = 0
+    blockchaininfo = blockchain_info_get()
     for deauthorization in deauthorizationsfile.read().splitlines():
         counter += 1
         print(f"{counter}")
@@ -34,12 +35,35 @@ def tfchain_balances(deauthorizationsfile, output):
         # sort the transactions by height
         transactions.sort(key=(lambda txn: sys.maxsize if txn.height < 0 else txn.height), reverse=True)
         result = ExplorerUnlockhashResult(unlockhash=UnlockHash.from_json(address), transactions=transactions)
-        balance = result.balance()
+        balance = result.balance(blockchaininfo)
 
         unlocked_tokens = balance.available.value
         locked_tokens = balance.locked.value
         output.write(f"{address} Free: {unlocked_tokens} Locked: {locked_tokens}\n")
         time.sleep(2)  # give the explorer a break
+
+
+class ExplorerBlockchainInfo:
+    def __init__(self, blockid, height, timestamp):
+        self.blockid = blockid
+        self.height = height
+        self.timestamp = timestamp
+
+    def __repr__(self):
+        return "Block {} at height {}, published on {}, is the last known block.".format(
+            self.blockid, self.height, self.timestamp
+        )
+
+
+def blockchain_info_get():
+    """
+        Get the current blockchain info, using the last known block, as reported by an explorer.
+        """
+    response = requests.get(TFCHAIN_EXPLORER + "/explorer")
+    last_height = response.json()["height"]
+    response = requests.get(TFCHAIN_EXPLORER + f"/explorer/blocks/{last_height}")
+    last_block = response.json()['block']
+    return ExplorerBlockchainInfo(last_block["blockid"], last_height, last_block["rawblock"]["timestamp"])
 
 
 def transaction_from_explorer_transaction(etxn, resp=None):  # keyword parameters for error handling purposes only
@@ -143,7 +167,13 @@ class ExplorerUnlockhashResult:
                 for co in txn.coin_outputs:
                     if str(co.condition.unlockhash) == address:
                         balance.output_add(co, confirmed=(not txn.unconfirmed), spent=False)
+        # if chain info is supplied, attach it, if not, get the current chain info for it
 
+        if info is None:
+            info = blockchain_info_get()
+        balance.chain_height = info.height
+        balance.chain_time = info.timestamp
+        balance.chain_blockid = info.blockid
         return balance
 
 
