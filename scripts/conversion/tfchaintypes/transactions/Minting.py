@@ -8,7 +8,7 @@ from ..IO import CoinInput, CoinOutput
 
 
 
-def _generateXByteID(self, x):
+def _generateXByteID(x):
     out = bytearray()
     for i in range(0, x):
         out.append(random.randint(0, 255))

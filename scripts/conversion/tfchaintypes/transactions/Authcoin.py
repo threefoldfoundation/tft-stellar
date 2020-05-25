@@ -1,4 +1,4 @@
-from Jumpscale import j
+import random
 
 from .Base import TransactionBaseClass, TransactionVersion
 
@@ -8,11 +8,17 @@ from ..PrimitiveTypes import BinaryData, Currency
 from ..IO import CoinInput, CoinOutput
 
 
+def _generateXByteID(x):
+    out = bytearray()
+    for i in range(0, x):
+        out.append(random.randint(0, 255))
+    return out
+
 class TransactionV176(TransactionBaseClass):
     _SPECIFIER = b"auth addr update"
 
     def __init__(self):
-        self._nonce = BinaryData(j.data.idgenerator.generateXByteID(8), strencoding="base64")
+        self._nonce = BinaryData(_generateXByteID(8), strencoding="base64")
         self._auth_fulfillment = None
         self._auth_addresses = []
         self._deauth_addresses = []
@@ -48,7 +54,7 @@ class TransactionV176(TransactionBaseClass):
         elif isinstance(value, str):
             value = value.encode("utf-8")
         if len(value) > 83:
-            raise j.exceptions.Value(
+            raise Exception(
                 "arbitrary data can have a maximum bytes length of 83, {} exceeds this limit".format(len(value))
             )
         self._data = BinaryData(value=value, strencoding="base64")
@@ -74,7 +80,7 @@ class TransactionV176(TransactionBaseClass):
         elif isinstance(uh, str):
             self._auth_addresses.append(UnlockHash.from_json(uh))
         else:
-            raise j.exceptions.Value("invalid type of uh {} (expected: UnlockHash or str)".format(type(uh)))
+            raise Exception("invalid type of uh {} (expected: UnlockHash or str)".format(type(uh)))
 
     @property
     def deauth_addresses(self):
@@ -97,7 +103,7 @@ class TransactionV176(TransactionBaseClass):
         elif isinstance(uh, str):
             self._deauth_addresses.append(UnlockHash.from_json(uh))
         else:
-            raise j.exceptions.Value("invalid type of uh {} (expected: UnlockHash or str)".format(type(uh)))
+            raise Exception("invalid type of uh {} (expected: UnlockHash or str)".format(type(uh)))
 
     def auth_fulfillment_defined(self):
         return self._auth_fulfillment is not None
@@ -117,7 +123,7 @@ class TransactionV176(TransactionBaseClass):
             self._auth_fulfillment = None
             return
         if not isinstance(value, FulfillmentBaseClass):
-            raise j.exceptions.Value(
+            raise Exzception(
                 "AuthAddressUpdate (v176) Transaction's auth fulfillment has to be a subtype of FulfillmentBaseClass, not {}".format(
                     type(value)
                 )
@@ -139,7 +145,7 @@ class TransactionV176(TransactionBaseClass):
             self._parent_auth_condition = None
             return
         if not isinstance(value, ConditionBaseClass):
-            raise j.exceptions.Value(
+            raise Exception(
                 "AuthAddressUpdate (v176) Transaction's parent auth condition has to be a subtype of ConditionBaseClass, not {}".format(
                     type(value)
                 )
@@ -269,7 +275,7 @@ class TransactionV177(TransactionBaseClass):
         elif isinstance(value, str):
             value = value.encode("utf-8")
         if len(value) > 83:
-            raise j.exceptions.Value(
+            raise Exception(
                 "arbitrary data can have a maximum bytes length of 83, {} exceeds this limit".format(len(value))
             )
         self._data = BinaryData(value=value, strencoding="base64")
@@ -289,7 +295,7 @@ class TransactionV177(TransactionBaseClass):
             self._auth_condition = None
             return
         if not isinstance(value, ConditionBaseClass):
-            raise j.exceptions.Value(
+            raise Exception(
                 "AuthConditionDefinition (v177) Transaction's auth condition has to be a subtype of ConditionBaseClass, not {}".format(
                     type(value)
                 )
@@ -311,7 +317,7 @@ class TransactionV177(TransactionBaseClass):
             self._parent_auth_condition = None
             return
         if not isinstance(value, ConditionBaseClass):
-            raise j.exceptions.Value(
+            raise Exception(
                 "AuthCondtionDefinition (v177) Transaction's parent auth condition has to be a subtype of ConditionBaseClass, not {}".format(
                     type(value)
                 )
@@ -336,7 +342,7 @@ class TransactionV177(TransactionBaseClass):
             self._auth_fulfillment = None
             return
         if not isinstance(value, FulfillmentBaseClass):
-            raise j.exceptions.Value(
+            raise Exception(
                 "AuthConditionDefinition (v177) Transaction's auth fulfillment has to be a subtype of FulfillmentBaseClass, not {}".format(
                     type(value)
                 )

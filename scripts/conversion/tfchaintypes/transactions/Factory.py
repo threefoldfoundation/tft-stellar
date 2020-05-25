@@ -2,8 +2,6 @@ import json
 from .Base import TransactionBaseClass, TransactionVersion
 from .Standard import TransactionV1
 from .Minting import TransactionV128, TransactionV129
-from .ThreeBot import BotTransactionBaseClass, TransactionV144, TransactionV145, TransactionV146
-from .ERC20 import TransactionV208, TransactionV209, TransactionV210
 from .Authcoin import TransactionV176, TransactionV177
 
 
@@ -30,18 +28,6 @@ class TransactionFactory(object):
         txn = None
         if tt == TransactionVersion.STANDARD:
             txn = TransactionV1.from_json(obj)
-        elif tt == TransactionVersion.THREEBOT_REGISTRATION:
-            txn = TransactionV144.from_json(obj)
-        elif tt == TransactionVersion.THREEBOT_RECORD_UPDATE:
-            txn = TransactionV145.from_json(obj)
-        elif tt == TransactionVersion.THREEBOT_NAME_TRANSFER:
-            txn = TransactionV146.from_json(obj)
-        elif tt == TransactionVersion.ERC20_CONVERT:
-            txn = TransactionV208.from_json(obj)
-        elif tt == TransactionVersion.ERC20_COIN_CREATION:
-            txn = TransactionV209.from_json(obj)
-        elif tt == TransactionVersion.ERC20_ADDRESS_REGISTRATION:
-            txn = TransactionV210.from_json(obj)
         elif tt == TransactionVersion.MINTER_DEFINITION:
             txn = TransactionV128.from_json(obj)
         elif tt == TransactionVersion.AUTH_ADDRESS_UPDATE:
