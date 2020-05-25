@@ -155,7 +155,7 @@ class CoinOutput(BaseDataTypeClass):
             self._condition = ConditionNil()
             return
         if not isinstance(value, ConditionBaseClass):
-            raise j.exceptions.Value(
+            raise Exception(
                 "cannot assign value of type {} as a CoinOutput's condition (expected: ConditionBaseClass subtype)".format(
                     type(value)
                 )
@@ -207,14 +207,14 @@ class BlockstakeInput(BaseDataTypeClass):
     def from_json(cls, obj):
         return cls(
             parentid=Hash.from_json(obj["parentid"]),
-            fulfillment=j.clients.tfchain.types.fulfillments.from_json(obj["fulfillment"]),
+            fulfillment=FulfillmentFactory.from_json(obj["fulfillment"]),
         )
 
     @classmethod
     def from_blockstake_output(cls, bso):
         if not isinstance(bso, BlockstakeOutput):
-            raise j.exceptions.Value("invalid type of bso {} (expected: BlockstakeOutput)".format(type(bso)))
-        bsi = cls(parentid=bso.id, fulfillment=j.clients.tfchain.types.fulfillments.from_condition(bso.condition))
+            raise Exception("invalid type of bso {} (expected: BlockstakeOutput)".format(type(bso)))
+        bsi = cls(parentid=bso.id, fulfillment=FulfillmentFactory.from_condition(bso.condition))
         bsi.parent_output = bso
         return bsi
 
@@ -239,7 +239,7 @@ class BlockstakeInput(BaseDataTypeClass):
             self._fulfillment = FulfillmentSingleSignature()
             return
         if not isinstance(value, FulfillmentBaseClass):
-            raise j.exceptions.Value(
+            raise Exception(
                 "cannot assign value of type {} as a BlockstakeInput's fulfillment (expected: FulfillmentBaseClass subtype)".format(
                     type(value)
                 )
@@ -256,7 +256,7 @@ class BlockstakeInput(BaseDataTypeClass):
             self._parent_output = BlockstakeOutput()
             return
         if not isinstance(value, BlockstakeOutput):
-            raise j.exceptions.Value(
+            raise Exception(
                 "cannot assign value of type {} as a BlockstakeInput's parent output (expected: BlockstakeOutput)".format(
                     type(value)
                 )
@@ -319,7 +319,7 @@ class BlockstakeOutput(BaseDataTypeClass):
     def from_json(cls, obj):
         return cls(
             value=Blockstake.from_json(obj["value"]),
-            condition=j.clients.tfchain.types.conditions.from_json(obj["condition"]),
+            condition=ConditionFactory.from_json(obj["condition"]),
         )
 
     @property
@@ -343,7 +343,7 @@ class BlockstakeOutput(BaseDataTypeClass):
             self._condition = ConditionNil()
             return
         if not isinstance(value, ConditionBaseClass):
-            raise j.exceptions.Value(
+            raise Exception(
                 "cannot assign value of type {} as a BlockstakeOutput's condition (expected: ConditionBaseClass subtype)".format(
                     type(value)
                 )

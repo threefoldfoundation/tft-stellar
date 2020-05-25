@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 from .PrimitiveTypes import BinaryData, Hash
 from .rivine.RivineDataFactory import RivineDataFactory
+from .TFChainTypesFactory import TFChainTypesFactory
 
 
 _CONDITION_TYPE_NIL = 0
@@ -756,11 +757,11 @@ class ConditionMultiSignature(ConditionBaseClass):
     @property
     def unlockhash(self):
         uhs = sorted(self.unlockhashes, key=lambda uh: str(uh))
-        tree = j.clients.tfchain.types.merkle_tree_new()
-        tree.push(j.data.rivine.sia_encode(len(uhs)))
+        tree = TFChainTypesFactory.merkle_tree_new()
+        tree.push(RivineDataFactory.sia_encode(len(uhs)))
         for uh in uhs:
-            tree.push(j.data.rivine.sia_encode(uh))
-        tree.push(j.data.rivine.sia_encode(self.required_signatures))
+            tree.push(RivineDataFactory.sia_encode(uh))
+        tree.push(RivineDataFactory.sia_encode(self.required_signatures))
         return UnlockHash(type=UnlockHashType.MULTI_SIG, hash=tree.root())
 
     @property
