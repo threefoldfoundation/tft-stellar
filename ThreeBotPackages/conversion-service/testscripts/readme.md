@@ -17,7 +17,7 @@ with the commandline client:
 send some unlocked tokens:
 
 ```sh
-./tfchainc wallet send coins <address> 10
+tfchainc wallet send coins <address> 10
 ```
 
 send some locked tokens:
@@ -25,19 +25,19 @@ send some locked tokens:
 with a lock until November 1 2020:
 
 ```sh
-./tfchainc wallet send coins '{"type": 3,"data": {"locktime": 1604188800,"condition": {"type":1,"data":{ "unlockhash":"<address>"}}}}' 11
+tfchainc wallet send coins '{"type": 3,"data": {"locktime": 1604188800,"condition": {"type":1,"data":{ "unlockhash":"<address>"}}}}' 11
 ```
 
 with a lock until November 1 2021:
 
 ```sh
-./tfchainc wallet send coins '{"type": 3,"data": {"locktime": 1635724800,"condition": {"type":1,"data":{ "unlockhash":"<address>"}}}}' 12
+tfchainc wallet send coins '{"type": 3,"data": {"locktime": 1635724800,"condition": {"type":1,"data":{ "unlockhash":"<address>"}}}}' 12
 ```
 
 Deauthorize the account:
 
 ```sh
-./tfchainc wallet send transaction "$(./tfchainc wallet sign "$(./tfchainc wallet authcoin authaddresses --deauth <address>)")"
+tfchainc wallet send transaction "$(tfchainc wallet sign "$(tfchainc wallet authcoin authaddresses --deauth <address>)")"
 ```
 
 ## Account activation
