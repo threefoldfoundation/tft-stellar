@@ -6,7 +6,7 @@ _TFTA_FULL_ASSETCODE="TFTA:GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WN
 tfchain_address=''
 stellar_address=''
 converter_wallet = j.clients.stellar.converter
-tfchain_client = j.clients.tfchain.get("tfchain")
+tfchain_client = j.clients.tfchain.tfchain
 # get balance from tfchain
 unlockhash = tfchain_client.unlockhash_get(tfchain_address)
 balance = unlockhash.balance()
