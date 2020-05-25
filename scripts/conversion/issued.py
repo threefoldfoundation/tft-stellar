@@ -10,18 +10,17 @@ from urllib import parse
 import stellar_sdk
 
 
-ISSUERS={
-    'TFT':'GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47',
-    'TFTA':'GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2',
+ISSUERS = {
+    "TFT": "GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47",
+    "TFTA": "GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2",
 }
 
-@click.command(
-    help="List issued TFT and TFTA"
-)
+
+@click.command(help="List issued TFT and TFTA")
 def list_issued():
-    horizon_server=stellar_sdk.Server("https://horizon.stellar.org")
+    horizon_server = stellar_sdk.Server("https://horizon.stellar.org")
     tx_endpoint = horizon_server.transactions()
-    tx_endpoint.limit=50
+    tx_endpoint.limit = 50
     for tokencode, issuer in ISSUERS.items():
         tx_endpoint.for_account(issuer)
         tx_endpoint.include_failed(False)
@@ -36,14 +35,17 @@ def list_issued():
             new_cursor = parse.parse_qs(next_link_query)["cursor"][0]
             response_transactions = response["_embedded"]["records"]
             for response_transaction in response_transactions:
-                if response_transaction['memo_type']!= 'hash':
+                if response_transaction["memo_type"] != "hash":
                     continue
-                memo = binascii.hexlify(base64.b64decode(response_transaction['memo'])).decode('utf-8')
-                env =stellar_sdk.transaction_envelope.TransactionEnvelope.from_xdr(response_transaction['envelope_xdr'],stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE)
-                paymentoperation=env.transaction.operations[0]
+                memo = binascii.hexlify(base64.b64decode(response_transaction["memo"])).decode("utf-8")
+                env = stellar_sdk.transaction_envelope.TransactionEnvelope.from_xdr(
+                    response_transaction["envelope_xdr"], stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
+                )
+                paymentoperation = env.transaction.operations[0]
 
-                print(f"{memo} {paymentoperation.amount} {tokencode} {paymentoperation.destination} {response_transaction['id']}")
-       
+                print(
+                    f"{memo} {paymentoperation.amount} {tokencode} {paymentoperation.destination} {response_transaction['id']}"
+                )
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ import random
 
 from .Base import TransactionBaseClass, TransactionVersion
 
-from ..FulfillmentTypes import FulfillmentBaseClass, FulfillmentSingleSignature,FulfillmentFactory
+from ..FulfillmentTypes import FulfillmentBaseClass, FulfillmentSingleSignature, FulfillmentFactory
 from ..ConditionTypes import ConditionBaseClass, ConditionNil, UnlockHash
 from ..PrimitiveTypes import BinaryData, Currency
 from ..IO import CoinInput, CoinOutput

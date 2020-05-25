@@ -1,3 +1,4 @@
 scripts/env
 createlockingscript.sh
 issued.txt
+deauthorizedbalances.txt
