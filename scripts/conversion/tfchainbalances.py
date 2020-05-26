@@ -62,7 +62,7 @@ def blockchain_info_get():
     response = requests.get(TFCHAIN_EXPLORER + "/explorer")
     last_height = response.json()["height"]
     response = requests.get(TFCHAIN_EXPLORER + f"/explorer/blocks/{last_height}")
-    last_block = response.json()['block']
+    last_block = response.json()["block"]
     return ExplorerBlockchainInfo(last_block["blockid"], last_height, last_block["rawblock"]["timestamp"])
 
 
