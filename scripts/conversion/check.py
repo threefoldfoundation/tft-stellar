@@ -31,7 +31,7 @@ def check_command(deauthorizationsfile, deauthorizedbalancesfile, issuedfile):
                 continue
         deauthorizations[deauthorizationtx] = tfchainaddress
     print(f"{numberofdeauthorizations} tfchain addresses are deauthorized")
-    print(f"{numberofzerobalances} had 0 TFT  and do not have to be migrated")
+    print(f"{numberofzerobalances} had 0 TFT and do not have to be migrated")
 
     issuedtokens = {}
     for issuance in issuedfile.read().splitlines():
@@ -53,7 +53,9 @@ def check_command(deauthorizationsfile, deauthorizedbalancesfile, issuedfile):
         deauthorizedbalance = Decimal("{0:.7f}".format(freedeauthorized)) + Decimal(
             "{0:.7f}".format(lockeddeauthorized)
         )
-        if issuedbalance == deauthorizedbalance:
+        difference=issuedbalance-deauthorizedbalance
+        #if the differens is less than 1 tft, assume arounding error
+        if difference>Decimal("-1") and difference< Decimal("1"): 
             numberofcorrectconversions += 1
         else:
             numberofincorrectconversions += 1
