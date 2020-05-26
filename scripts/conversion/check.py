@@ -44,6 +44,7 @@ def check_command(deauthorizationsfile, deauthorizedbalancesfile, issuedfile):
 
     numberofcorrectconversions = 0
     numberofincorrectconversions = 0
+    incorrectconversions=[]
     for deauthorizationtx, issuedbalance in issuedtokens.items():
         if deauthorizationtx not in deauthorizations:
             continue
@@ -53,17 +54,19 @@ def check_command(deauthorizationsfile, deauthorizedbalancesfile, issuedfile):
         deauthorizedbalance = Decimal("{0:.7f}".format(freedeauthorized)) + Decimal(
             "{0:.7f}".format(lockeddeauthorized)
         )
-        difference=issuedbalance-deauthorizedbalance
-        #if the differens is less than 1 tft, assume arounding error
-        if difference>Decimal("-1") and difference< Decimal("1"): 
+        difference = issuedbalance - deauthorizedbalance
+        # if the differens is less than 1 tft, assume arounding error
+        if difference > Decimal("-1") and difference < Decimal("1"):
             numberofcorrectconversions += 1
         else:
+            incorrectconversions.append(f"deauthtx: {deauthorizationtx} tfchainaddress: {tfchainaddress} difference: {difference}")
             numberofincorrectconversions += 1
-    print(f"{numberofcorrectconversions} correct conversions")
-    print(f"{numberofincorrectconversions} incorrect conversions")
     conversionsleft = len(deauthorizations)
     print(f"{numberofdeauthorizations-(conversionsleft+numberofzerobalances)} conversions done, {conversionsleft} left")
-
+    print(f"{numberofcorrectconversions} correct conversions")
+    print(f"{numberofincorrectconversions} incorrect conversions:")
+    for ic in incorrectconversions:
+        print(ic)
 
 if __name__ == "__main__":
     check_command()
