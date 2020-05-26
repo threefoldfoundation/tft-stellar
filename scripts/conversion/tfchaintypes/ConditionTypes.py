@@ -288,7 +288,7 @@ class UnlockHashType(IntEnum):
         if type(obj) is str:
             obj = int(obj)
         elif not isinstance(obj, int):
-            raise j.exceptions.Value(
+            raise Exception(
                 "UnlockHashType is expected to be JSON-encoded as an int, not {}".format(type(obj))
             )
         return cls(obj)  # int -> enum
@@ -404,7 +404,7 @@ class UnlockHash(BaseDataTypeClass):
         if isinstance(other, str):
             other = UnlockHash.from_json(other)
         elif not isinstance(other, UnlockHash):
-            raise j.exceptions.Value("UnlockHash of type {} is not supported".format(type(other)))
+            raise Exception("UnlockHash of type {} is not supported".format(type(other)))
         return other
 
     def sia_binary_encode(self, encoder):
@@ -437,7 +437,7 @@ class ConditionNil(ConditionBaseClass):
 
     def from_json_data_object(self, data):
         if data not in (None, {}):
-            raise j.exceptions.Value("unexpected JSON-encoded nil condition {} (type: {})".format(data, type(data)))
+            raise Exception("unexpected JSON-encoded nil condition {} (type: {})".format(data, type(data)))
 
     def json_data_object(self):
         return None
@@ -504,7 +504,7 @@ class AtomicSwapSecret(BinaryData):
     @classmethod
     def from_json(cls, obj):
         if not isinstance(obj, str):
-            raise j.exceptions.Value("secret is expected to be an encoded string when part of a JSON object")
+            raise Exception("secret is expected to be an encoded string when part of a JSON object")
         return cls(value=obj)
 
     @classmethod
@@ -525,13 +525,13 @@ class AtomicSwapSecretHash(BinaryData):
     @classmethod
     def from_json(cls, obj):
         if not isinstance(obj, str):
-            raise j.exceptions.Value("secret hash is expected to be an encoded string when part of a JSON object")
+            raise Exception("secret hash is expected to be an encoded string when part of a JSON object")
         return cls(value=obj)
 
     @classmethod
     def from_secret(cls, secret):
         if not isinstance(secret, AtomicSwapSecret):
-            raise j.exceptions.Value(
+            raise Exception(
                 "secret is expected to be of type AtomicSwapSecret, not to be of type {}".format(type(secret))
             )
         return cls(value=hashlib.sha256(secret.value).digest())
@@ -581,11 +581,11 @@ class ConditionAtomicSwap(ConditionBaseClass):
             if isinstance(value, str):
                 value = UnlockHash.from_json(value)
             elif not isinstance(value, UnlockHash):
-                raise j.exceptions.Value(
+                raise Exception(
                     "Atomic Swap's sender unlock hash has to be of type UnlockHash, not {}".format(type(value))
                 )
             if value.type not in (UnlockHashType.PUBLIC_KEY, UnlockHashType.NIL):
-                raise j.exceptions.Value(
+                raise Exception(
                     "Atomic Swap's sender unlock hash type cannot be {} (expected: 0 or 1)".format(value.type)
                 )
             self._sender = value
@@ -604,11 +604,11 @@ class ConditionAtomicSwap(ConditionBaseClass):
             if isinstance(value, str):
                 value = UnlockHash.from_json(value)
             elif not isinstance(value, UnlockHash):
-                raise j.exceptions.Value(
+                raise Exception(
                     "Atomic Swap's receiver unlock hash has to be of type UnlockHash, not {}".format(type(value))
                 )
             if value.type not in (UnlockHashType.PUBLIC_KEY, UnlockHashType.NIL):
-                raise j.exceptions.Value(
+                raise Exception(
                     "Atomic Swap's receiver unlock hash type cannot be {} (expected: 0 or 1)".format(value.type)
                 )
             self._receiver = value
@@ -637,7 +637,7 @@ class ConditionAtomicSwap(ConditionBaseClass):
         else:
             lock = OutputLock(value=value)
             if not lock.is_timestamp:
-                raise j.exceptions.Value(
+                raise Exception(
                     "ConditionAtomicSwap only accepts timestamps as the lock value, not block heights: {} is invalid".format(
                         value
                     )
@@ -776,7 +776,7 @@ class ConditionMultiSignature(ConditionBaseClass):
         elif isinstance(uh, str):
             self._unlockhashes.append(UnlockHash.from_json(uh))
         else:
-            raise j.exceptions.Value("cannot add UnlockHash with invalid type {}".format(type(uh)))
+            raise Exception("cannot add UnlockHash with invalid type {}".format(type(uh)))
 
     @property
     def required_signatures(self):
@@ -788,7 +788,7 @@ class ConditionMultiSignature(ConditionBaseClass):
             self._min_nr_sig = 0
             return
         if not isinstance(value, int):
-            raise j.exceptions.Value(
+            raise Exception(
                 "ConditionMultiSignature's required signatures value is expected to be of type int, not {}".format(
                     type(value)
                 )
