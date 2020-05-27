@@ -1,6 +1,8 @@
 from .BaseDataType import BaseDataTypeClass
 from .PrimitiveTypes import Hash
 from .ConditionTypes import UnlockHash, UnlockHashType
+from .rivine.RivineDataFactory import RivineDataFactory
+from pyblake2 import blake2b
 
 from enum import IntEnum
 
@@ -96,13 +98,14 @@ class PublicKey(BaseDataTypeClass):
         """
         Return the unlock hash generated from this public key.
         """
-        e = j.data.rivine.encoder_sia_get()
+        e = RivineDataFactory.encoder_sia_get()
         self.sia_binary_encode(e)
         # need to encode again to add the length
         data = e.data
-        e = j.data.rivine.encoder_sia_get()
+        e = RivineDataFactory.encoder_sia_get()
         e.add_slice(data)
-        hash = bytearray.fromhex(j.data.hash.blake2_string(e.data))
+        h = blake2b(e.data, digest_size=32)
+        hash = bytearray.fromhex(h.hexdigest())
         return UnlockHash(type=UnlockHashType.PUBLIC_KEY, hash=hash)
 
     @staticmethod

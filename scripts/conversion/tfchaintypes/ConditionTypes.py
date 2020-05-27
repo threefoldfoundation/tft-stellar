@@ -288,9 +288,7 @@ class UnlockHashType(IntEnum):
         if type(obj) is str:
             obj = int(obj)
         elif not isinstance(obj, int):
-            raise Exception(
-                "UnlockHashType is expected to be JSON-encoded as an int, not {}".format(type(obj))
-            )
+            raise Exception("UnlockHashType is expected to be JSON-encoded as an int, not {}".format(type(obj)))
         return cls(obj)  # int -> enum
 
     def json(self):
