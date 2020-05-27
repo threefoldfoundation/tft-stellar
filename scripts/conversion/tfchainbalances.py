@@ -12,6 +12,21 @@ from tfchaintypes.ConditionTypes import UnlockHash, UnlockHashType
 TFCHAIN_EXPLORER = "https://explorer2.threefoldtoken.com"
 
 
+def unlockhash_get(tfchainaddress: str):
+    response = requests.get(TFCHAIN_EXPLORER + "/explorer/hashes/" + tfchainaddress)
+    resp = response.json()
+    # parse the transactions
+    transactions = []
+    for etxn in resp["transactions"]:
+        # parse the explorer transaction
+        transaction = transaction_from_explorer_transaction(etxn, resp=resp)
+        # append the transaction to the list of transactions
+        transactions.append(transaction)
+    # sort the transactions by height
+    transactions.sort(key=(lambda txn: sys.maxsize if txn.height < 0 else txn.height), reverse=True)
+    return ExplorerUnlockhashResult(unlockhash=UnlockHash.from_json(tfchainaddress), transactions=transactions)
+
+
 @click.command(help="Get the balances before conversion")
 @click.argument("deauthorizationsfile", default="deauthorizations.txt", type=click.File("r"))
 @click.argument("output", default="deauthorizedbalances.txt", type=click.File("w"))
@@ -23,19 +38,8 @@ def tfchain_balances(deauthorizationsfile, output):
         print(f"{counter}")
         splitdeauthorization = deauthorization.split()
         address = splitdeauthorization[1]
-        response = requests.get(TFCHAIN_EXPLORER + "/explorer/hashes/" + address)
-        resp = response.json()
-        # parse the transactions
-        transactions = []
-        for etxn in resp["transactions"]:
-            # parse the explorer transaction
-            transaction = transaction_from_explorer_transaction(etxn, resp=resp)
-            # append the transaction to the list of transactions
-            transactions.append(transaction)
-        # sort the transactions by height
-        transactions.sort(key=(lambda txn: sys.maxsize if txn.height < 0 else txn.height), reverse=True)
-        result = ExplorerUnlockhashResult(unlockhash=UnlockHash.from_json(address), transactions=transactions)
-        balance = result.balance(blockchaininfo)
+        unlockhash = unlockhash_get(address)
+        balance = unlockhash.balance(blockchaininfo)
 
         unlocked_tokens = balance.available.value
         locked_tokens = balance.locked.value

@@ -3,9 +3,12 @@
 
 import click
 from decimal import Decimal
+import time
+from datetime import datetime
+from tfchainbalances import unlockhash_get
 
 
-def stellar_address_to_tfchain_address( stellar_address):
+def stellar_address_to_tfchain_address(stellar_address):
     from tfchaintypes.CryptoTypes import PublicKey, PublicKeySpecifier
     from stellar_sdk import strkey
 
@@ -31,24 +34,58 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
 
     issuedtokens = []
     totalissuedamount = Decimal()
-    mainstellaraddress=""
+    totalfreeissued = Decimal()
+    totallockedissued = Decimal()
+    mainstellaraddress = ""
     for issuance in issuedfile.read().splitlines():
         splitissuance = issuance.split()
         if deauthorizationtx != splitissuance[0]:
             continue
-        amount = splitissuance[1]
+        amount = Decimal(splitissuance[1])
         tokencode = splitissuance[2]
         address = splitissuance[3]
-        if tfchainaddress==stellar_address_to_tfchain_address(address):
-            mainstellaraddress=address
-        totalissuedamount += Decimal(amount)
+        totalissuedamount += amount
+        if tfchainaddress == stellar_address_to_tfchain_address(address):
+            mainstellaraddress = address
+            totalfreeissued += amount
+        else:
+            totallockedissued += amount
         issuedtokens.append(f"{amount} {tokencode} {address}")
-    
+
     print(f"Stellar wallet address: {mainstellaraddress}")
-    print(f"{totalissuedamount} tokens issued")
+
+    unlockhash = unlockhash_get(tfchainaddress)
+    balance = unlockhash.balance()
+
+    unlocked_tokens = Decimal("{0:.7f}".format(balance.available.value))
+    locked_tokens = balance.locked.value
+    print(f"Tfchain TFT: {unlocked_tokens+locked_tokens} Free: {unlocked_tokens} Locked: {locked_tokens}")
+    print(f"Tokens issued: {totalissuedamount} Free: {totalfreeissued} Locked: {totallockedissued}")
+    
+    # Generate list of locked tokens that should have been issued
+    lockedshouldhavebeenissued = []
+    totalockedamountthatshouldhavebeenisssued=Decimal()
+    for tx in unlockhash.transactions:
+        for coin_output in tx.coin_outputs:
+            lock_time = coin_output.condition.lock.value
+            if lock_time == 0:
+                break
+            lock_time_date = datetime.fromtimestamp(lock_time)
+            # if lock time year is before 2021 be convert to TFTA else we convert to TFT
+            asset = "TFTA" if lock_time_date.year < 2021 else "TFT"
+            if time.time() < lock_time:
+                amount=Decimal("{0:.7f}".format(coin_output.value.value))
+                totalockedamountthatshouldhavebeenisssued+=amount 
+                lockedshouldhavebeenissued.append(f"{amount} {asset} {lock_time_date}")
+    
+    print(f"Locked tokens that should have been issued ({totalockedamountthatshouldhavebeenisssued}):")
+    for should in lockedshouldhavebeenissued:
+        print(should)
+    
+    print("Isuances:")
     for issuance in issuedtokens:
-        print(issuance)
-
-
+        splitissuance = issuance.split()
+        print(f"{issuance} {'Free' if splitissuance[2]==mainstellaraddress else'Locked'}")
+        
 if __name__ == "__main__":
     check_command()
