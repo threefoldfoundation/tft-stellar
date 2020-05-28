@@ -4,8 +4,17 @@
 import click
 from decimal import Decimal
 import time
+import math
 from datetime import datetime
 from tfchainbalances import unlockhash_get
+import stellar_sdk
+import requests
+
+
+FULL_ASSETCODES = {
+    "TFT": "TFT:GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47",
+    "TFTA": "TFTA:GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2",
+}
 
 
 def stellar_address_to_tfchain_address(stellar_address):
@@ -15,6 +24,26 @@ def stellar_address_to_tfchain_address(stellar_address):
     raw_public_key = strkey.StrKey.decode_ed25519_public_key(stellar_address)
     rivine_public_key = PublicKey(PublicKeySpecifier.ED25519, raw_public_key)
     return str(rivine_public_key.unlockhash)
+
+
+def get_escrowaccount_unlocktime(address):
+    horizon_server = stellar_sdk.Server("https://horizon.stellar.org")
+    accounts_endpoint = horizon_server.accounts()
+    accounts_endpoint.account_id(address)
+    response = accounts_endpoint.call()
+    preauth_signer = [signer["key"] for signer in response["signers"] if signer["type"] == "preauth_tx"][0]
+    resp = requests.post(
+        "https://tokenservices.threefold.io/threefoldfoundation/unlock_service/get_unlockhash_transaction",
+        json={"args": {"unlockhash": preauth_signer}},
+    )
+    resp.raise_for_status()
+
+    txe = stellar_sdk.TransactionEnvelope.from_xdr(
+        resp.json()["transaction_xdr"], stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
+    )
+    tx = txe.transaction
+    if tx.time_bounds is not None:
+        return tx.time_bounds.min_time
 
 
 @click.command(help="Conversion check for a sibgle tfchain address")
@@ -48,9 +77,11 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
         if tfchainaddress == stellar_address_to_tfchain_address(address):
             mainstellaraddress = address
             totalfreeissued += amount
+            issuedtokens.append(f"{amount} {tokencode} {address} Free")
         else:
             totallockedissued += amount
-        issuedtokens.append(f"{amount} {tokencode} {address}")
+            unlocktime = get_escrowaccount_unlocktime(address)
+            issuedtokens.append(f"{amount} {tokencode} {address} Locked {unlocktime}")
 
     print(f"Stellar wallet address: {mainstellaraddress}")
 
@@ -61,10 +92,10 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
     locked_tokens = balance.locked.value
     print(f"Tfchain TFT: {unlocked_tokens+locked_tokens} Free: {unlocked_tokens} Locked: {locked_tokens}")
     print(f"Tokens issued: {totalissuedamount} Free: {totalfreeissued} Locked: {totallockedissued}")
-    
+
     # Generate list of locked tokens that should have been issued
     lockedshouldhavebeenissued = []
-    totalockedamountthatshouldhavebeenisssued=Decimal()
+    totalockedamountthatshouldhavebeenisssued = Decimal()
     for tx in unlockhash.transactions:
         for coin_output in tx.coin_outputs:
             lock_time = coin_output.condition.lock.value
@@ -74,18 +105,46 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
             # if lock time year is before 2021 be convert to TFTA else we convert to TFT
             asset = "TFTA" if lock_time_date.year < 2021 else "TFT"
             if time.time() < lock_time:
-                amount=Decimal("{0:.7f}".format(coin_output.value.value))
-                totalockedamountthatshouldhavebeenisssued+=amount 
-                lockedshouldhavebeenissued.append(f"{amount} {asset} {lock_time_date}")
-    
+                amount = Decimal("{0:.7f}".format(coin_output.value.value))
+                totalockedamountthatshouldhavebeenisssued += amount
+                lockedshouldhavebeenissued.append(f"{amount} {asset} {math.ceil(lock_time)}")
+
     print(f"Locked tokens that should have been issued ({totalockedamountthatshouldhavebeenisssued}):")
     for should in lockedshouldhavebeenissued:
         print(should)
-    
+
+    missingissuances = lockedshouldhavebeenissued
+
     print("Isuances:")
     for issuance in issuedtokens:
+        print(f"{issuance}")
         splitissuance = issuance.split()
-        print(f"{issuance} {'Free' if splitissuance[2]==mainstellaraddress else'Locked'}")
-        
+        if splitissuance[3] == "Free":
+            continue
+        missingissuances.remove(f"{splitissuance[0]} {splitissuance[1]} {splitissuance[4]}")
+
+    totalmissingissuances = Decimal()
+    for issuance in missingissuances:
+        splitissuance = issuance.split()
+        totalmissingissuances += Decimal(splitissuance[0])
+
+    print(f"Missing issuances: {totalmissingissuances} tokens:")
+    for issuance in missingissuances:
+        print(issuance)
+
+    print("Correction script:")
+    print(f"deauthtxid='{deauthorizationtx}'")
+    for issuance in missingissuances:
+        splitissuance = issuance.split()
+        amount = splitissuance[0]
+        tokencode = splitissuance[1]
+        lockedtime = splitissuance[2]
+        asset = FULL_ASSETCODES[tokencode]
+        issuer_address = asset.split(":")[1]
+        print(
+            f"conversionwallet.transfer('{mainstellaraddress}','{amount}',asset='{asset}',locked_until={lockedtime}, memo_hash=deauthtxid,fund_transaction=False,from_address='{issuer_address}')"
+        )
+
+
 if __name__ == "__main__":
     check_command()
