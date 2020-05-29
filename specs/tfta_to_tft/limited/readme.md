@@ -12,10 +12,10 @@ These people have to send this amount of TFTA to the TFTA issuer account `GBUT4G
 This acually destroys the TFTA.
 
 Next, a script collects the destroyed amounts, the sending addresses and the transaction id's.
-Using this information, new TFT are issued  to the sendingf addresses for these amounts with the transaction id the memo_hash field to proove the relationship between the destruction and the issuance.
+Using this information, new TFT are issued  to the sending addresses for these amounts with the transaction id the memo_hash field to proove the relationship between the destruction and the issuance.
 
 ## side effects
 
-Since 0.1 TFTA is added as a transaction fee when using the 3bot wallet, 0.1 TFTA less then the allowed amount has to be sent from the walletor the transaction will fail.
+Since 0.1 TFTA is added as a transaction fee when using the 3bot wallet, 0.1 TFTA less then the allowed amount has to be sent from the wallet or the transaction will fail.
 
 Also, 0.1 TFT less then the allowed amount will be issued then. If this poses a problem for some people, we will send 0.1 TFT from a different wallet afterwards.
