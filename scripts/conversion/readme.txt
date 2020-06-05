@@ -30,3 +30,9 @@ This will create a file with a `memo amount tokencode destination transactionid`
 
 This will create a file called `deauthorizedbalances.txt` with a `address Free: amount Locked: amount` combination per line.
 
+## List balances before conversion for a list of tfchain addresses
+
+```
+./tfchainaddresses.py
+```
+
