@@ -157,9 +157,11 @@ class conversion_service(j.baseclasses.threebot_actor):
             conversion_group = gevent.pool.Group()
             for tx in unlockhash.transactions:
                 for coin_output in tx.coin_outputs:
+                    if str(coin_output.condition.unlockhash) != tfchain_address:
+                        continue
                     lock_time = coin_output.condition.lock.value
                     if lock_time == 0:
-                        break
+                        continue
                     lock_time_date = datetime.fromtimestamp(lock_time)
                     # if lock time year is before 2021 be convert to TFTA
                     if lock_time_date.year < 2021:

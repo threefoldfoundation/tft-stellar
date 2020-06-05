@@ -98,9 +98,11 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
     totalockedamountthatshouldhavebeenisssued = Decimal()
     for tx in unlockhash.transactions:
         for coin_output in tx.coin_outputs:
+            if str(coin_output.condition.unlockhash) != tfchainaddress:
+                continue
             lock_time = coin_output.condition.lock.value
             if lock_time == 0:
-                break
+                continue
             lock_time_date = datetime.fromtimestamp(lock_time)
             # if lock time year is before 2021 be convert to TFTA else we convert to TFT
             asset = "TFTA" if lock_time_date.year < 2021 else "TFT"
@@ -122,7 +124,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
         splitissuance = issuance.split()
         if splitissuance[3] == "Free":
             continue
-        formattedissuance=f"{splitissuance[0]} {splitissuance[1]} {splitissuance[4]}"
+        formattedissuance=f"{Decimal(splitissuance[0]):.7f} {splitissuance[1]} {splitissuance[4]}"
         if formattedissuance in missingissuances:
             missingissuances.remove(formattedissuance)
         else:
@@ -134,9 +136,10 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
         splitissuance = issuance.split()
         totaltoomuchissued += Decimal(splitissuance[0])
     
-    print(f"Too much issued: {totaltoomuchissued} tokens:")
+    print(f"Too much issued: {totaltoomuchissued} locked tokens:")
     for issuance in toomuchissued:
-        print(issuance)
+        issuancetime=int(issuance.split()[2])
+        print(f"{issuance} {datetime.fromtimestamp(issuancetime)}")
 
     totalmissingissuances = Decimal()
     for issuance in missingissuances:
