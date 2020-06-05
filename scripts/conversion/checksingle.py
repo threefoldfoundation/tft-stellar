@@ -114,6 +114,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
         print(should)
 
     missingissuances = lockedshouldhavebeenissued
+    toomuchissued=[]
 
     print("Isuances:")
     for issuance in issuedtokens:
@@ -121,7 +122,21 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
         splitissuance = issuance.split()
         if splitissuance[3] == "Free":
             continue
-        missingissuances.remove(f"{splitissuance[0]} {splitissuance[1]} {splitissuance[4]}")
+        formattedissuance=f"{splitissuance[0]} {splitissuance[1]} {splitissuance[4]}"
+        if formattedissuance in missingissuances:
+            missingissuances.remove(formattedissuance)
+        else:
+            toomuchissued.append(formattedissuance)
+
+
+    totaltoomuchissued = Decimal()
+    for issuance in toomuchissued:
+        splitissuance = issuance.split()
+        totaltoomuchissued += Decimal(splitissuance[0])
+    
+    print(f"Too much issued: {totaltoomuchissued} tokens:")
+    for issuance in toomuchissued:
+        print(issuance)
 
     totalmissingissuances = Decimal()
     for issuance in missingissuances:
