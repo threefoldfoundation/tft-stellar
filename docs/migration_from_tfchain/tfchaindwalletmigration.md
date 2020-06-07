@@ -14,7 +14,7 @@ tfchainc wallet addresses | wc -l
 tfchainc wallet seeds
 ```
 
-## Generate addresses and secrtets from the seed
+## Generate addresses and secrets from the seed
 
 Use the `stellaraddressesfromseed` tool from the [releases page](https://github.com/threefoldfoundation/tft-stellar/releases) or from the [rivine source](https://github.com/threefoldtech/rivine/blob/master/research/stellar/examples/accounts/stellaraddressesfromseed.go) to generate the addresses, the corresponding stellar addresses and their seeds.
 
