@@ -21,3 +21,15 @@ Use the `stellaraddressesfromseed` tool from the [releases page](https://github.
 ```sh
 ./stellaraddressesfromseed -secrets=true -amount=<amountfromstep1> my very secret rivine seed from step 2
 ```
+
+## Check the adresses that need to be converted
+
+```sh
+tfchainc wallet addresses > tft_adresses.txt
+```
+
+Run the [tfchainaddressses.py](../../scripts/conversion/tfchainaddresses.py) script.
+This will list the adresses that need to be converted together with the amounts they hold.
+
+Filter the output from the `stellaraddressesfromseed` tool  based on this information curl the[ThreeBotPackages/conversion-service](../../ThreeBotPackages/conversion-service) endpoints for the needed addresses.
+
