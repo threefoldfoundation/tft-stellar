@@ -33,3 +33,8 @@ This will list the adresses that need to be converted together with the amounts 
 
 Filter the output from the `stellaraddressesfromseed` tool  based on this information and curl the [ThreeBotPackages/conversion-service](../../ThreeBotPackages/conversion-service) endpoints for the needed addresses.
 
+```sh
+curl -H "Content-Type: application/json" -d '{ "args": { "address": "","tfchain_address":""   }}' "https://tokenservices.threefold.io/threefoldfoundation/conversion_service/activate_account"
+
+curl -H "Content-Type: application/json" -d '{ "args": { "tfchain_address": "", "stellar_address": "" }}' "https://tokenservices.threefold.io/threefoldfoundation/conversion_service/migrate_tokens"
+```
