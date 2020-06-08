@@ -17,6 +17,8 @@ def unlockhash_get(tfchainaddress: str):
     if response.status_code!=200:
         return None
     resp = response.json()
+    if not resp["transactions"]:
+        return None
     # parse the transactions
     transactions = []
     for etxn in resp["transactions"]:
