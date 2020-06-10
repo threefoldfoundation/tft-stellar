@@ -50,7 +50,8 @@ def get_escrowaccount_unlocktime(address):
 @click.argument("tfchainaddress", type=str, required=True)
 @click.argument("deauthorizationsfile", default="deauthorizations.txt", type=click.File("r"))
 @click.argument("issuedfile", default="issued.txt", type=click.File("r"))
-def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
+@click.option("--stellaraddress", default="",type=str)
+def check_command(tfchainaddress, deauthorizationsfile, issuedfile,stellaraddress):
 
     deauthorizationtx = None
     for deauthorization in deauthorizationsfile.read().splitlines():
@@ -65,7 +66,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
     totalissuedamount = Decimal()
     totalfreeissued = Decimal()
     totallockedissued = Decimal()
-    mainstellaraddress = ""
+    mainstellaraddress = stellaraddress
     for issuance in issuedfile.read().splitlines():
         splitissuance = issuance.split()
         if deauthorizationtx != splitissuance[0]:
@@ -74,7 +75,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
         tokencode = splitissuance[2]
         address = splitissuance[3]
         totalissuedamount += amount
-        if tfchainaddress == stellar_address_to_tfchain_address(address):
+        if (tfchainaddress == stellar_address_to_tfchain_address(address)) or (address==mainstellaraddress):
             mainstellaraddress = address
             totalfreeissued += amount
             issuedtokens.append(f"{amount} {tokencode} {address} Free")
@@ -152,6 +153,13 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile):
 
     print("Correction script:")
     print(f"deauthtxid='{deauthorizationtx}'")
+    if  unlocked_tokens!=totalfreeissued:
+       asset = FULL_ASSETCODES['TFTA']
+       issuer_address = asset.split(":")[1] 
+       print(
+            f"conversionwallet.transfer('{mainstellaraddress}','{unlocked_tokens}',asset='{asset}', memo_hash=deauthtxid,fund_transaction=False,from_address='{issuer_address}')"
+        ) 
+    
     for issuance in missingissuances:
         splitissuance = issuance.split()
         amount = splitissuance[0]

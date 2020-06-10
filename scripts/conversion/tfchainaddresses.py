@@ -37,7 +37,8 @@ def tfchain_balances(tfchainaddressesfile):
     counter=0
     zerocounter = 0
     blockchaininfo = blockchain_info_get()
-    for tfchainaddress in tfchainaddressesfile.read().splitlines():
+    for tfchainaddressline in tfchainaddressesfile.read().splitlines():
+        tfchainaddress=tfchainaddressline.split()[0]
         counter+=1
         unlockhash = unlockhash_get(tfchainaddress)
         if unlockhash is None:
