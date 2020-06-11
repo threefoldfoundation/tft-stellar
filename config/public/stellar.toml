@@ -142,3 +142,11 @@ name = "Threefold Crystal Language Project"
 desc = "Core language used to implement the 3bot and future SDK for ThreeFold"
 image = "https://www.threefold.io/assets/3fold_icon.png"
 
+[[CURRENCIES]]
+code = "TFTMOG"
+issuer = "GAPRHOF6HW3CK4LFJQVIH5B2CBJCDLFGOLK5GIWF6HQD45IIOBGD6TCY"
+display_decimals = 2
+name = "ThreeFold Money of Good project"
+desc = "Driving the transition to a new fair and sustainable economy while raising consciousness and well-being through meditation. Threefold will provide the perfect framework to run the distributed ledger of Money of Good financial system. It will also make it possible to scale the solution for large populations by empowering people in places that used to have poor or no internet access to start their own Meditation Banks."
+image = "https://www.threefold.io/assets/3fold_icon.png"
+
