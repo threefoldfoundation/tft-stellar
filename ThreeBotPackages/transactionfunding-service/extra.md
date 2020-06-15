@@ -1,6 +1,6 @@
 # Some info that might be useful
 
-## change the number of slaves
+## change the number of slaves after installation
 
 Before starting the threebot:
 

@@ -14,7 +14,7 @@ TFCHAIN_EXPLORER = "https://explorer2.threefoldtoken.com"
 
 def unlockhash_get(tfchainaddress: str):
     response = requests.get(TFCHAIN_EXPLORER + "/explorer/hashes/" + tfchainaddress)
-    if response.status_code!=200:
+    if response.status_code != 200:
         return None
     resp = response.json()
     if not resp["transactions"]:
@@ -34,26 +34,28 @@ def unlockhash_get(tfchainaddress: str):
 @click.command(help="Get the balances before conversion for a list of addresses")
 @click.argument("tfchainaddressesfile", default="tft_addresses.txt", type=click.File("r"))
 def tfchain_balances(tfchainaddressesfile):
-    counter=0
+    counter = 0
     zerocounter = 0
     blockchaininfo = blockchain_info_get()
     for tfchainaddressline in tfchainaddressesfile.read().splitlines():
-        tfchainaddress=tfchainaddressline.split()[0]
-        counter+=1
+        tfchainaddress = tfchainaddressline.split()[0]
+        counter += 1
+        time.sleep(1)  # give the explorer a break
         unlockhash = unlockhash_get(tfchainaddress)
         if unlockhash is None:
-            zerocounter+=1
-            continue 
+            zerocounter += 1
+            continue
         balance = unlockhash.balance(blockchaininfo)
 
         unlocked_tokens = balance.available.value
         locked_tokens = balance.locked.value
+
         if unlocked_tokens.is_zero() and locked_tokens.is_zero():
-            zerocounter+=1
+            zerocounter += 1
             continue
         print(f"{tfchainaddress} Free: {unlocked_tokens} Locked: {locked_tokens}")
-        time.sleep(1)  # give the explorer a break
     print(f"{zerocounter} of {counter} had a zero balance")
+
 
 class ExplorerBlockchainInfo:
     def __init__(self, blockid, height, timestamp):

@@ -50,8 +50,8 @@ def get_escrowaccount_unlocktime(address):
 @click.argument("tfchainaddress", type=str, required=True)
 @click.argument("deauthorizationsfile", default="deauthorizations.txt", type=click.File("r"))
 @click.argument("issuedfile", default="issued.txt", type=click.File("r"))
-@click.option("--stellaraddress", default="",type=str)
-def check_command(tfchainaddress, deauthorizationsfile, issuedfile,stellaraddress):
+@click.option("--stellaraddress", default="", type=str)
+def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddress):
 
     deauthorizationtx = None
     for deauthorization in deauthorizationsfile.read().splitlines():
@@ -75,7 +75,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile,stellaraddres
         tokencode = splitissuance[2]
         address = splitissuance[3]
         totalissuedamount += amount
-        if (tfchainaddress == stellar_address_to_tfchain_address(address)) or (address==mainstellaraddress):
+        if (tfchainaddress == stellar_address_to_tfchain_address(address)) or (address == mainstellaraddress):
             mainstellaraddress = address
             totalfreeissued += amount
             issuedtokens.append(f"{amount} {tokencode} {address} Free")
@@ -117,7 +117,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile,stellaraddres
         print(should)
 
     missingissuances = lockedshouldhavebeenissued
-    toomuchissued=[]
+    toomuchissued = []
 
     print("Isuances:")
     for issuance in issuedtokens:
@@ -125,21 +125,20 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile,stellaraddres
         splitissuance = issuance.split()
         if splitissuance[3] == "Free":
             continue
-        formattedissuance=f"{Decimal(splitissuance[0]):.7f} {splitissuance[1]} {splitissuance[4]}"
+        formattedissuance = f"{Decimal(splitissuance[0]):.7f} {splitissuance[1]} {splitissuance[4]}"
         if formattedissuance in missingissuances:
             missingissuances.remove(formattedissuance)
         else:
             toomuchissued.append(formattedissuance)
 
-
     totaltoomuchissued = Decimal()
     for issuance in toomuchissued:
         splitissuance = issuance.split()
         totaltoomuchissued += Decimal(splitissuance[0])
-    
+
     print(f"Too much issued: {totaltoomuchissued} locked tokens:")
     for issuance in toomuchissued:
-        issuancetime=int(issuance.split()[2])
+        issuancetime = int(issuance.split()[2])
         print(f"{issuance} {datetime.fromtimestamp(issuancetime)}")
 
     totalmissingissuances = Decimal()
@@ -153,13 +152,13 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile,stellaraddres
 
     print("Correction script:")
     print(f"deauthtxid='{deauthorizationtx}'")
-    if  unlocked_tokens!=totalfreeissued:
-       asset = FULL_ASSETCODES['TFTA']
-       issuer_address = asset.split(":")[1] 
-       print(
+    if unlocked_tokens != totalfreeissued:
+        asset = FULL_ASSETCODES["TFTA"]
+        issuer_address = asset.split(":")[1]
+        print(
             f"conversionwallet.transfer('{mainstellaraddress}','{unlocked_tokens}',asset='{asset}', memo_hash=deauthtxid,fund_transaction=False,from_address='{issuer_address}')"
-        ) 
-    
+        )
+
     for issuance in missingissuances:
         splitissuance = issuance.split()
         amount = splitissuance[0]

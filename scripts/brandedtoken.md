@@ -2,7 +2,7 @@
 
 Create a folder in `../config/brandedtokens` with  the token code as name.
 
-Create a templatetellar.toml with the righ content:
+Create a templatestellar.toml with the right content:
 
 ```toml
 name="Projectname "
