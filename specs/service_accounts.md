@@ -6,4 +6,6 @@ The issuer account may never change. It should be set up in a way that it has no
 
 ## Conversion distribution account
 
+The conversion account has the ability to sign for transfers.
+
 ## Farmer distribution account
