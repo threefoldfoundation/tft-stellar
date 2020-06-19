@@ -42,7 +42,7 @@ If this poses a problem, we can send 0.1 TFT from a different wallet. We recuper
 
 People use the default Stellar Dex to place sell orders
 
-## Options given the functional description 
+## Options given the functional description
 
 According to the [Functional description](https://wiki.threefold.io/#/threefold_marketmaker_bot), when the market maker bot reaches it's treshold:
 > sales done gets distributed evenly over the sell orders in the order book
