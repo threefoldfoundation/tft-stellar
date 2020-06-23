@@ -28,3 +28,34 @@ A new trade offered to the trading bot will be presented to the user as a paymen
 ### Reasoning
 
 A simple solution has been chosen honouring the Single TFTA holder concept and the ability for other Stellar wallets than the  3bot app one to be used.
+
+## Solution
+
+### BCDB Schemas
+
+```toml
+@url = threefoldfoundation.tfta_to_tft__service.order
+
+threebotid** = (S)
+trade_id**= (S)
+
+stellaraddress** = (S)
+original_amount = (F)
+payment_transaction_id = (S)
+payment_received = (T)
+amount_left= (F)
+cancelled = False (B)
+refund_transaction_id = (S)
+```
+
+``` toml
+@url = threefoldfoundation.tfta_to_tft__service.distribution
+
+threebotid** = (S)
+trade_id**= (S)
+
+stellaraddress** = (S)
+
+transaction_id = (T)
+amount= (F)
+```
