@@ -29,9 +29,9 @@ Using this information, new TFT are issued  to the sending addresses for these a
 
 Since 0.1 TFTA is added as a transaction fee when using the 3bot wallet, 0.1 TFTA less then the wallet balance can be sent from the wallet or the transaction will fail.
 
-Also, 0.1 TFT less then the allowed amount will be issued then. 
+Also, 0.1 TFT less then the allowed amount will be issued then.
 
-If this poses a problem, we can send 0.1 TFT from a different wallet. We recuperate it anyway since the transaction funding service received the 0.1 TFTA transaction fee. 
+If this poses a problem, we can send 0.1 TFT from a different wallet. We recuperate it anyway since the transaction funding service received the 0.1 TFTA transaction fee.
 
 ### Atomic swap
 

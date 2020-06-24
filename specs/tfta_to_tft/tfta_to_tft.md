@@ -29,6 +29,7 @@ A new trade offered to the trading bot will be presented to the user as a paymen
 
 A simple solution has been chosen honouring the Single TFTA holder concept and the ability for other Stellar wallets than the  3bot app one to be used.
 
+
 ## Solution
 
 A website protected by a 3bot login to manage your trades.
@@ -45,6 +46,7 @@ stellaraddress** = (S)
 original_amount = (F)
 payment_transaction_id = (S)
 payment_received = (T)
+wanted_asset = "TFT:GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47" (S)
 amount_left= (F)
 cancelled = False (B)
 refund_transaction_id = (S)
@@ -72,7 +74,16 @@ A messsage indicating that "If your wallet does not support the qr code, be sure
 ### Trade Cancellation
 
 A user can choose to cancel the outstanding trade, the remaining amount will be transferred back to the address it originates from, this address should be shown to the user after which a proceed/cancel option should be shown.
+When the `distribution_ongoing` flag is set, no cancellations can be made for the open trade.
 
-### Distribution
+## Selling bot
 
- The `distribution_ongoing` flag is set for all open trades. When this flag is set, no modifications or cancellations can be made for open trades.
+The selling bot places it's orders in TFT on the Stellar DEX. It receives XLM In return. 
+
+## Distribution
+
+The `distribution_ongoing` flag is set for all open trades. When this flag is set, no modifications or cancellations can be made for open trades.
+
+Users by default get TFT back but technically they can choose to receive another stellar based asset. [Stellar Path Payments](https://medium.com/stellar-community/understanding-stellar-path-payments-5eefe55b071b) with strict send is used to send the assets.
+
+**Open question:**When sending TFT, do we allow to buy from the selling bot? If not, what happens to the received XLM?
