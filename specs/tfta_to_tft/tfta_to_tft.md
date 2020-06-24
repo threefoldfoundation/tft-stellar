@@ -31,6 +31,8 @@ A simple solution has been chosen honouring the Single TFTA holder concept and t
 
 ## Solution
 
+A website protected by a 3bot login to manage your trades.
+
 ### BCDB Schemas
 
 ```toml
@@ -46,9 +48,10 @@ payment_received = (T)
 amount_left= (F)
 cancelled = False (B)
 refund_transaction_id = (S)
+distribution_ongoing = False (B)
 ```
 
-``` toml
+```toml
 @url = threefoldfoundation.tfta_to_tft__service.distribution
 
 threebotid** = (S)
@@ -59,3 +62,17 @@ stellaraddress** = (S)
 transaction_id = (T)
 amount= (F)
 ```
+
+### Transfer requests
+
+Since there seems no fits all solution for payment requests that [all wallets support](https://github.com/threefoldfoundation/tft-stellar/issues/173). A qr code supported by the 3bot wallet will be shown together with the destination address and the trade id that needs to be supplied in the memo text field.
+
+A messsage indicating that "If your wallet does not support the qr code, be sure to correctly copy the address and the memo text or your trade can not be accepted." must be shown to make this clear to the user.
+
+### Trade Cancellation
+
+A user can choose to cancel the outstanding trade, the remaining amount will be transferred back to the address it originates from, this address should be shown to the user after which a proceed/cancel option should be shown.
+
+### Distribution
+
+ The `distribution_ongoing` flag is set for all open trades. When this flag is set, no modifications or cancellations can be made for open trades.
