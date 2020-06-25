@@ -78,7 +78,7 @@ When the `distribution_ongoing` flag is set, no cancellations can be made for th
 
 ## Selling bot
 
-The selling bot places it's orders in TFT on the Stellar DEX. It receives XLM In return. 
+The selling bot places it's orders in TFT on the Stellar DEX. It receives XLM In return.
 
 ## Distribution
 
@@ -86,4 +86,12 @@ The `distribution_ongoing` flag is set for all open trades. When this flag is se
 
 Users by default get TFT back but technically they can choose to receive another stellar based asset. [Stellar Path Payments](https://medium.com/stellar-community/understanding-stellar-path-payments-5eefe55b071b) with strict send is used to send the assets.
 
-**Open question:**When sending TFT, do we allow to buy from the selling bot? If not, what happens to the received XLM?
+## Problems
+
+- Bad user experience, especially for 3bot connect users.
+- The 3bot connect wallet only supports TFT, TFTA and FreeTFT, no way to monetize via XLM for example.
+- When sending TFT, do we allow to buy from the selling bot? If not, what happens to the received XLM as the received TFTA is converted to TFT?
+
+Instead of selling ourselves, an alternative might be to watch the price and let everybody convert an amount from TFTA to TFT, depending on the price on the different exchanges. Even though TFTA and TFT are essentially the same, Exchanges like Liquid and BTC-alpha only have a TFT market.
+
+This way a 3bot connect app user can get a message like "Do you want to exchange 500 TFTA to TFT?". When having TFT instead of TFTA, the user can choose to sell or keep without the Freeflow Foundation being involved.
