@@ -14,8 +14,8 @@ There is a [Functional description](https://wiki.threefold.io/#/threefold_market
 
 ### Minimal prices during 2020
 
-| Month | USD |
-|-------|-----|
+| Month | USD floor |
+|-------|-----------|
 |July 2020 | 0.15606 |
 |August 2020 | 0.1591812 |
 |September 2020 | 0.162364824 |
@@ -58,7 +58,8 @@ stellaraddress** = (S)
 original_amount = (F)
 payment_transaction_id = (S)
 payment_received = (T)
-wanted_asset = "TFT:GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47" (S)
+wanted_asset = "XLM" (S)
+receiving_address = (S) 
 amount_left= (F)
 cancelled = False (B)
 refund_transaction_id = (S)
@@ -77,6 +78,16 @@ transaction_id = (T)
 amount= (F)
 ```
 
+## Trade offercreation
+
+A logged in user can create a trade offer by supplying the amount of TFTA and the wanted price in USD. 
+
+A list of open trade offers grouped by price with the total amount next to it is also shown to have the user make its price decision.
+
+Next to the orderbook, the floor amounts are also shown.
+
+A user can only have 1 open trade offer.
+
 ### Transfer requests
 
 Since there seems no fits all solution for payment requests that [all wallets support](https://github.com/threefoldfoundation/tft-stellar/issues/173). A qr code supported by the 3bot wallet will be shown together with the destination address and the trade id that needs to be supplied in the memo text field.
@@ -92,7 +103,7 @@ When the `distribution_ongoing` flag is set, no cancellations can be made for th
 
 In a first phase the selling bot places its orders in TFT to XLM  on the Stellar DEX. 
 
-It receives XLM In return. which is distributed back to the users.
+It receives XLM In return which is distributed back to the users.
 
 Other exchanges and cryptocurrencies can be added in later phases.
 
@@ -100,10 +111,9 @@ Other exchanges and cryptocurrencies can be added in later phases.
 
 The `distribution_ongoing` flag is set for all open trades. When this flag is set, no modifications or cancellations can be made for open trades.
 
-Users by default get XLM back.
-
 ## Problems
 
-- Bad user experience, especially for 3bot connect users.
 - The 3bot connect wallet only supports TFT, TFTA and FreeTFT, no way to manage  the XLM for example. The stellar secret of the 3bot connect wallet can be imported in another wallet like solar to send the received XLM to an exchange for example.
 Another address can also be supplied in the trade offer to prevent sharing this secret between wallets.
+
+- Bad user experience, especially for 3bot connect users.
