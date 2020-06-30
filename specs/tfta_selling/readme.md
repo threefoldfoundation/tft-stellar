@@ -120,7 +120,6 @@ The received amount is evenly distributed amongst the open trade offers, regardl
 
 The `distribution_ongoing` flag is set for all open trades. When this flag is set, no modifications or cancellations can be made for open trades.
 
-
 ### Price fluctuations
 
 Since cryptocurrencyprices vary against USD,it might be that the received amount of XLM or other cryptocurrency might no longer correspond to UsD price for TFTA set at the  the trade offer creation.
@@ -131,3 +130,4 @@ Since cryptocurrencyprices vary against USD,it might be that the received amount
 Another address can also be supplied in the trade offer to prevent sharing this secret between wallets.
 
 - Bad user experience, especially for 3bot connect users.
+- No notifications are included in this spec, can be addded later.
