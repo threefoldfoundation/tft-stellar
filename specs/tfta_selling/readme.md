@@ -90,7 +90,11 @@ When the `distribution_ongoing` flag is set, no cancellations can be made for th
 
 ## Selling bot
 
-The selling bot places it's orders in TFT on the Stellar DEX. It receives XLM In return.
+In a first phase the selling bot places its orders in TFT to XLM  on the Stellar DEX. 
+
+It receives XLM In return. which is distributed back to the users.
+
+Other exchanges and cryptocurrencies can be added in later phases.
 
 ## Distribution
 
