@@ -44,7 +44,7 @@ A simple solution has been chosen honouring the Single TFTA holder concept and t
 
 ## Solution
 
-A website protected by a 3bot login to manage your trades.
+A website (or a chatflow) protected by a 3bot login to manage your trades.
 
 ### BCDB Schemas
 
@@ -111,6 +111,7 @@ The selling price in XLM is derived from  the XLM USD price on [Kraken](https://
 It receives XLM In return which is distributed back to the users.
 
 Other exchanges and cryptocurrencies can be added in later phases.
+- Check [kelp](https://github.com/stellar/kelp) and [selling strategy](https://github.com/stellar/kelp/blob/master/plugins/sellStrategy.go)
 
 ## Distribution
 
