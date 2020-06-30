@@ -92,16 +92,14 @@ When the `distribution_ongoing` flag is set, no cancellations can be made for th
 
 The selling bot places it's orders in TFT on the Stellar DEX. It receives XLM In return.
 
-
 ## Distribution
 
 The `distribution_ongoing` flag is set for all open trades. When this flag is set, no modifications or cancellations can be made for open trades.
 
 Users by default get XLM back.
 
-
 ## Problems
 
 - Bad user experience, especially for 3bot connect users.
-- The 3bot connect wallet only supports TFT, TFTA and FreeTFT, no way to monetize via XLM for example.
-
+- The 3bot connect wallet only supports TFT, TFTA and FreeTFT, no way to manage  the XLM for example. The stellar secret of the 3bot connect wallet can be imported in another wallet like solar to send the received XLM to an exchange for example.
+Another address can also be supplied in the trade offer to prevent sharing this secret between wallets.
