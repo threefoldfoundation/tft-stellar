@@ -78,9 +78,9 @@ transaction_id = (T)
 amount= (F)
 ```
 
-## Trade offercreation
+## Trade offer creation
 
-A logged in user can create a trade offer by supplying the amount of TFTA and the wanted price in USD. 
+A logged in user can create a trade offer by supplying the amount of TFTA and the wanted price in USD.
 
 A list of open trade offers grouped by price with the total amount next to it is also shown to have the user make its price decision.
 
@@ -94,14 +94,19 @@ Since there seems no fits all solution for payment requests that [all wallets su
 
 A messsage indicating that "If your wallet does not support the qr code, be sure to correctly copy the address and the memo text or your trade can not be accepted." must be shown to make this clear to the user.
 
-### Trade Cancellation
+### User initiated trade Cancellation
 
 A user can choose to cancel the outstanding trade, the remaining amount will be transferred back to the address it originates from, this address should be shown to the user after which a proceed/cancel option should be shown.
 When the `distribution_ongoing` flag is set, no cancellations can be made for the open trade.
 
+### Forced trade cancellation
+
+In the event of the requested USD price set at trade creation dropping below the floor because of passing on to a next month, the tyrade is forcefully cancellled and the remaining amount of TFTA is sent back to address is was received from.
+
 ## Selling bot
 
-In a first phase the selling bot places its orders in TFT to XLM  on the Stellar DEX. 
+In a first phase the selling bot places its orders in TFT to XLM  on the Stellar DEX.
+The selling price in XLM is derived from  the XLM USD price on [Kraken](https://www.kraken.com), where the middle of the spread is taken as a reference.
 
 It receives XLM In return which is distributed back to the users.
 
@@ -109,7 +114,16 @@ Other exchanges and cryptocurrencies can be added in later phases.
 
 ## Distribution
 
+When the selling bot sold 20k of TFT or depleted the trade offfers for a specific price, the distribution processs is started.
+
+The received amount is evenly distributed amongst the open trade offers, regardless of the amount of the trade offer,unless it is less than the distribution share off course, in which case the difference is divided amongst the rest.
+
 The `distribution_ongoing` flag is set for all open trades. When this flag is set, no modifications or cancellations can be made for open trades.
+
+
+### Price fluctuations
+
+Since cryptocurrencyprices vary against USD,it might be that the received amount of XLM or other cryptocurrency might no longer correspond to UsD price for TFTA set at the  the trade offer creation.
 
 ## Problems
 
