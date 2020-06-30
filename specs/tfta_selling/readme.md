@@ -130,5 +130,5 @@ Since cryptocurrencyprices vary against USD,it might be that the received amount
 - The 3bot connect wallet only supports TFT, TFTA and FreeTFT, no way to manage  the XLM for example. The stellar secret of the 3bot connect wallet can be imported in another wallet like solar to send the received XLM to an exchange for example.
 Another address can also be supplied in the trade offer to prevent sharing this secret between wallets.
 
-- Bad user experience, especially for 3bot connect users.
+- No integration yet with the 3bot connect app, giving them a bad user experience.
 - No notifications are included in this spec, can be addded later.
