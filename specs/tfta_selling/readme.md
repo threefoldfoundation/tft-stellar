@@ -34,7 +34,7 @@ Currently the best option is to link the trade orders to a 3bot connect user.
 
 ## Proposal
 
-A website which requires a 3bot connect login  and where a new trade can be offered to the trader bot or where an existing trade offer can be cancelled.
+A website (or a chatflow) which requires a 3bot connect login  and where a new trade can be offered to the trader bot or where an existing trade offer can be cancelled.
 
 A new trade offered to the trading bot will be presented to the user as a payment to be made with a genereated id which is required as a memotext. If the 3bot wallet is used, a qr-code can be scanned to prevent typing or copy-paste mistakes.
 
