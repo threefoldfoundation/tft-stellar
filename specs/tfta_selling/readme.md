@@ -123,7 +123,7 @@ The `distribution_ongoing` flag is set for all open trades. When this flag is se
 
 ### Price fluctuations
 
-Since cryptocurrencyprices vary against USD,it might be that the received amount of XLM or other cryptocurrency might no longer correspond to UsD price for TFTA set at the  the trade offer creation.
+Since cryptocurrencyprices vary against USD,it might be that the received amount of XLM or other cryptocurrency might no longer correspond to USD price for TFTA set at the  the trade offer creation.
 
 ## Problems
 
