@@ -1,14 +1,27 @@
-# Initial TFTA to TFT conversion
+# TFTA selling during 2020
 
 ## Concept
 
-The total amount of TFTA+TFT can not change. This means that newly issued TFT requires the same amount of TFTA to be destroyed.
+TFTA is 100% the same as a TFT, this is just a technical detail for migrating all TFT's from one blockchain to the other and at the end of 2020 all TFTA will become TFT. Using 2 currency names TFT & TFTA allows to provide some price protection during 2020 which is to the benefit of the full ThreeFold community.
 
-There is a [Functional description](https://wiki.threefold.io/#/threefold_marketmaker_bot) that describes the high level process for people wanting to convert.
+Exchanges only have TFT markets, making selling of TFTA very hard.
 
-Some [initial thoughts](./initial_thoughts.md) are available listing different options with pro's and cons.
+To facilitate people that want to sell TFTA, a trading service will be made available.
+People can give TFTA to the trading service which sells it as TFT.
+After the sell, the Resulting XLM or other currency is given back to the user.
 
-The gradual conversion should only be in place until the end of 2020 after which all TFTA's  are allowed to be converted in to TFT's.
+There is a [Functional description](https://wiki.threefold.io/#/threefold_marketmaker_bot) that describes the high level process for people wanting to sell.
+
+### Minimal prices during 2020
+
+| Month | USD |
+|-------|-----|
+|July 2020 | 0.15606 |
+|August 2020 | 0.1591812 |
+|September 2020 | 0.162364824 |
+|October 2020 | 0.1656121205 |
+|November 2020 | 0.1689243629 |
+|December 2020 | 0.1723028501 |
 
 ### Single TFTA holder
 
@@ -28,7 +41,6 @@ A new trade offered to the trading bot will be presented to the user as a paymen
 ### Reasoning
 
 A simple solution has been chosen honouring the Single TFTA holder concept and the ability for other Stellar wallets than the  3bot app one to be used.
-
 
 ## Solution
 
@@ -80,18 +92,16 @@ When the `distribution_ongoing` flag is set, no cancellations can be made for th
 
 The selling bot places it's orders in TFT on the Stellar DEX. It receives XLM In return.
 
+
 ## Distribution
 
 The `distribution_ongoing` flag is set for all open trades. When this flag is set, no modifications or cancellations can be made for open trades.
 
-Users by default get TFT back but technically they can choose to receive another stellar based asset. [Stellar Path Payments](https://medium.com/stellar-community/understanding-stellar-path-payments-5eefe55b071b) with strict send is used to send the assets.
+Users by default get XLM back.
+
 
 ## Problems
 
 - Bad user experience, especially for 3bot connect users.
 - The 3bot connect wallet only supports TFT, TFTA and FreeTFT, no way to monetize via XLM for example.
-- When sending TFT, do we allow to buy from the selling bot? If not, what happens to the received XLM as the received TFTA is converted to TFT?
 
-Instead of selling ourselves, an alternative might be to watch the price and let everybody convert an amount from TFTA to TFT, depending on the price on the different exchanges. Even though TFTA and TFT are essentially the same, Exchanges like Liquid and BTC-alpha only have a TFT market.
-
-This way a 3bot connect app user can get a message like "Do you want to exchange 500 TFTA to TFT?". When having TFT instead of TFTA, the user can choose to sell or keep without the Freeflow Foundation being involved.
