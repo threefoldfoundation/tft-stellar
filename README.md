@@ -98,3 +98,8 @@ Deployed services:
 - Transaction funding service
 - Activation service
 - [Freetft faucet](https://getfreetft.testnet.threefold.io)
+
+
+## Statistics
+
+[A js-sdk script for getting statistics about  one of the tokens is available](lib/stats/readme.md).

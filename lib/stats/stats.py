@@ -69,7 +69,7 @@ class StatisticsCollector(object):
         stats["total_locked"]=total_locked
         return stats
 
-@click.command(help="Convert burned TFTA's from the selling service to TFT's")
+@click.command(help="Statistics about TFT, TFTA and FreeTFT")
 @click.argument("tokencode", type=click.Choice(['TFT','TFTA','FreeTFT']), default='TFT')
 @click.option("--network", type=click.Choice(['test','public'],case_sensitive=False),default='public')
 def show_stats(tokencode,network):
