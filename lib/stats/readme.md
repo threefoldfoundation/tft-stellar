@@ -1,6 +1,7 @@
 # Statistics about TFT/TFTA/FreeTFT
 
 ## Requirements
+
 - [js-sdk](https://github.com/threefoldtech/js-sdk)
 
 ## Run it standalone
@@ -14,3 +15,7 @@ By default the stats for TFT are shown but the ones for TFTA and FreeTFT  can al
 For example the stats for TFTA:
 
 `./stats.py TFTA`
+
+## Lock time information
+
+When passing the `--detailed` flag, the locked amounts per locktime are also calculated.
