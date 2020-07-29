@@ -15,4 +15,4 @@ If the memo text is not correct, The burned TFTA's are issued again to the sendi
 
 ## side effects
 
-Since 0.1 TFTA is added as a transaction fee when using the 3bot wallet, 0.1 TFT less then the allowed amount will be issued then. If this poses a problem for some people, we can send 0.1 TFT from a different wallet afterwards.
+Since 0.1 TFTA is added as a transaction fee when using the 3bot wallet, 0.1 TFT less will be issued then. If this poses a problem for some people, we can send 0.1 TFT from a different wallet afterwards.
