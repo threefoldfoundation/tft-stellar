@@ -31,8 +31,6 @@ If the transaction id from a destruction is in the the list of tft transaction m
 
 Enter the js-sdk shell ( `poetry shell` for a development environment).
 
-The tft_issuer.py script can be found in `tft_issuer` folder in this repository.
-
 `./tft_issuer.py <the required message>`
 
 An optional `--walletname=<anotherwalletname>` parameter can be supplied if another wallet than `j.clients.stellar.tftatotftissuer` needs to be used.
