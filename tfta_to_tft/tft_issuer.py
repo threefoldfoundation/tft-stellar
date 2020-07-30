@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # pylint: disable=no-value-for-parameter
 from jumpscale.loader import j
+from jumpscale.clients.stellar.exceptions import NoTrustLine,TemporaryProblem
+
 import jumpscale
 import click
 import time
@@ -36,10 +38,9 @@ def _get_horizon_server(network:str):
 
 def get_transaction_memo_text(network:str,transaction_hash:str ):
     horizon_server=_get_horizon_server(network)
-    tx_endpoint=horizon_server.transactions()
-    tx_endpoint.transaction=transaction_hash
+    tx_endpoint=horizon_server.transactions().transaction(transaction_hash)
     response=tx_endpoint.call()
-    if response['memo_type']=='text':
+    if response.get('memo_type',"")=='text':
         return response["memo"]
     return None
 
@@ -55,8 +56,8 @@ def fetch_new_payments_to_process(
     ]
     for payment in from_address_payments:
         #First check if the message in the memo_text is correct
-        tx_message=get_transaction_memo_text(wallet.network.Value,payment.transaction_hash)
-        if tx_message and message.capitalize() != tx_message.capitalize():
+        tx_message=get_transaction_memo_text(wallet.network.value,payment.transaction_hash)
+        if not tx_message or message.capitalize() != tx_message.capitalize():
             if not already_issued_for_payment(payment, already_sent_back_memo_hashes):
                 payments_to_refund.append(payment)
             continue
@@ -71,6 +72,7 @@ def fetch_new_payments_to_process(
 def convert_tfta_totft(message, walletname):
     wallet = j.clients.stellar.get(walletname)
     network = wallet.network.value
+    print(f"Starting service to convert TFTA to TFT on the {network} network")
 
     tfta_issuer = _ASSET_ISUERS[network]["TFTA"]
     tft_issuer = _ASSET_ISUERS[network]["TFT"]
@@ -117,25 +119,37 @@ def convert_tfta_totft(message, walletname):
             for p in payments_to_process:
                 if not already_issued_for_payment(p, tft_issuer_memo_hashes):
                     j.logger.info(f"Issuing {p.balance.balance} TFT to {p.from_address} for payment {p.transaction_hash}")
-                    wallet.transfer(
+                    try:
+                        wallet.transfer(
                         p.from_address,
                         amount=p.balance.balance,
                         asset=f"TFT:{tft_issuer}",
                         memo_hash=p.transaction_hash,
                         fund_transaction=False,
                         from_address=tft_issuer,
-                    )
+                        )
+                    except NoTrustLine:
+                       j.logger.info(f"{p.from_address} has no TFT trustline")
+                    except TemporaryProblem as e:
+                       j.logger.info(f"Temporaryproblem: {e}") 
+                     
             for p in payments_to_refund:
                 if not already_issued_for_payment(p, tfta_issuer_memo_hashes):
                     j.logger.info(f"Sending back  {p.balance.balance} TFTA to {p.from_address} for payment {p.transaction_hash}")
-                    wallet.transfer(
+                    try:
+                        wallet.transfer(
                         p.from_address,
                         amount=p.balance.balance,
                         asset=f"TFTA:{tfta_issuer}",
                         memo_hash=p.transaction_hash,
                         fund_transaction=False,
                         from_address=tfta_issuer,
-                    ) 
+                        )
+                    
+                    except NoTrustLine:
+                       j.logger.info(f"{p.from_address} has no TFTA trustline")
+                    except TemporaryProblem as e:
+                       j.logger.info(f"Temporaryproblem: {e}") 
             payments_to_process,payments_to_refund, tfta_payments_cursor = fetch_new_payments_to_process(
                 wallet,
                 tfta_issuer,

@@ -1,6 +1,6 @@
 # Service to convert TFTA to TFT
 
-This script cissues TFT for destroyed TFTA .
+This script issues TFT for destroyed TFTA .
 
 ## Functionality
 
@@ -26,7 +26,6 @@ If the transaction id from a destruction is in the the list of tft transaction m
 
 - [js-sdk](https://github.com/threefoldtech/js-sdk) off course
 - A wallet that has payment signing rights on the TFT and TFTA issuer accounts (by default `j.clients.stellar.tftatotftissuer`)
-- the address of the selling service account
 
 ## Run it
 
