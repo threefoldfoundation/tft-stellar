@@ -13,7 +13,7 @@ We then loop forever with the following logic:
 
 We wait for 60 seconds to be sure all issuances are processed and available through horizon.
 
-All and TFTA transactions and their memo_hashes are are collected from the Stellar network again.
+All TFT and TFTA transactions and their memo_hashes are are collected from the Stellar network again.
 
 The kept aside destruction payments are checked.
 If  the transaction id from a destruction is in the the list of  transaction memo hashes, the issuance for that destruction has already happened.
