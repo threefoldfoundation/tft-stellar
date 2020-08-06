@@ -11,7 +11,6 @@ Next, a conversion bot hosted in Dubai collects the destroyed amounts, the sendi
 
 Using this information,  if the memo text is correct (accepting the terms & conditions), new TFT are issued (using multisignature) to the sending addresses for these amounts with the transaction id the memo_hash field as a proof of the relationship between the destruction and the issuance.
 
-I
 ## side effects
 
 Since 0.1 TFTA is added as a transaction fee when using the 3bot wallet, 0.1 TFT less will be issued then. 
