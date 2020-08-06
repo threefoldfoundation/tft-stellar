@@ -46,7 +46,7 @@ def get_escrowaccount_unlocktime(address):
         return tx.time_bounds.min_time
 
 
-@click.command(help="Conversion check for a sibgle tfchain address")
+@click.command(help="Conversion check for a single tfchain address")
 @click.argument("tfchainaddress", type=str, required=True)
 @click.argument("deauthorizationsfile", default="deauthorizations.txt", type=click.File("r"))
 @click.argument("issuedfile", default="issued.txt", type=click.File("r"))
