@@ -9,8 +9,8 @@ This acually destroys the TFTA.
 
 Next, a conversion bot hosted in Dubai collects the destroyed amounts, the sending addresses and the transaction id's.
 
-Using this information,  if the memo text is correct (accepting the terms & conditions), new TFT are issued (using multisignature) to the sending addresses for these amounts with the transaction id the memo_hash field as a proof of the relationship between the destruction and the issuance.
+Using this information, new TFT are issued  to the sending addresses for these amounts with the transaction id the memo_hash field as a proof of the relationship between the destruction and the issuance.
 
 ## side effects
 
-Since 0.1 TFTA is added as a transaction fee when using the 3bot wallet, 0.1 TFT less will be issued then. 
+Since 0.1 TFTA is added as a transaction fee when using the 3bot wallet, 0.1 TFT less will be issued tan the user has totally spent. 
