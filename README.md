@@ -46,6 +46,9 @@ Keep in mind that the stellar testnet is [reset every quarter](https://www.stell
 
 Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
 
+## Token statistics
+ Token statistics can be seen on https://tokenstats.threefoldtoken.com.
+
 ## Acquiring testnet tokens
 
 ### TFT
