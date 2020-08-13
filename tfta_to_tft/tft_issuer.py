@@ -53,7 +53,8 @@ def fetch_new_payments_to_process(
 
 @click.command(help="Convert burned TFTA's to TFT's")
 @click.option("--walletname", type=str, default="tftatotftissuer")
-def convert_tfta_totft(walletname):
+@click.option("--preview/--no-preview",default=False)
+def convert_tfta_totft(walletname,preview):
     wallet = j.clients.stellar.get(walletname)
     network = wallet.network.value
     print(f"Starting service to convert TFTA to TFT on the {network} network")
@@ -91,6 +92,8 @@ def convert_tfta_totft(walletname):
             for p in payments_to_process:
                 if not already_issued_for_payment(p, tft_issuer_memo_hashes):
                     j.logger.info(f"Issuing {p.balance.balance} TFT to {p.from_address} for payment {p.transaction_hash}")
+                    if preview:
+                        continue
                     try:
                         wallet.transfer(
                         p.from_address,

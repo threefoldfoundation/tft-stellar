@@ -36,3 +36,7 @@ Enter the js-sdk shell ( `poetry shell` for a development environment).
 An optional `--walletname=<anotherwalletname>` parameter can be supplied if another wallet than `j.clients.stellar.tftatotftissuer` needs to be used.
 
 The network to work on is derived from the wallet.
+
+## Support
+
+When a user reports a problem, first ask for the stellar address the TFTA was sent from. Check [stellar.expert](https://stellar.expert/explorer/public) if the TFTA was sent to the correct address and if there indeed was no TFT sent back for the same amount with a memo_hash of the TFTA sending transaction.
