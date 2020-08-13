@@ -104,9 +104,9 @@ def convert_tfta_totft(walletname,preview):
                         from_address=tft_issuer,
                         )
                     except NoTrustLine:
-                       j.logger.info(f"{p.from_address} has no TFT trustline")
+                       j.logger.error(f"{p.from_address} has no TFT trustline")
                     except TemporaryProblem as e:
-                       j.logger.info(f"Temporaryproblem: {e}") 
+                       j.logger.error(f"Temporaryproblem: {e}") 
                      
             payments_to_process, tfta_payments_cursor = fetch_new_payments_to_process(
                 wallet,
