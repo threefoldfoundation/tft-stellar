@@ -54,7 +54,7 @@ def fetch_new_payments_to_process(
 @click.command(help="Convert burned TFTA's to TFT's")
 @click.option("--walletname", type=str, default="tftatotftissuer")
 @click.option("--preview/--no-preview",default=False)
-def convert_tfta_totft(walletname,preview):
+def convert_tfta_to_tft(walletname,preview):
     wallet = j.clients.stellar.get(walletname)
     network = wallet.network.value
     print(f"Starting service to convert TFTA to TFT on the {network} network")
@@ -82,7 +82,7 @@ def convert_tfta_totft(walletname,preview):
     )
 
     while True:
-        time.sleep(60)  # Make sure if we fetch the isuances that everythibng is up to date
+        time.sleep(60)  # Make sure if we fetch the isuances that everything is up to date
         try:
             tft_tx_memo_hashes, tft_transactions_cursor = fetch_new_transaction_memo_hashes(
                 wallet, tft_issuer, tft_transactions_cursor
@@ -119,4 +119,4 @@ def convert_tfta_totft(walletname,preview):
             continue
 
 if __name__ == "__main__":
-    convert_tfta_totft()
+    convert_tfta_to_tft()
