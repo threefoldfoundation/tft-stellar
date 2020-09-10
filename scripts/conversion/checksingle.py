@@ -46,13 +46,17 @@ def get_escrowaccount_unlocktime(address):
         return tx.time_bounds.min_time
 
 
+
 @click.command(help="Conversion check for a single tfchain address")
 @click.argument("tfchainaddress", type=str, required=True)
 @click.argument("deauthorizationsfile", default="deauthorizations.txt", type=click.File("r"))
 @click.argument("issuedfile", default="issued.txt", type=click.File("r"))
 @click.option("--stellaraddress", default="", type=str)
 def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddress):
-
+    if stellaraddress:
+       if tfchainaddress != stellar_address_to_tfchain_address(stellaraddress):
+           print("Warning: The tfchain address does not match the stellar adress")
+    
     deauthorizationtx = None
     for deauthorization in deauthorizationsfile.read().splitlines():
         splitdeauthorization = deauthorization.split()

@@ -8,20 +8,6 @@
 
 This will create a file with a `transactionid tfchainaddress` combination per line.
 
-## List issued tokens
-
-```sh
-./issued.py > issued.txt
-```
-
-This will create a file with a `memo amount tokencode destination transactionid` combination per line.
-
-## Check the status
-
-```sh
-./check.py
-```
-
 ## List deauthorized balances
 
 ```sh
@@ -32,7 +18,26 @@ This will create a file called `deauthorizedbalances.txt` with a `address Free: 
 
 ## List balances before conversion for a list of tfchain addresses
 
-```
+```sh
 ./tfchainaddresses.py
 ```
 
+## List issued tokens
+
+```sh
+./issued.py > issued.txt
+```
+
+This will create a file with a `memo amount tokencode destination transactionid` combination per line.
+
+## Check the status for all migrations
+
+```sh
+./check.py
+```
+
+## check the status for a sinlge migration
+
+```sh
+./checksingle.py <tfchainadress>
+```
