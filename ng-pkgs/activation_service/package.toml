@@ -1,0 +1,3 @@
+name = "activation_service"
+is_auth = true
+is_admin = true
