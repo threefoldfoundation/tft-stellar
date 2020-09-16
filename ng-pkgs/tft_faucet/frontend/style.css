@@ -1,0 +1,11 @@
+
+
+
+#app {
+    background-image: url("./assets/faucet-background.png");
+    background-size: cover;
+}
+
+#inspire {
+    background-color:transparent;
+}
