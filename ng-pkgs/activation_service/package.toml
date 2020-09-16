@@ -1,3 +1,19 @@
-name = "activation_service"
+name = "activation"
 is_auth = false
 is_admin = false
+
+
+[[servers]]
+name = "activation_root_proxy"
+domain = "gettft.testnet.grid.tf"
+letsencryptemail = "tarekr@incubaid.com"
+includes = ["default_443.chatflows_*", "default_443.auth_*", "default_443.activation*"]
+
+[[servers.locations]]
+name = "custom"
+type = "custom"
+custom_config = """
+location /threefoldfoundation/activation_service {
+    rewrite /threefoldfoundation/activation_service/(.*)$ /threefoldfoundation/activation_service/actors/activation_service/$1;
+}
+"""
