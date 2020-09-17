@@ -13,7 +13,7 @@ includes = ["default_443.chatflows_*", "default_443.auth_*", "default_443.activa
 name = "custom"
 type = "custom"
 custom_config = """
-location /threefoldfoundation/activation_service {
-    rewrite /threefoldfoundation/activation_service/(.*)$ /threefoldfoundation/activation_service/actors/activation_service/$1;
+location /activation_service {
+    rewrite /activation_service/(.*)$ /activation_service/actors/activation_service/$1;
 }
 """
