@@ -13,7 +13,6 @@ from activation_sal import activate_account as activate_account_sal
 
 activation_wallet = j.clients.stellar.get("activation_wallet")
 
-
 class ActivationService(BaseActor):
     def _stellar_address_used_before(self, stellar_address):
         try:
