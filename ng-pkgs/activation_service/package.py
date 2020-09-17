@@ -1,7 +1,16 @@
-from jumpscale.loader import j
+import os
+import sys
+
 import gevent
 
-class activation:
+from jumpscale.loader import j
+
+current_full_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_full_path + "/sals/")
+from activation_sal import create_gevent_pool
+
+
+class activation_service:
     def install(self, **kwargs):
         if "activation_wallet" not in j.clients.stellar.list_all():
             secret = kwargs.get("secret", None)
@@ -13,8 +22,6 @@ class activation:
                 else:
                     wallet.activate_through_threefold_service()
             wallet.save()
-
-
 
         location_actors_443 = j.sals.nginx.main.websites.default_443.locations.get(name="activation_actors")
         location_actors_443.is_auth = False
@@ -29,6 +36,8 @@ class activation:
         j.sals.nginx.main.websites.default_443.configure()
         j.sals.nginx.main.websites.default_80.configure()
 
+        create_gevent_pool()
+
     def start(self):
         self.install()
 
@@ -37,11 +46,3 @@ class activation:
         """
         j.sals.nginx.main.websites.default_443.locations.delete("activation_root_proxy")
         j.sals.nginx.main.websites.default_80.locations.delete("activation_root_proxy")
-
-        self.pool = gevent.pool.Pool(1)
-
-    def _activate_account(self, address):
-        j.clients.stellar.activation_wallet.activate_account(address, starting_balance="3.6")
-
-    def activate_account(self, address):
-        self.pool.apply(self._activate_account, args=(address,))
