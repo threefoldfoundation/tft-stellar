@@ -13,7 +13,7 @@ includes = ["default_443.activation*"]
 name = "custom"
 type = "custom"
 custom_config = """
-location /activation_service {
-    rewrite /activation_service/(.*)$ /activation_service/actors/activation_service/$1;
+location /threefoldfoundation/activation_service/ {
+    rewrite /threefoldfoundation/activation_service/(.*)$ /activation_service/actors/activation_service/$1;
 }
 """
