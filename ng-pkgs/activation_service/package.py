@@ -1,5 +1,6 @@
 import os
 import sys
+import toml
 
 import gevent
 
@@ -33,6 +34,19 @@ class activation_service:
         location_actors_80.is_auth = False
         location_actors_80.is_admin = False
         location_actors_80.save()
+        
+        # Configure server domain (passed as kwargs if not, will be the default domain in package.toml)
+        if domain in kwargs: 
+            domain = kwargs.get("domain", server_default_domain)
+            toml_config = toml.load(j.sals.fs.join_paths(j.sals.fs.dirname(__file__), "package.toml"))
+            package_name = toml_config['name']
+            server_name = toml_config['servers'][0]['name']
+            server_default_domain = toml_config['servers'][0]['domain']
+        
+            j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_443").domain = domain
+            j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_443").configure()
+            j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_80").domain = domain
+            j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_80").configure()
 
         j.sals.nginx.main.websites.default_443.configure()
         j.sals.nginx.main.websites.default_80.configure()
