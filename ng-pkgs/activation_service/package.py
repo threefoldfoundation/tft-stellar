@@ -12,10 +12,11 @@ from activation_sal import create_gevent_pool
 
 class activation_service:
     def install(self, **kwargs):
-        if "activation_wallet" not in j.clients.stellar.list_all():
+        wallet_name = kwargs.get("wallet", "activation_wallet")
+        if wallet_name not in j.clients.stellar.list_all():
             secret = kwargs.get("secret", None)
             network = kwargs.get("network", "TEST")
-            wallet = j.clients.stellar.new("activation_wallet", secret=secret, network=network)
+            wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
             if not secret:
                 if network == "TEST":
                     wallet.activate_through_friendbot()

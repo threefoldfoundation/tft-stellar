@@ -5,9 +5,9 @@ is_admin = false
 
 [[servers]]
 name = "activation_root_proxy"
-domain = "gettft.testnet.grid.tf"
+domain = "testnet.threefoldtoken.io"
 letsencryptemail = "tarekr@incubaid.com"
-includes = ["default_443.chatflows_*", "default_443.auth_*", "default_443.activation*"]
+includes = ["default_443.activation*"]
 
 [[servers.locations]]
 name = "custom"
