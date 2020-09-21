@@ -36,7 +36,7 @@ class activation_service:
         location_actors_80.save()
         
         # Configure server domain (passed as kwargs if not, will be the default domain in package.toml)
-        if domain in kwargs: 
+        if domain in kwargs:
             domain = kwargs.get("domain", server_default_domain)
             toml_config = toml.load(j.sals.fs.join_paths(j.sals.fs.dirname(__file__), "package.toml"))
             package_name = toml_config['name']
