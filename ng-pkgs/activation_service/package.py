@@ -37,11 +37,10 @@ class activation_service:
         
         # Configure server domain (passed as kwargs if not, will be the default domain in package.toml)
         if "domain" in kwargs:
-            domain = kwargs.get("domain", server_default_domain)
+            domain = kwargs.get("domain")
             toml_config = toml.load(j.sals.fs.join_paths(j.sals.fs.dirname(__file__), "package.toml"))
             package_name = toml_config['name']
             server_name = toml_config['servers'][0]['name']
-            server_default_domain = toml_config['servers'][0]['domain']
         
             j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_443").domain = domain
             j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_443").configure()
