@@ -36,7 +36,7 @@ This will create a file with a `memo amount tokencode destination transactionid`
 ./check.py
 ```
 
-## check the status for a sinlge migration
+## check the status for a single migration
 
 ```sh
 ./checksingle.py <tfchainadress>
