@@ -10,8 +10,16 @@ You need following knowledge to start this server.
 
 ## Running
 
-Make sure the wallet exists:
-`j.clients.stellar.new("activation_wallet", network="TEST",secret="<activation_secret>")`
+Make sure the wallet exists and is saved:
+```python
+j.clients.stellar.new("activation_wallet", network="TEST",secret="<activation_secret>")
+j.clients.stellar.activation_wallet.save()
+```
+
+clone this repository:
+```python
+j.tools.git.ensure_repo("https://github.com/threefoldfoundation/tft-stellar.git")
+```
 
 execute the following command in jsng shell:
 `j.servers.threebot.start_default()`
@@ -20,7 +28,9 @@ Once this process is completed, add this package from admin dashboard
 or from jsng shell like this:
 
 ```python
-JS-NG> j.servers.threebot.default.packages.add(<package_path>)
+from pathlib import Path
+package_path=str(Path.joinpath(Path.home(),"sandbox","code","github","threefoldfoundation","tft-stellar","ng-pkgs","activation_service"))
+j.servers.threebot.default.packages.add(package_path)
 ```
 
 ## Actor
