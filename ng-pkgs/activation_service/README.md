@@ -24,14 +24,22 @@ j.tools.git.ensure_repo("https://github.com/threefoldfoundation/tft-stellar.git"
 execute the following command in jsng shell:
 `j.servers.threebot.start_default()`
 
-Once this process is completed, add this package from admin dashboard
-or from jsng shell like this:
+Once this process is completed add the package to the threebot server from jsng shell like this:
 
 ```python
 from pathlib import Path
 package_path=str(Path.joinpath(Path.home(),"sandbox","code","github","threefoldfoundation","tft-stellar","ng-pkgs","activation_service"))
 j.servers.threebot.default.packages.add(package_path)
 ```
+
+The following kwargs can also be given to configure the package:
+- *wallet* : Name of new/exisiting stellar wallet client instance
+- *secret* : Activation secret of wallet to import
+- *network*: "STD" or "TEST" to indicate the type of the stellar network 
+- *domain* : domain configured to access the service
+
+Example with kwargs:
+`j.servers.threebot.default.packages.add(package_path,wallet="WALLET_NAME",domain="domain.test.1")`
 
 ## Actor
 
