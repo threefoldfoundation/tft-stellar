@@ -11,12 +11,14 @@ You need following knowledge to start this server.
 ## Running
 
 Make sure the wallet exists and is saved:
+
 ```python
 j.clients.stellar.new("activation_wallet", network="TEST",secret="<activation_secret>")
 j.clients.stellar.activation_wallet.save()
 ```
 
 clone this repository:
+
 ```python
 j.tools.git.ensure_repo("https://github.com/threefoldfoundation/tft-stellar.git")
 ```
@@ -33,9 +35,10 @@ j.servers.threebot.default.packages.add(package_path)
 ```
 
 The following kwargs can also be given to configure the package:
+
 - *wallet* : Name of new/exisiting stellar wallet client instance
 - *secret* : Activation secret of wallet to import
-- *network*: "STD" or "TEST" to indicate the type of the stellar network 
+- *network*: "STD" or "TEST" to indicate the type of the stellar network
 - *domain* : domain configured to access the service
 
 Example with kwargs:
