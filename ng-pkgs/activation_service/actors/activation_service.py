@@ -37,10 +37,10 @@ class ActivationService(BaseActor):
             try:
                 if "address" in args:
                     address = args.get("address", None)
+                else:
+                    raise j.exceptions.Value(f"missing a required argument: 'address' in args dict")
             except j.data.serializers.json.json.JSONDecodeError:
                 pass
-            if not address:
-                raise j.exceptions.Value(f"missing a required argument: 'address' in args dict")
 
         try:
             self._activate_account(address)
