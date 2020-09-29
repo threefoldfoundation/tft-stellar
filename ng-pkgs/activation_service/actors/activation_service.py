@@ -29,11 +29,23 @@ class ActivationService(BaseActor):
         activate_account_sal(address)
 
     @actor_method
-    def create_activation_code(self, address: str) -> str:
+    def create_activation_code(self, address: str = None, args: dict = None) -> str:
+        # Backward compatibility with jsx service for request body {'args': {'address': <address>}}
+        if not address and not args:
+            raise j.exceptions.Value(f"missing a required argument: 'address'")
+        if args:
+            try:
+                if "address" in args:
+                    address = args.get("address", None)
+            except j.data.serializers.json.json.JSONDecodeError:
+                pass
+            if not address:
+                raise j.exceptions.Value(f"missing a required argument: 'address' in args dict")
+
         try:
             self._activate_account(address)
             response = j.data.serializers.json.dumps(
-                {"args": {"activation_code": "abcd", "address": address, "phonenumbers": ["+1234567890"]}}
+                {"activation_code": "abcd", "address": address, "phonenumbers": ["+1234567890"]}
             )
             return response
         except (Ed25519PublicKeyInvalidError, BadRequestError):
