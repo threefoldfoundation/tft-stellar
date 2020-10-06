@@ -1,6 +1,6 @@
 # Activation Service
 
-Service for new accounts activation. To be used as a jumpscale package.
+Js-ng Service for new accounts activation. To be used as a jumpscale package.
 
 ## Requirements
 

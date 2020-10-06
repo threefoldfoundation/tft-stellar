@@ -1,7 +1,7 @@
 # Stellar faucet
 
 A faucet for receiving tokens from a specified asset and issuer.
-To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
+To be used as a JsX Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
 
 For developing on this package, see the [Development documentation](./development.md).
 
@@ -28,7 +28,6 @@ JSX> faucetwallet.add_trustline('FreeTFT','GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46S
 ```
 
 For testnet:
-
 
 Add the trustlines:
 
@@ -74,7 +73,7 @@ j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_
 
 If the app needs to be deployed on another path than `/` it must only be configured in 1 place.
 
-https://github.com/threefoldfoundation/tft-stellar/blob/5ded498d881550974e9b3f1c916ff93b484a3392/ThreeBotPackages/stellar_faucet/faucet_frontend/vue.config.js#L6
+[vue.config.js](./faucet_frontend/vue.config.js#L6)
 
 afterwards run`npm run build`
 

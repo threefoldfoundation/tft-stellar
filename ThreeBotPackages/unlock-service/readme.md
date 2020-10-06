@@ -1,6 +1,6 @@
 # Unlock Service
 
-Service for storing and retrieving unlock transactions for a stellar wallet.
+JsX Service for storing and retrieving unlock transactions for a stellar wallet.
 To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
 
 ## Running

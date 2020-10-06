@@ -1,7 +1,6 @@
 # Conversion Service
 
-Service for converting Threefold tft's to Stellar tft's.
-To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
+JsX Service for converting Threefold tft's to Stellar tft's. To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
 
 ## Requirements
 

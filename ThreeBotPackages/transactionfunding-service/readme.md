@@ -2,7 +2,7 @@
 
 A funding service accepts transaction envelopes and funds the required lumen as described in the [documentation](../../docs/transaction_funding.md).
 
-To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
+To be used as a JsX Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
 
 ## Requirements
 
