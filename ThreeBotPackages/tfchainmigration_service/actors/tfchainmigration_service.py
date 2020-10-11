@@ -12,14 +12,20 @@ import sys
 
 import stellar_sdk
 from stellar_sdk.exceptions import NotFoundError
+from stellar_sdk import strkey
 from jumpscale.core.exceptions import JSException
 from jumpscale.loader import j
 from jumpscale.servers.gedis.baseactor import BaseActor, actor_method
 
 
-current_full_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_full_path + "/../sals/")
+CURRENT_FULL_PATH = os.path.dirname(os.path.abspath(__file__))
+sals_path = CURRENT_FULL_PATH + "/../sals/"
+tfchain_path = CURRENT_FULL_PATH + "/../../../scripts/conversion/"
+sys.path.extend([sals_path, tfchain_path])
+
 from tfchainmigration_sal import activate_account as activate_account_sal, WALLET_NAME, CONVERTED_ADDRESS_MODEL
+from tfchaintypes.CryptoTypes import PublicKey, PublicKeySpecifier
+from tfchainaddresses import unlockhash_get
 
 activation_wallet = j.clients.stellar.get(WALLET_NAME)
 TFCHAIN_EXPLORER = "https://explorer2.threefoldtoken.com"
@@ -47,7 +53,6 @@ class TFchainmigration_service(BaseActor):
 
     def _stellar_address_to_tfchain_address(self, stellar_address):
         from JumpscaleLibs.clients.tfchain.types.CryptoTypes import PublicKey, PublicKeySpecifier
-        from stellar_sdk import strkey
 
         raw_public_key = strkey.StrKey.decode_ed25519_public_key(stellar_address)
         rivine_public_key = PublicKey(PublicKeySpecifier.ED25519, raw_public_key)
