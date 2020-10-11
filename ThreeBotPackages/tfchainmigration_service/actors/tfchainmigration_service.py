@@ -52,16 +52,13 @@ class TFchainmigration_service(BaseActor):
             return False
 
     def _stellar_address_to_tfchain_address(self, stellar_address):
-        from JumpscaleLibs.clients.tfchain.types.CryptoTypes import PublicKey, PublicKeySpecifier
-
         raw_public_key = strkey.StrKey.decode_ed25519_public_key(stellar_address)
         rivine_public_key = PublicKey(PublicKeySpecifier.ED25519, raw_public_key)
         return str(rivine_public_key.unlockhash)
 
     def _is_zero_balance_tfchain(self, tfchain_address):
-        tfchain_client = j.clients.tfchain.get("tfchain")
         # get balance from tfchain
-        result = tfchain_client.unlockhash_get(tfchain_address)
+        result = unlockhash_get(tfchain_address)
         balance = result.balance()
 
         unlocked_tokens = balance.available.value
@@ -147,25 +144,6 @@ class TFchainmigration_service(BaseActor):
         converted_address.save()
         return False
 
-    # def _unlockhash_get(self, tfchainaddress: str):
-
-    #     response = requests.get(TFCHAIN_EXPLORER + "/explorer/hashes/" + tfchainaddress)
-    #     if response.status_code != 200:
-    #         return None
-    #     resp = response.json()
-    #     if not resp["transactions"]:
-    #         return None
-    #     # parse the transactions
-    #     transactions = []
-    #     for etxn in resp["transactions"]:
-    #         # parse the explorer transaction
-    #         transaction = transaction_from_explorer_transaction(etxn, resp=resp)
-    #         # append the transaction to the list of transactions
-    #         transactions.append(transaction)
-    #     # sort the transactions by height
-    #     transactions.sort(key=(lambda txn: sys.maxsize if txn.height < 0 else txn.height), reverse=True)
-    #     return ExplorerUnlockhashResult(unlockhash=UnlockHash.from_json(tfchainaddress), transactions=transactions)
-
     @actor_method
     def migrate_tokens(self, tfchain_address, stellar_address, schema_out=None, user_session=None):
         converter_wallet = self.package_author.conversion_wallet
@@ -179,7 +157,7 @@ class TFchainmigration_service(BaseActor):
         asset = _TFTA_FULL_ASSETCODES[str(converter_wallet.network)]
 
         # get balance from tfchain
-        unlockhash = tfchain_client.unlockhash_get(tfchain_address)
+        unlockhash = unlockhash_get(tfchain_address)
         balance = unlockhash.balance()
 
         is_authorized = tfchain_client.authcoin.is_authorized(unlockhash.unlockhash)
