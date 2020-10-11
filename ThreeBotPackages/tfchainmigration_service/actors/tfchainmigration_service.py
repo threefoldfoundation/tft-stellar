@@ -1,4 +1,3 @@
-from Jumpscale import j
 import time
 import json
 import binascii
@@ -20,7 +19,7 @@ from jumpscale.servers.gedis.baseactor import BaseActor, actor_method
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/../sals/")
-from activation_sal import activate_account as activate_account_sal, WALLET_NAME, CONVERTED_ADDRESS_MODEL
+from tfchainmigration_sal import activate_account as activate_account_sal, WALLET_NAME, CONVERTED_ADDRESS_MODEL
 
 activation_wallet = j.clients.stellar.get(WALLET_NAME)
 TFCHAIN_EXPLORER = "https://explorer2.threefoldtoken.com"
@@ -36,7 +35,7 @@ _TFTA_FULL_ASSETCODES = {
 }
 
 
-class tfchainmigration_service(BaseActor):
+class TFchainmigration_service(BaseActor):
     def _stellar_address_used_before(self, stellar_address):
         try:
             stellar_client = self.package_author.conversion_wallet
@@ -123,7 +122,7 @@ class tfchainmigration_service(BaseActor):
 
         return preauth_tx.to_xdr()
 
-    @j.baseclasses.actor_method
+    @actor_method
     def activate_account(self, address, tfchain_address, schema_out=None, user_session=None):
 
         if tfchain_address != self._stellar_address_to_tfchain_address(address):
@@ -162,7 +161,7 @@ class tfchainmigration_service(BaseActor):
     #     transactions.sort(key=(lambda txn: sys.maxsize if txn.height < 0 else txn.height), reverse=True)
     #     return ExplorerUnlockhashResult(unlockhash=UnlockHash.from_json(tfchainaddress), transactions=transactions)
 
-    @j.baseclasses.actor_method
+    @actor_method
     def migrate_tokens(self, tfchain_address, stellar_address, schema_out=None, user_session=None):
         converter_wallet = self.package_author.conversion_wallet
         # TODO import tfchain sal
@@ -260,3 +259,6 @@ class tfchainmigration_service(BaseActor):
                         )
             conversion_group.join()
         return json.dumps([])
+
+
+Actor = TFchainmigration_service

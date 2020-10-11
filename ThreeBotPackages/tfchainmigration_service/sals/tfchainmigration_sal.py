@@ -3,7 +3,7 @@ import gevent
 from jumpscale.core.base import StoredFactory
 from jumpscale.loader import j
 
-from .models import ConvertedAddress
+from models import ConvertedAddress
 
 # pool = None
 activation_pool = None

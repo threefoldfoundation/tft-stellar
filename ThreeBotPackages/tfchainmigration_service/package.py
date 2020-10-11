@@ -8,7 +8,7 @@ from jumpscale.loader import j
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/sals/")
-from activation_sal import create_gevent_pools, set_wallet_name
+from tfchainmigration_sal import create_gevent_pools, set_wallet_name
 
 
 class tfchainmigration_service:
@@ -80,8 +80,8 @@ class tfchainmigration_service:
     def uninstall(self):
         """Called when package is deleted
         """
-        j.sals.nginx.main.websites.default_443.locations.delete("activation_root_proxy")
-        j.sals.nginx.main.websites.default_80.locations.delete("activation_root_proxy")
+        j.sals.nginx.main.websites.default_443.locations.delete("tfchainmigration_root_proxy")
+        j.sals.nginx.main.websites.default_80.locations.delete("tfchainmigration_root_proxy")
 
     # def _activate_account(self, address):
     #     self.conversion_wallet.activate_account(address, starting_balance="3.6")
