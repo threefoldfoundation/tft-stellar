@@ -1,10 +1,19 @@
-[source]
 name = "transactionfunding_service"
-description = "Package that funds the Lumen funding for TFT transactions"
-threebot = "threefoldfoundation"
-version = "0.0.1"
+is_auth = false
+is_admin = false
 
-# [[bcdbs]]
-# namespace = "threefoldfoundation"
-# type = "zdb"
-# instance = "default"
+
+[[servers]]
+name = "transactionfunding_root_proxy"
+domain = "testnet.threefoldtoken.io"
+letsencryptemail = "tarekr@incubaid.com"
+includes = ["default_443.transactionfunding*"]
+
+[[servers.locations]]
+name = "custom"
+type = "custom"
+custom_config = """
+location /threefoldfoundation/transactionfunding_service {
+    rewrite /threefoldfoundation/transactionfunding_service/(.*)$ /transactionfunding_service/actors/transactionfunding_service/$1;
+}
+"""

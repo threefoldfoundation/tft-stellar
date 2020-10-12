@@ -1,76 +1,84 @@
-from Jumpscale import j
-import gevent
-import gevent.queue
+import os
+import sys
+import toml
 from decimal import Decimal
 
+import gevent
+import gevent.queue
 
-class Package(j.baseclasses.threebot_package):
-    def get_main_fundingwallet(self):
-        main_walletname = self._package.install_kwargs.get("wallet", "txfundingwallet")
-        main_wallet = j.clients.stellar.get(main_walletname)
-        return main_wallet
+from jumpscale.loader import j
 
-    def ensure_slavewallets(self):
-        main_wallet = self.get_main_fundingwallet()
-        nr_of_slaves = self._package.install_kwargs.get("slaves", 30)
-        for slaveindex in range(nr_of_slaves):
-            walletname = str(main_wallet.name) + "_" + str(slaveindex)
-            if not j.clients.stellar.exists(walletname):
-                print(f"activating slave {walletname}")
-                slave_wallet = j.clients.stellar.new(walletname, network=main_wallet.network)
-                main_wallet.activate_account(slave_wallet.address, starting_balance="5")
+current_full_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_full_path + "/sals/")
+from transactionfunding_sal import (
+    ASSET_ISSUERS,
+    ensure_slavewallets,
+    start_funding_loop,
+    set_wallet_name,
+    stop_funding_loop,
+)
 
-    def start(self):
-        self.ensure_slavewallets()
-        DOMAIN = self._package.install_kwargs.get("domain") or "testnet.threefoldtoken.io"
-        for port in (443, 80):
-            website = self.openresty.get_from_port(port)
-            website.ssl = port == 443
-            website.domain = DOMAIN
 
-            locations = website.locations.get(name=f"transactionfunding_service_{port}_locations")
+class transactionfunding_service:
+    def install(self, **kwargs):
+        wallet_name = kwargs.get("wallet", "txfundingwallet")
+        set_wallet_name(wallet_name)
+        if wallet_name not in j.clients.stellar.list_all():
+            secret = kwargs.get("secret", None)
+            network = kwargs.get("network", "TEST")
+            main_wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
+            if not secret:
+                if network == "TEST":
+                    main_wallet.activate_through_friendbot()
+                    freetft_asset = ASSET_ISSUERS["FreeTFT"][network]
+                    tft_asset = ASSET_ISSUERS["TFT"][network]
 
-            include_location = locations.get_location_custom(f"transactionfunding_service_includes_{port}")
-            include_location.is_auth = False
-            include_location.config = """
-            location /threefoldfoundation/transactionfunding_service {
-                rewrite /threefoldfoundation/transactionfunding_service/(.*)$ /threefoldfoundation/transactionfunding_service/actors/transactionfunding_service/$1;
-            }"""
+                else:
+                    main_wallet.activate_through_threefold_service()
+                    freetft_asset = ASSET_ISSUERS["FreeTFT"][network]
+                    tft_asset = ASSET_ISSUERS["TFT"][network]
+                main_wallet.add_trustline("TFT", tft_asset)
+                main_wallet.add_trustline("FreeTFT", freetft_asset)
+            main_wallet.save()
 
-            locations.configure()
-            website.configure()
-        self._start_funding_loop()
+        nr_of_slaves = kwargs.get("slaves", 30)
+        ensure_slavewallets(nr_of_slaves)
 
-    def _start_funding_loop(self):
-        print("Starting transaction funding service refund loop")
-        # create gevent queueu
-        self.queue = gevent.queue.Queue()
-        # start gevent loop at _funding_loop
-        self._funding_greenlet = gevent.spawn(self._funding_loop)
+        location_actors_443 = j.sals.nginx.main.websites.default_443.locations.get(name="transactionfunding_actors")
+        location_actors_443.is_auth = False
+        location_actors_443.is_admin = False
+        location_actors_443.save()
 
-    def _funding_loop(self):
-        for walletname in self.queue:
-            try:
-                wallet = j.clients.stellar.get(walletname)
-                balances = wallet.get_balance()
-                xlmbalance = [b for b in balances.balances if b.is_native][0]
-                xlmbalance = Decimal(xlmbalance.balance)
-                # if xlmbalance< 3 add 2 from main fundingwallet
-                if xlmbalance < Decimal("3"):
-                    print(f"Refunding {walletname}")
-                    self.get_main_fundingwallet().transfer(wallet.address, "2", asset="XLM", fund_transaction=False)
-            except Exception as e:
-                print(f"Exception in transaction funding service loop: {e}")
+        location_actors_80 = j.sals.nginx.main.websites.default_80.locations.get(name="transactionfunding_actors")
+        location_actors_80.is_auth = False
+        location_actors_80.is_admin = False
+        location_actors_80.save()
 
-    def fund_if_needed(self, walletname):
-        # add walletname to gevent queue
-        self.queue.put(walletname)
+        # Configure server domain (passed as kwargs if not, will be the default domain in package.toml)
+        if "domain" in kwargs:
+            domain = kwargs.get("domain")
+            toml_config = toml.load(j.sals.fs.join_paths(j.sals.fs.dirname(__file__), "package.toml"))
+            package_name = toml_config["name"]
+            server_name = toml_config["servers"][0]["name"]
 
-        return None
+            j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_443").domain = domain
+            j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_443").configure()
+            j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_80").domain = domain
+            j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_80").configure()
 
-    def _stop_funding_loop(self):
-        print("Halting transaction funding service refund loop")
-        self._funding_greenlet.kill()
+        j.sals.nginx.main.websites.default_443.configure()
+        j.sals.nginx.main.websites.default_80.configure()
+
+        start_funding_loop()
+
+    def start(self, **kwargs):
+        self.install(**kwargs)
+
+    def uninstall(self):
+        """Called when package is deleted
+        """
+        j.sals.nginx.main.websites.default_443.locations.delete("transactionfunding_root_proxy")
+        j.sals.nginx.main.websites.default_80.locations.delete("transactionfunding_root_proxy")
 
     def stop(self):
-        self._stop_funding_loop()
+        stop_funding_loop()
