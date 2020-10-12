@@ -1,6 +1,6 @@
 # Conversion Service
 
-JsX Service for converting Threefold tft's to Stellar tft's. To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
+Js-ng Service for converting Threefold tft's to Stellar tft's. To be used as a Threebot package.
 
 ## Requirements
 
@@ -10,26 +10,21 @@ You need following knowledge to start this server.
 
 ## Running
 
-- execute following:
-`kosmos -p 'j.servers.threebot.start()'`
-
-Once this process is completed, create the stellar and tfchain client and add this package to the Threebot.
-
-Inialize the wallet clients:
-
-testnet:
+Make sure the wallet exists and is saved:
 
 ```python
-JSX> j.clients.stellar.new("converter", network="TEST",secret="<converter_secret>")
-JSX> j.clients.tfchain.new(name="tfchain", network_type="TEST")
+j.clients.stellar.new("converter_wallet", network="TEST",secret="<converter_secret>")
+j.clients.stellar.activation_wallet.save()
 ```
 
-production:
+clone this repository:
 
 ```python
-JSX> j.clients.stellar.new("converter",secret="<converter_secret>")
-JSX> j.clients.tfchain.new(name="tfchain")
+j.tools.git.ensure_repo("https://github.com/threefoldfoundation/tft-stellar.git")
 ```
+
+execute the following command in jsng shell:
+`j.servers.threebot.start_default()`
 
 Make sure that for both TFT and TFTA, the converter account can issue tokens:
 
@@ -39,28 +34,29 @@ tftaissuerwallet.modify_signing_requirements((j.clients.stellar.converter.addres
 ```
 
 Install the package.
-
-testnet:
-
-```python
-JSX> j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/conversion-service", install_kwargs={ "domain": "testnet.threefold.io" })
-```
-
-production:
+Once this process is completed add the package to the threebot server from jsng shell like this:
 
 ```python
-JSX> j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/conversion-service", install_kwargs={ "domain": "tokenservices.threefold.io" })
+from pathlib import Path
+package_path=str(Path.joinpath(Path.home(),"sandbox","code","github","threefoldfoundation","tft-stellar","ThreeBotPackages","tfchainmigration_service"))
+j.servers.threebot.default.packages.add(package_path)
 ```
 
-The server will start at `host/threefoldfoundation/conversion_service/`
+The server will start at `host/threefoldfoundation/tfchainmigration_service/`
+
+The following kwargs can also be given to configure the package:
+
+- *wallet* : Name of new/exisiting stellar wallet client instance
+- *secret* : Activation secret of wallet to import
+- *network*: "STD" or "TEST" to indicate the type of the stellar network
+- *domain* : domain configured to access the service
+
+Example with kwargs:
+`j.servers.threebot.default.packages.add(package_path,wallet="WALLET_NAME",domain="domain.test.1")`
 
 Test out the transfer tokens:
 
-`curl -H "Content-Type: application/json" -d '{ "args": { "tfchain_address": "", "stellar_address": "" }}' -XPOST http://localhost/threefoldfoundation/conversion_service/migrate_tokens`
-
-## Troubleshooting
-
-If a 404 is returned, restart Lapis server.
+`curl -H "Content-Type: application/json" -d '{ "tfchain_address": "", "stellar_address": "" }' -XPOST http://localhost/threefoldfoundation/tfchainmigration_service/migrate_tokens`
 
 ## Actor
 

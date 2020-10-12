@@ -25,7 +25,7 @@ sys.path.extend([sals_path, tfchain_path])
 
 from tfchainmigration_sal import activate_account as activate_account_sal, WALLET_NAME, CONVERTED_ADDRESS_MODEL
 from tfchaintypes.CryptoTypes import PublicKey, PublicKeySpecifier
-from tfchainaddresses import unlockhash_get
+from tfchainaddresses import unlockhash_get, ExplorerUnlockhashResult
 
 activation_wallet = j.clients.stellar.get(WALLET_NAME)
 TFCHAIN_EXPLORER = "https://explorer2.threefoldtoken.com"
@@ -125,7 +125,22 @@ class TFchainmigration_service(BaseActor):
         return preauth_tx.to_xdr()
 
     @actor_method
-    def activate_account(self, address, tfchain_address, schema_out=None, user_session=None):
+    def activate_account(self, address, tfchain_address, args: dict = None):
+        # Backward compatibility with jsx service for request body {'args': {'address': <address>}}
+        if not tfchain_address and not address and not args:
+            raise j.exceptions.Value(f"missing a required argument: 'tfchain_address' and 'address' ")
+        if args:
+            try:
+                if "tfchain_address" in args:
+                    tfchain_address = args.get("tfchain_address", None)
+                else:
+                    raise j.exceptions.Value(f"missing a required argument: 'tfchain_address' in args dict")
+                if "address" in args:
+                    address = args.get("address", None)
+                else:
+                    raise j.exceptions.Value(f"missing a required argument: 'address' in args dict")
+            except j.data.serializers.json.json.JSONDecodeError:
+                pass
 
         if tfchain_address != self._stellar_address_to_tfchain_address(address):
             raise j.exceptions.Value("The stellar and tfchain addresses are not created from the same private key")
@@ -144,11 +159,45 @@ class TFchainmigration_service(BaseActor):
         converted_address.save()
         return False
 
+    def _is_authorized(self, unlockhash):
+        """
+        Query the explorer backend to see if an address is currently authorized.
+        @param unlockhash: UnlockHash for which to look up the authorizaton state
+        """
+        if not isinstance(unlockhash, ExplorerUnlockhashResult):
+            raise j.exceptions.Value(f"Argument must be of type UnlockHash, got type {type(unlockhash)}")
+        # define endpoint
+        endpoint = f"/explorer/authcoin/status?addr={unlockhash.json()}"
+        # parse response
+        resp = requests.get(TFCHAIN_EXPLORER + endpoint)
+        resp = j.data.serializers.json.loads(resp)
+
+        try:
+            # parse response, this returns an array of json booleans, we only check 1 address in this function
+            # so it's always index 0 we are interested in.
+            return resp["auths"][0]
+        except (KeyError, IndexError) as exc:
+            # invalid explorer response
+            raise j.exceptions.Value(str(exc))
+
     @actor_method
-    def migrate_tokens(self, tfchain_address, stellar_address, schema_out=None, user_session=None):
+    def migrate_tokens(self, tfchain_address, stellar_address, args: dict = None):
+        # Backward compatibility with jsx service for request body {'args': {'address': <address>}}
+        if not tfchain_address and not stellar_address and not args:
+            raise j.exceptions.Value(f"missing a required argument: 'tfchain_address' and 'stellar_address' ")
+        if args:
+            try:
+                if "tfchain_address" in args:
+                    tfchain_address = args.get("tfchain_address", None)
+                else:
+                    raise j.exceptions.Value(f"missing a required argument: 'tfchain_address' in args dict")
+                if "stellar_address" in args:
+                    stellar_address = args.get("stellar_address", None)
+                else:
+                    raise j.exceptions.Value(f"missing a required argument: 'stellar_address' in args dict")
+            except j.data.serializers.json.json.JSONDecodeError:
+                pass
         converter_wallet = self.package_author.conversion_wallet
-        # TODO import tfchain sal
-        tfchain_client = None
 
         # Check after getting the wallets so all required imports are certainly met
         if tfchain_address != self._stellar_address_to_tfchain_address(stellar_address):
@@ -160,7 +209,7 @@ class TFchainmigration_service(BaseActor):
         unlockhash = unlockhash_get(tfchain_address)
         balance = unlockhash.balance()
 
-        is_authorized = tfchain_client.authcoin.is_authorized(unlockhash.unlockhash)
+        is_authorized = self._is_authorized(unlockhash.unlockhash)
 
         if is_authorized:
             raise j.exceptions.Value("Tfchain addressess should be deauthorized first before migrating to Stellar")

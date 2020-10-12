@@ -50,28 +50,6 @@ class tfchainmigration_service:
 
         j.sals.nginx.main.websites.default_443.configure()
         j.sals.nginx.main.websites.default_80.configure()
-
-        # conversion_wallet_name = self._package.install_kwargs.get("wallet", "converter")
-
-        # self.conversion_wallet = j.clients.stellar.get(conversion_wallet_name)
-
-        # DOMAIN = self._package.install_kwargs.get("domain", "testnet.threefoldtoken.io")
-        # for port in (443, 80):
-        #     website = self.openresty.get_from_port(port)
-        #     website.ssl = port == 443
-        #     website.domain = DOMAIN
-
-        #     locations = website.locations.get(name=f"conversion_service_{port}_locations")
-
-        #     include_location = locations.get_location_custom(f"conversion_service_includes_{port}")
-        #     include_location.is_auth = False
-        #     include_location.config = f"""
-        #     location /threefoldfoundation/conversion_service {{
-        #         rewrite /threefoldfoundation/conversion_service/(.*)$ /threefoldfoundation/conversion_service/actors/conversion_service/$1;
-        #     }}"""
-
-        #     locations.configure()
-        #     website.configure()
         create_gevent_pools()
 
     def start(self, **kwargs):
