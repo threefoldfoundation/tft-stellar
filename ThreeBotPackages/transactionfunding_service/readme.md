@@ -69,7 +69,7 @@ The following kwargs can also be given to configure the package:
 - `domain`: default: `testnet.threefoldtoken.io`
 
 
-The server will start at `host/threefoldfoundation/transactionfunding_service/`
+The server will start at `<HOST>/transactionfunding_service/` or `<HOST>/threefoldfoundation/transactionfunding_service/`
 
 Test out the transfer tokens:
 
