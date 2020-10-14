@@ -1,0 +1,19 @@
+name = "unlock_service"
+is_auth = false
+is_admin = false
+
+
+[[servers]]
+name = "unlock_root_proxy"
+domain = "testnet.threefoldtoken.io"
+letsencryptemail = "tarekr@incubaid.com"
+includes = ["default_443.unlock*"]
+
+[[servers.locations]]
+name = "custom"
+type = "custom"
+custom_config = """
+location /threefoldfoundation/unlock_service/ {
+    rewrite /threefoldfoundation/unlock_service/(.*)$ /unlock_service/actors/unlock_service/$1;
+}
+"""
