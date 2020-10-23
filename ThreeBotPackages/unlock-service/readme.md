@@ -8,7 +8,7 @@ To be used as a Threebot package. See [https://github.com/threefoldtech/jumpscal
 - execute following:
 `kosmos -p 'j.servers.threebot.start()'`
 
-Once this process is completed, create the stellar and tfchain client and add this package to the Threebot.
+Once this process is completed, create the stellar and tfchain clients and add this package to the Threebot.
 
 testnet:
 
