@@ -26,7 +26,7 @@
           </div>
           <br />
           <br />
-          <p>Enter a valid Stellar address to receive TFT, this address must have a trustline to the TFT issuer! You will only be able to receive tokens once.</p>
+          <p>Enter a valid Stellar address to receive TFT, this address must have a trustline to the TFT issuer!</p>
           <br />
           <br />
           <v-btn
