@@ -1,2 +1,2 @@
 Click==7.0
-stellar-sdk==2.6.1
+stellar-sdk==2.8.1

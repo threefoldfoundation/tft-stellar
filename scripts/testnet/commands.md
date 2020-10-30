@@ -2,14 +2,14 @@
 
 ## Issuing Account
 
-These commands are available through [Jumpscale](https://github.com/threefoldtech/jumpscaleX_core).
+These commands are available through [js-ng shell](https://github.com/threefoldtech/js-sdk).
 
 Create the wallets:
 
 ```sh
-j.clients.stellar.new('tftissuerwallet', network='TEST')
-j.clients.stellar.new('freetftissuerwallet', network='TEST')
-j.clients.stellar.new('tftaissuerwallet', network='TEST')
+j.clients.stellar.new('testtftissuerwallet', network='TEST')
+j.clients.stellar.new('testfreetftissuerwallet', network='TEST')
+j.clients.stellar.new('testtftaissuerwallet', network='TEST')
 ```
 
 or recreate with the secrets.
@@ -17,9 +17,9 @@ or recreate with the secrets.
 Activate and fund the account:
 
 ```sh
-j.clients.stellar.tftissuerwallet.activate_through_friendbot()
-j.clients.stellar.tftissuerwallet.activate_through_friendbot()
-j.clients.stellar.tftaissuerwallet.activate_through_friendbot()
+j.clients.stellar.testtftissuerwallet.activate_through_friendbot()
+j.clients.stellar.testfreetftissuerwallet.activate_through_friendbot()
+j.clients.stellar.testtftaissuerwallet.activate_through_friendbot()
 ```
 
 ## Publish Token home domain
@@ -39,34 +39,20 @@ activate issuer accounts again, publish home domains
 service accounts:
 
 ```python
-j.clients.stellar.new('txfundingwallet',network='TEST',secret='')
-j.clients.stellar.new('converter',network='TEST',secret='')
-j.clients.stellar.new('activation_wallet',network='TEST',secret='')
-j.clients.stellar.new('faucetwallet',network='TEST',secret='')
+j.clients.stellar.new('testtxfundingwallet',network='TEST',secret='')
+j.clients.stellar.new('testconverter',network='TEST',secret='')
+j.clients.stellar.new('testactivation_wallet',network='TEST',secret='')
+j.clients.stellar.new('testfaucetwallet',network='TEST',secret='')
 ```
 
 ```python
-j.clients.stellar.txfundingwallet.activate_through_friendbot()
-j.clients.stellar.converter.activate_through_friendbot()
-j.clients.stellar.activation_wallet.activate_through_friendbot()
-j.clients.stellar.faucetwallet.activate_through_friendbot()
-j.clients.stellar.faucetwallet.add_known_trustline('FreeTFT')
-j.clients.stellar.txfundingwallet.add_known_trustline('TFT')
-j.clients.stellar.txfundingwallet.add_known_trustline('FreeTFT')
-j.clients.stellar.txfundingwallet.add_known_trustline('TFTA')
-j.clients.stellar.converter.add_known_trustline('TFT')
-j.clients.stellar.converter.add_known_trustline('TFTA')
-```
-
-Trader accounts:
-
-```python
-j.clients.stellar.new('tfttraderwallet',network='TEST',secret='')
-j.clients.stellar.new('freetfttraderwallet',network='TEST',secret='')
-j.clients.stellar.tfttraderwallet.activate_through_friendbot()
-j.clients.stellar.freetfttraderwallet.activate_through_friendbot()
-j.clients.stellar.tfttraderwallet.add_known_trustline('TFT')
-j.clients.stellar.freetfttraderwallet.add_known_trustline('FreeTFT')
-j.clients.stellar.tftissuerwallet.transfer(j.clients.stellar.tfttraderwallet.address, amount="500000",asset='TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3',fund_transaction=False)
-j.clients.stellar.freeetftissuerwallet.transfer(j.clients.stellar.freetfttraderwallet.address,amount="500000",asset='FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R', fund_transaction=False)
+j.clients.stellar.testtxfundingwallet.activate_through_friendbot()
+j.clients.stellar.testconverter.activate_through_friendbot()
+j.clients.stellar.testactivation_wallet.activate_through_friendbot()
+j.clients.stellar.testfaucetwallet.activate_through_friendbot()
+j.clients.stellar.testfaucetwallet.add_known_trustline('TFT')
+j.clients.stellar.testtxfundingwallet.add_known_trustline('TFT')
+j.clients.stellar.testtxfundingwallet.add_known_trustline('TFTA')
+j.clients.stellar.testconverter.add_known_trustline('TFT')
+j.clients.stellar.testconverter.add_known_trustline('TFTA')
 ```
