@@ -47,22 +47,14 @@ Keep in mind that the stellar testnet is [reset every quarter](https://www.stell
 Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
 
 ## Token statistics
+
  Token statistics can be seen on https://tokenstats.threefoldtoken.com.
 
-## Acquiring testnet tokens
-
-### TFT
-
-Dex: https://stellar.expert/explorer/testnet/asset/TFT-GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3-1?filter=orderbook
-
-### FreeTFT
-
-- Dex: https://stellar.expert/explorer/testnet/asset/FreeTFT-GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R-2?filter=orderbook
-- Faucet: https://getfreetft.testnet.threefold.io
+[A js-sdk script for getting statistics about  one of the tokens is also available](lib/stats/readme.md).
 
 ## Wallet implementations
 
-Whil we provide some tooling to make it easier for users of only these tokens, it are regular assets on the Stellar network so any Stellar wallet can be used.
+While we provide some tooling to make it easier for users of only these tokens, it are regular assets on the Stellar network so any Stellar wallet can be used.
 
 - [Jumpscale](https://github.com/threefoldtech/jumpscaleX_libs/tree/development/JumpscaleLibs/clients/stellar)
 
@@ -88,7 +80,10 @@ Url: `https://tokenservices.threefold.io`
 
 Deployed services:
 
-None yet
+- Conversion service
+- Unlock Service
+- Transaction funding service
+- Activation service
 
 ### Testnet services
 
@@ -100,9 +95,6 @@ Deployed services:
 - Unlock Service
 - Transaction funding service
 - Activation service
-- [Freetft faucet](https://getfreetft.testnet.threefold.io)
-
 
 ## Statistics
 
-[A js-sdk script for getting statistics about  one of the tokens is available](lib/stats/readme.md).
