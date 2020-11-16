@@ -36,9 +36,9 @@ j.servers.threebot.default.packages.add(package_path)
 
 The following kwargs can also be given to configure the package:
 
-- *wallet* : Name of new/exisiting stellar wallet client instance
+- *wallet* : Name of new/existing stellar wallet client instance
 - *secret* : Activation secret of wallet to import
-- *network*: "STD" or "TEST" to indicate the type of the stellar network
+- *network*: "STD" or "TEST" to indicate the type of the stellar network (only required when importing a wallet through the secret argument)
 - *domain* : domain configured to access the service
 
 Example with kwargs:
