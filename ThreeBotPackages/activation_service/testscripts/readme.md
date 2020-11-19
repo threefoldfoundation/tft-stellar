@@ -7,5 +7,5 @@
 ## Submit to the service
 
 ```sh
-curl --insecure -H "Content-Type: application/json" -d '{ "args": { "address": "<newaddress>"  }}' "http://localhost:443/threefoldfoundation/activation_service/create_activation_code"
+curl --insecure -H "Content-Type: application/json" -d '{ "args": { "address": "<newaddress>"  }}' "https://localhost:443/threefoldfoundation/activation_service/create_activation_code"
 ```
