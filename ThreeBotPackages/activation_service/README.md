@@ -6,7 +6,7 @@ Js-ng Service for new accounts activation. To be used as a jumpscale package.
 
 You need following knowledge to start this server.
 
-- `activation_secret`: is the secret key of the activation  account which holds the Stellar XLM to fund the accounts.
+- `activation_secret`: is the secret key of the activation account which holds the Stellar XLM to fund the accounts.
 
 ## Running
 
@@ -29,15 +29,13 @@ execute the following command in jsng shell:
 Once this process is completed add the package to the threebot server from jsng shell like this:
 
 ```python
-from pathlib import Path
-package_path=str(Path.joinpath(Path.home(),"sandbox","code","github","threefoldfoundation","tft-stellar","ng-pkgs","activation_service"))
-j.servers.threebot.default.packages.add(package_path)
+j.servers.threebot.default.packages.add(giturl="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/activation_service")
 ```
 
 The following kwargs can also be given to configure the package:
 
 - *wallet* : Name of new/existing stellar wallet client instance
-- *secret* : Activation secret of wallet to import
+- *secret* : Activation secret of wallet to import ( if you are not using an already existing wallet)
 - *network*: "STD" or "TEST" to indicate the type of the stellar network (only required when importing a wallet through the secret argument)
 - *domain* : domain configured to access the service
 
