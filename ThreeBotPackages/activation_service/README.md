@@ -10,17 +10,11 @@ You need following knowledge to start this server.
 
 ## Running
 
-Make sure the wallet exists and is saved:
+If you want to use a persistent wallet, make sure the wallet exists and is saved:
 
 ```python
 j.clients.stellar.new("activation_wallet", network="TEST",secret="<activation_secret>")
 j.clients.stellar.activation_wallet.save()
-```
-
-clone this repository:
-
-```python
-j.tools.git.ensure_repo("https://github.com/threefoldfoundation/tft-stellar.git")
 ```
 
 execute the following command in jsng shell:
@@ -36,11 +30,15 @@ The following kwargs can also be given to configure the package:
 
 - *wallet* : Name of new/existing stellar wallet client instance
 - *secret* : Activation secret of wallet to import ( if you are not using an already existing wallet)
-- *network*: "STD" or "TEST" to indicate the type of the stellar network (only required when importing a wallet through the secret argument)
+- *network*: "STD" or "TEST" to indicate the type of the stellar network (only required when importing a wallet through the secret argument). Default="TEST"
 - *domain* : domain configured to access the service
 
 Example with kwargs:
 `j.servers.threebot.default.packages.add(package_path,wallet="WALLET_NAME",domain="domain.test.1")`
+
+If the wallet name does not exist and the secret or network are not set through the install arguments, environment variables can be used to set the secret and network:
+- **ACTIVATION_WALLET_SECRET**
+- **ACTIVATION_SERVICE_NETWORK**
 
 ## Actor
 

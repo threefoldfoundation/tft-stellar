@@ -1,5 +1,6 @@
 import os
 import sys
+import os
 import toml
 
 import gevent
@@ -18,7 +19,11 @@ class activation_service:
             wallet=j.clients.stellar.get(wallet_name)
         else:
             secret = kwargs.get("secret", None)
-            network = kwargs.get("network", "TEST")
+            if not secret:
+                secret =  os.environ.get('ACTIVATION_WALLET_SECRET',None)
+            network = kwargs.get("network", None)
+            if not network:
+                network=os.environ.get('ACTIVATION_SERVICE_NETWORK','TEST')
             wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
             if not secret:
                 if network == "TEST":
