@@ -31,13 +31,8 @@ wallet.add_known_trustline("TFT") # Add TFT trustline
 # Save the wallet
 j.clients.stellar.faucet_wallet.save()
 ```
+
 Fund the wallet with TFTs to transfer from
-
-clone this repository:
-
-```python
-j.tools.git.ensure_repo("https://github.com/threefoldfoundation/tft-stellar.git")
-```
 
 execute the following command in jsng shell:
 `j.servers.threebot.start_default()`
