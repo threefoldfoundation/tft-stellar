@@ -22,8 +22,6 @@ class activation_service:
             if not secret:
                 if network == "TEST":
                     wallet.activate_through_friendbot()
-                else:
-                    wallet.activate_through_threefold_service()
             wallet.save()
 
         if "default_443" in j.sals.nginx.main.websites.list_all(): 
