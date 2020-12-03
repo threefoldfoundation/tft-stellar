@@ -10,15 +10,14 @@ from jumpscale.servers.gedis.baseactor import BaseActor, actor_method
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/../sals/")
-from activation_sal import activate_account as activate_account_sal, WALLET_NAME
+from activation_sal import activate_account as activate_account_sal, get_wallet
 
-activation_wallet = j.clients.stellar.get(WALLET_NAME)
 
 
 class ActivationService(BaseActor):
     def _stellar_address_used_before(self, stellar_address):
         try:
-            transactions = activation_wallet.list_transactions(address=stellar_address)
+            transactions = get_wallet().list_transactions(address=stellar_address)
             return len(transactions) != 0
         except stellar_sdk.exceptions.NotFoundError:
             return False

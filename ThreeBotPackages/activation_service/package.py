@@ -8,21 +8,25 @@ from jumpscale.loader import j
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/sals/")
-from activation_sal import create_gevent_pool, set_wallet_name
+from activation_sal import create_gevent_pool, set_wallet
 
 
 class activation_service:
     def install(self, **kwargs):
         wallet_name = kwargs.get("wallet", "activation_wallet")
-        set_wallet_name(wallet_name)
-        if wallet_name not in j.clients.stellar.list_all():
+        if wallet_name in j.clients.stellar.list_all():
+            wallet=j.clients.stellar.get(wallet_name)
+        else:
             secret = kwargs.get("secret", None)
             network = kwargs.get("network", "TEST")
             wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
             if not secret:
                 if network == "TEST":
                     wallet.activate_through_friendbot()
-            wallet.save()
+
+        set_wallet(wallet)
+
+        
 
         if "default_443" in j.sals.nginx.main.websites.list_all(): 
             location_actors_443 = j.sals.nginx.main.websites.default_443.locations.get(name="activation_actors")
