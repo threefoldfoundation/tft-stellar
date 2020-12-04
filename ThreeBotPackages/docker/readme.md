@@ -1,14 +1,7 @@
 # Dockerfiles for the ThreefoldFoundation services
 
-## base jssdk
+This container image contains a threebot with all the tft services installed
 
 ```sh
-docker build jssdk -t jssdk --no-cache
+docker build . -t tftservices:v1.2 --no-cache
 ```
-
-## activationservice
-
-```sh
-docker build activationservice -t activationservice:v1.2 --no-cache
-```
-
