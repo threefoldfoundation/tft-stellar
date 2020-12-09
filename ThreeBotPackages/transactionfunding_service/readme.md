@@ -57,9 +57,7 @@ Install the package.
 Once this process is completed add the package to the threebot server from jsng shell like this:
 
 ```python
-from pathlib import Path
-package_path=str(Path.joinpath(Path.home(),"sandbox","code","github","threefoldfoundation","tft-stellar","ThreeBotPackages","transactionfunding-service"))
-j.servers.threebot.default.packages.add(package_path)
+j.servers.threebot.default.packages.add(giturl="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/transactionfunding_service")
 ```
 
 The following kwargs can also be given to configure the package:
@@ -67,7 +65,6 @@ The following kwargs can also be given to configure the package:
 - `wallet`: the wallet used to fund the transactions, default: `txfundingwallet`
 - `slaves`: the number of wallets to use to distribute the load, default: 30
 - `domain`: default: `testnet.threefoldtoken.io`
-
 
 The server will start at `<HOST>/transactionfunding_service/` or `<HOST>/threefoldfoundation/transactionfunding_service/`
 
