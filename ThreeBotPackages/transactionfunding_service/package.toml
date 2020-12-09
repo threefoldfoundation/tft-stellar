@@ -1,0 +1,19 @@
+name = "transactionfunding_service"
+is_auth = false
+is_admin = false
+
+
+[[servers]]
+name = "transactionfunding_root_proxy"
+domain = "testnet.threefoldtoken.io"
+letsencryptemail = "tarekr@incubaid.com"
+includes = ["default_443.transactionfunding*"]
+
+[[servers.locations]]
+name = "custom"
+type = "custom"
+custom_config = """
+location /threefoldfoundation/transactionfunding_service {
+    rewrite /threefoldfoundation/transactionfunding_service/(.*)$ /transactionfunding_service/actors/transactionfunding_service/$1;
+}
+"""

@@ -2,7 +2,7 @@
 
 A funding service accepts transaction envelopes and funds the required lumen as described in the [documentation](../../docs/transaction_funding.md).
 
-To be used as a JsX Threebot package. See [https://github.com/threefoldtech/jumpscaleX_threebot](https://github.com/threefoldtech/jumpscaleX_threebot).
+To be used as a js-ng package.
 
 ## Requirements
 
@@ -14,16 +14,17 @@ It needs trustlines to all tokens it funds transactions for to claim the fee.
 With a new funding wallet(Testnet):
 
 ```python
-JSX> txfundingwallet = j.clients.stellar.new("txfundingwallet", network="TEST")
-JSX> txfundingwallet.activate_through_friendbot()
-JSX> txfundingwallet.add_trustline('TFT','GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3')
-JSX> txfundingwallet.add_trustline('FreeTFT','GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R')
+txfundingwallet = j.clients.stellar.new("txfundingwallet", network="TEST")
+txfundingwallet.activate_through_friendbot()
+txfundingwallet.add_trustline('TFT','GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3')
+txfundingwallet.add_trustline('FreeTFT','GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R')
+txfundingwallet.save()
 ```
 
 for production:
 
 ```python
-JSX> txfundingwallet = j.clients.stellar.new("txfundingwallet", network="TEST")
+txfundingwallet = j.clients.stellar.new("txfundingwallet", network="TEST")
 ```
 
 Activate it from another wallet
@@ -31,8 +32,10 @@ Activate it from another wallet
 Add the trustlines:
 
 ```python
-JSX> txfundingwallet.add_trustline('TFT','GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47')
-JSX> txfundingwallet.add_trustline('FreeTFT','GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT')
+txfundingwallet.add_trustline('TFT','GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47')
+txfundingwallet.add_trustline('FreeTFT','GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT')
+txfundingwallet.save()
+
 ```
 
 With an existing funding wallet:
@@ -40,28 +43,33 @@ With an existing funding wallet:
 `txfundingwallet_secret`: is the secret key of the funding account which holds the Lumens and already has the trustlines.
 
 ```python
-JSX> j.clients.stellar.new("txfundingwallet", network="TEST",secret="<txfundingwallet_secret>")
+j.clients.stellar.new("txfundingwallet", network="TEST",secret="<txfundingwallet_secret>")
+txfundingwallet.save()
+
 ```
 
 ## Running
 
-- execute following:
-`kosmos -p 'j.servers.threebot.start()'`
+execute the following command in jsng shell:
+`j.servers.threebot.start_default()`
 
-Once this process is completed, create the stellar and tfchain client and add this package to the Threebot.
+Install the package.
+Once this process is completed add the package to the threebot server from jsng shell like this:
 
-install arguments:
+```python
+from pathlib import Path
+package_path=str(Path.joinpath(Path.home(),"sandbox","code","github","threefoldfoundation","tft-stellar","ThreeBotPackages","transactionfunding-service"))
+j.servers.threebot.default.packages.add(package_path)
+```
+
+The following kwargs can also be given to configure the package:
 
 - `wallet`: the wallet used to fund the transactions, default: `txfundingwallet`
 - `slaves`: the number of wallets to use to distribute the load, default: 30
 - `domain`: default: `testnet.threefoldtoken.io`
 
-```python
-JSX> j.tools.threebot_packages.zerobot__admin.actors.package_manager.package_add(git_url="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/transactionfunding-service",install_kwargs={ "domain": "testnet.threefold.io" })
-JSX>  j.tools.threebot_packages.threefoldfoundation__transactionfunding_service.start()
-```
 
-The server will start at `host/threefoldfoundation/transactionfunding_service/`
+The server will start at `<HOST>/transactionfunding_service/` or `<HOST>/threefoldfoundation/transactionfunding_service/`
 
 Test out the transfer tokens:
 

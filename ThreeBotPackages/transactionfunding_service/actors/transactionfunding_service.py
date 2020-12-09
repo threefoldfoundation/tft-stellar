@@ -1,53 +1,39 @@
-from Jumpscale import j
+import os
+import sys
 import random
 import time
+import stellar_sdk
 
-_TFT_ISSUERS = {
-    "TEST": "GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3",
-    "STD": "GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47",
-}
+from jumpscale.loader import j
+from jumpscale.servers.gedis.baseactor import BaseActor, actor_method
 
+current_full_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_full_path + "/sals/")
+from transactionfunding_sal import ASSET_ISSUERS, WALLET_NAME, NUMBER_OF_SLAVES, fund_if_needed
 
-_TFTA_ISSUERS = {
-    "TEST": "GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT",
-    "STD": "GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2",
-}
-
-_FREETFT_ISSUERS = {
-    "TEST": "GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R",
-    "STD": "GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT",
-}
-
-_ASSET_ISSUERS = {"TFT": _TFT_ISSUERS, "TFTA": _TFTA_ISSUERS, "FreeTFT": _FREETFT_ISSUERS}
 
 _HORIZON_NETWORKS = {"TEST": "https://horizon-testnet.stellar.org", "STD": "https://horizon.stellar.org"}
 
 
-class transactionfunding_service(j.baseclasses.threebot_actor):
+class Transactionfunding_service(BaseActor):
     def _get_horizon_server(self, network):
-        import stellar_sdk
 
         return stellar_sdk.Server(horizon_url=_HORIZON_NETWORKS[str(network)])
 
     def _create_fee_payment(self, from_address, asset):
-        main_wallet = self.package._package_author.get_main_fundingwallet()
+        main_wallet = j.clients.stellar.get(WALLET_NAME)
         fee_target = main_wallet.address
-
-        import stellar_sdk
 
         return stellar_sdk.Payment(fee_target, asset, "0.1", from_address)
 
     def _get_slave_fundingwallet_(self):
-        main_walletname = self.package.install_kwargs.get("wallet", "txfundingwallet")
-
-        nr_of_slaves = self.package.install_kwargs.get("slaves", 30)
         earliest_sequence = int(time.time()) - 60  # 1 minute
         least_recently_used_wallet = None
         # Loop over the slavewallets, starting at a random one
-        startindex = random.randrange(0, nr_of_slaves)
-        r = range(startindex, startindex + nr_of_slaves)
-        for slaveindex in [i % nr_of_slaves for i in r]:
-            walletname = main_walletname + "_" + str(slaveindex)
+        startindex = random.randrange(0, NUMBER_OF_SLAVES)
+        r = range(startindex, startindex + NUMBER_OF_SLAVES)
+        for slaveindex in [i % NUMBER_OF_SLAVES for i in r]:
+            walletname = WALLET_NAME + "_" + str(slaveindex)
             wallet = j.clients.stellar.get(walletname)
             a = wallet.load_account()
             if a.last_created_sequence_is_used:
@@ -58,15 +44,11 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
                     least_recently_used_wallet = wallet
         return least_recently_used_wallet
 
-    @j.baseclasses.actor_method
-    def fund_transaction(self, transaction, schema_out=None, user_session=None):
+    @actor_method
+    def fund_transaction(self, transaction):
         """
-        ```in
-        transaction = (S)
-        ```
-
-        ```out
-        transaction_xdr = (S)
+        param:transaction = (S)
+        return: transaction_xdr = (S)
         ```
         """
         funding_wallet = self._get_slave_fundingwallet_()
@@ -74,7 +56,6 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
             raise j.exceptions.Base("Service Unavailable")
 
         # after getting the wallet, the required imports are available
-        import stellar_sdk
 
         if str(funding_wallet.network) == "TEST":
             network_passphrase = stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
@@ -86,18 +67,18 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         source_signing_kp = stellar_sdk.Keypair.from_secret(funding_wallet.secret)
 
         if len(txe.transaction.operations) == 0:
-            raise j.exceptions.Base("No operations in the supplied transaction")
+            raise j.exceptions.NotFound("No operations in the supplied transaction")
         asset = None
         for op in txe.transaction.operations:
             if type(op) != stellar_sdk.operation.Payment:
-                raise j.exceptions.Base("Only payment operations are supported")
-            if op.asset.code not in _ASSET_ISSUERS:
-                raise j.exceptions.Base("Unsupported asset")
-            if _ASSET_ISSUERS[op.asset.code][str(funding_wallet.network)] != op.asset.issuer:
-                raise j.exceptions.Base("Unsupported asset")
+                raise j.exceptions.Value("Only payment operations are supported")
+            if op.asset.code not in ASSET_ISSUERS:
+                raise j.exceptions.Value("Unsupported asset")
+            if ASSET_ISSUERS[op.asset.code][str(funding_wallet.network)] != op.asset.issuer:
+                raise j.exceptions.Value("Unsupported asset")
             if asset:
                 if asset != op.asset:
-                    raise j.exceptions.Base("Only 1 type of asset is supported")
+                    raise j.exceptions.Value("Only 1 type of asset is supported")
             else:
                 asset = op.asset
 
@@ -115,7 +96,9 @@ class transactionfunding_service(j.baseclasses.threebot_actor):
         txe.transaction.sequence = source_account.sequence
         txe.sign(source_signing_kp)
 
-        out = schema_out.new()
-        out.transaction_xdr = txe.to_xdr()
-        self.package._package_author.fund_if_needed(funding_wallet.name)
-        return out
+        transaction_xdr = txe.to_xdr()
+        fund_if_needed(funding_wallet.name)
+        return transaction_xdr
+
+
+Actor = Transactionfunding_service
