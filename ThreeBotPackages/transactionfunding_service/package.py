@@ -30,9 +30,6 @@ class transactionfunding_service:
             if not secret:
                 if network == "TEST":
                     main_wallet.activate_through_friendbot()
-
-                else:
-                    main_wallet.activate_through_threefold_service()
                 
                 main_wallet.add_known_trustline("TFT")
                 main_wallet.add_known_trustline("TFTA")
