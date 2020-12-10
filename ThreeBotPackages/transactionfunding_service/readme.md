@@ -24,7 +24,7 @@ txfundingwallet.save()
 for production:
 
 ```python
-txfundingwallet = j.clients.stellar.new("txfundingwallet", network="TEST")
+txfundingwallet = j.clients.stellar.new("txfundingwallet", network="STD")
 ```
 
 Activate it from another wallet
@@ -33,6 +33,7 @@ Add the trustlines:
 
 ```python
 txfundingwallet.add_trustline('TFT','GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47')
+txfundingwallet.add_trustline('TFTA','GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2')
 txfundingwallet.add_trustline('FreeTFT','GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT')
 txfundingwallet.save()
 

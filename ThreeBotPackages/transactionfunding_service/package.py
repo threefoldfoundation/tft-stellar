@@ -30,15 +30,13 @@ class transactionfunding_service:
             if not secret:
                 if network == "TEST":
                     main_wallet.activate_through_friendbot()
-                    freetft_asset = ASSET_ISSUERS["FreeTFT"][network]
-                    tft_asset = ASSET_ISSUERS["TFT"][network]
 
                 else:
                     main_wallet.activate_through_threefold_service()
-                    freetft_asset = ASSET_ISSUERS["FreeTFT"][network]
-                    tft_asset = ASSET_ISSUERS["TFT"][network]
-                main_wallet.add_trustline("TFT", tft_asset)
-                main_wallet.add_trustline("FreeTFT", freetft_asset)
+                
+                main_wallet.add_known_trustline("TFT")
+                main_wallet.add_known_trustline("TFTA")
+                main_wallet.add_known_trustline("FreeTFT")
             main_wallet.save()
 
         nr_of_slaves = kwargs.get("slaves", 30)
