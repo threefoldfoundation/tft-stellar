@@ -30,7 +30,7 @@ class transactionfunding_service:
             network = kwargs.get("network", None)
 
             if not network:
-                network=os.environ.get('TFT_SERVICES_NETWORK','TEST')
+                network=os.environ.get('TFT_SERVICES_NETWORK',None)
             main_wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
             if not secret:
                 if network == "TEST":
