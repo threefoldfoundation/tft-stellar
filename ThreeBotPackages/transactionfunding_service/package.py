@@ -82,8 +82,11 @@ class transactionfunding_service:
     def uninstall(self):
         """Called when package is deleted
         """
-        j.sals.nginx.main.websites.default_443.locations.delete("transactionfunding_root_proxy")
-        j.sals.nginx.main.websites.default_80.locations.delete("transactionfunding_root_proxy")
+        if "default_443" in j.sals.nginx.main.websites.list_all():
+            j.sals.nginx.main.websites.default_443.locations.delete("transactionfunding_root_proxy")
+        
+        if "default_80" in j.sals.nginx.main.websites.list_all(): 
+            j.sals.nginx.main.websites.default_80.locations.delete("transactionfunding_root_proxy")
 
     def stop(self):
         stop_funding_loop()
