@@ -66,6 +66,13 @@ The following kwargs can also be given to configure the package:
 - `wallet`: the wallet used to fund the transactions, default: `txfundingwallet`
 - `slaves`: the number of wallets to use to distribute the load, default: 30
 - `domain`: default: `testnet.threefoldtoken.io`
+- `secret`: Activation secret of wallet to import ( if you are not using an already existing wallet)
+- `network`: "STD" or "TEST" to indicate the type of the stellar network (only required when importing a wallet through the secret argument).
+
+If the wallet name does not exist and the secret or network are not set through the install arguments, environment variables can be used to set the secret and network:
+
+- **TXFUNDING_WALLET_SECRET**
+- **TFT_SERVICES_NETWORK**
 
 The server will start at `<HOST>/transactionfunding_service/` or `<HOST>/threefoldfoundation/transactionfunding_service/`
 

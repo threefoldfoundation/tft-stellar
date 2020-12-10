@@ -37,8 +37,9 @@ Example with kwargs:
 `j.servers.threebot.default.packages.add(package_path,wallet="WALLET_NAME",domain="domain.test.1")`
 
 If the wallet name does not exist and the secret or network are not set through the install arguments, environment variables can be used to set the secret and network:
+
 - **ACTIVATION_WALLET_SECRET**
-- **ACTIVATION_SERVICE_NETWORK**
+- **TFT_SERVICES_NETWORK**
 
 ## Actor
 
