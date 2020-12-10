@@ -31,12 +31,15 @@ class transactionfunding_service:
 
             if not network:
                 network=os.environ.get('TFT_SERVICES_NETWORK',None)
-            main_wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
-            if not secret:
-                if network == "TEST":
-                    main_wallet.activate_through_friendbot()
-                    main_wallet.save()
-                
+            if network:
+                main_wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
+                if not secret:
+                    if network == "TEST":
+                        main_wallet.activate_through_friendbot()
+                        main_wallet.save()
+                        
+        #make sure the trustlines exist for the main wallet
+        if main_wallet:
             main_wallet.add_known_trustline("TFT")
             main_wallet.add_known_trustline("TFTA")
             main_wallet.add_known_trustline("FreeTFT")
