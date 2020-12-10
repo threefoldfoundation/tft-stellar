@@ -51,6 +51,8 @@ def set_wallet_name(wallet_name):
 def ensure_slavewallets(nr_of_slaves):
     global NUMBER_OF_SLAVES
     NUMBER_OF_SLAVES = nr_of_slaves
+    if WALLET_NAME not in j.clients.stellar.list_all():
+        return
     main_wallet = j.clients.stellar.get(WALLET_NAME)
     for slaveindex in range(nr_of_slaves):
         walletname = str(main_wallet.instance_name) + "_" + str(slaveindex)

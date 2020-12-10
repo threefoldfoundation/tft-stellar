@@ -37,9 +37,9 @@ class transactionfunding_service:
                     if network == "TEST":
                         main_wallet.activate_through_friendbot()
                         main_wallet.save()
-                        
+
         #make sure the trustlines exist for the main wallet
-        if main_wallet:
+        if wallet_name in j.clients.stellar.list_all():
             main_wallet.add_known_trustline("TFT")
             main_wallet.add_known_trustline("TFTA")
             main_wallet.add_known_trustline("FreeTFT")
