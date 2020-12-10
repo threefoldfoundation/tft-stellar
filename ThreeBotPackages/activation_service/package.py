@@ -23,7 +23,7 @@ class activation_service:
                 secret =  os.environ.get('ACTIVATION_WALLET_SECRET',None)
             network = kwargs.get("network", None)
             if not network:
-                network=os.environ.get('ACTIVATION_SERVICE_NETWORK','TEST')
+                network=os.environ.get('TFT_SERVICES_NETWORK','TEST')
             wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
             if not secret:
                 if network == "TEST":
