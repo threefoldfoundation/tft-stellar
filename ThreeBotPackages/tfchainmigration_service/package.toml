@@ -1,0 +1,19 @@
+name = "tfchainmigration_service"
+is_auth = false
+is_admin = false
+
+
+[[servers]]
+name = "tfchainmigration_root_proxy"
+domain = "testnet.threefoldtoken.io"
+letsencryptemail = "tarekr@incubaid.com"
+includes = ["default_443.tfchainmigration*"]
+
+[[servers.locations]]
+name = "custom"
+type = "custom"
+custom_config = """
+location /threefoldfoundation/tfchainmigration_service/ {
+    rewrite /threefoldfoundation/tfchainmigration_service/(.*)$ /tfchainmigration_service/actors/tfchainmigration_service/$1;
+"""
+
