@@ -17,12 +17,6 @@ j.clients.stellar.new("converter_wallet", network="TEST",secret="<converter_secr
 j.clients.stellar.activation_wallet.save()
 ```
 
-clone this repository:
-
-```python
-j.tools.git.ensure_repo("https://github.com/threefoldfoundation/tft-stellar.git")
-```
-
 execute the following command in jsng shell:
 `j.servers.threebot.start_default()`
 
@@ -37,9 +31,7 @@ Install the package.
 Once this process is completed add the package to the threebot server from jsng shell like this:
 
 ```python
-from pathlib import Path
-package_path=str(Path.joinpath(Path.home(),"sandbox","code","github","threefoldfoundation","tft-stellar","ThreeBotPackages","tfchainmigration_service"))
-j.servers.threebot.default.packages.add(package_path)
+j.servers.threebot.default.packages.add(giturl="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/tfchainmigration_service")
 ```
 
 The server will start at `host/threefoldfoundation/tfchainmigration_service/`
