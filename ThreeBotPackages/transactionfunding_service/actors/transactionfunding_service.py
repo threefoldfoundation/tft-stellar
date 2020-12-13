@@ -26,7 +26,7 @@ class Transactionfunding_service(BaseActor):
 
         return stellar_sdk.Payment(fee_target, asset, "0.1", from_address)
 
-    def _get_slave_fundingwallet_(self):
+    def _get_slave_fundingwallet(self):
         earliest_sequence = int(time.time()) - 60  # 1 minute
         least_recently_used_wallet = None
         # Loop over the slavewallets, starting at a random one
@@ -51,11 +51,9 @@ class Transactionfunding_service(BaseActor):
         return: transaction_xdr = (S)
         ```
         """
-        funding_wallet = self._get_slave_fundingwallet_()
+        funding_wallet = self._get_slave_fundingwallet()
         if not funding_wallet:
             raise j.exceptions.Base("Service Unavailable")
-
-        # after getting the wallet, the required imports are available
 
         if str(funding_wallet.network) == "TEST":
             network_passphrase = stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
