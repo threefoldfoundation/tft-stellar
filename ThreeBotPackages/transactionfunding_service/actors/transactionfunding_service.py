@@ -45,12 +45,24 @@ class Transactionfunding_service(BaseActor):
         return least_recently_used_wallet
 
     @actor_method
-    def fund_transaction(self, transaction):
+    def fund_transaction(self, transaction: str = None, args: dict = None):
         """
         param:transaction = (S)
         return: transaction_xdr = (S)
         ```
         """
+        # Backward compatibility with jsx service for request body {'args': {'transaction': <transaction>}}
+        if not transaction and not args:
+            raise j.exceptions.Value(f"missing a required argument: 'transaction'")
+        if args:
+            try:
+                if "transaction" in args:
+                    transaction = args.get("transaction", None)
+                else:
+                    raise j.exceptions.Value(f"missing a required argument: 'transaction' in args dict")
+            except j.data.serializers.json.json.JSONDecodeError:
+                pass
+
         funding_wallet = self._get_slave_fundingwallet()
         if not funding_wallet:
             raise j.exceptions.Base("Service Unavailable")
