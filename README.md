@@ -18,6 +18,15 @@ Threefoldtoken on the stellar network
 
 Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
 
+### TFtech testnetwork
+
+Since the Stellar testnet network is overloaded lately, TFT is also available on the TFTech Stellar network.
+The assetcode is TFT and the issueraddress is the same as on the Stellar testnet (GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3)
+
+The network passphrase is  "TFTech Test Network ; December 2020".
+
+A horizon server is available at https://horizon.testnet.threefold.io
+
 ## TFTA
 
 ### Production network
