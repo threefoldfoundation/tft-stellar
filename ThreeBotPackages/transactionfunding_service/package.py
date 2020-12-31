@@ -23,14 +23,15 @@ class transactionfunding_service:
     def install(self, **kwargs):
         wallet_name = kwargs.get("wallet", "txfundingwallet")
         set_wallet_name(wallet_name)
+        main_wallet = None
         if wallet_name not in j.clients.stellar.list_all():
             secret = kwargs.get("secret", None)
             if not secret:
-                secret =  os.environ.get('TXFUNDING_WALLET_SECRET',None)
+                secret = os.environ.get("TXFUNDING_WALLET_SECRET", None)
             network = kwargs.get("network", None)
 
             if not network:
-                network=os.environ.get('TFT_SERVICES_NETWORK',None)
+                network = os.environ.get("TFT_SERVICES_NETWORK", None)
             if network:
                 main_wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
                 if not secret:
@@ -38,8 +39,8 @@ class transactionfunding_service:
                         main_wallet.activate_through_friendbot()
                         main_wallet.save()
 
-        #make sure the trustlines exist for the main wallet
-        if wallet_name in j.clients.stellar.list_all():
+        # make sure the trustlines exist for the main wallet
+        if wallet_name in j.clients.stellar.list_all() and main_wallet:
             main_wallet.add_known_trustline("TFT")
             main_wallet.add_known_trustline("TFTA")
             main_wallet.add_known_trustline("FreeTFT")
@@ -53,7 +54,7 @@ class transactionfunding_service:
             location_actors_443.is_admin = False
             location_actors_443.save()
 
-        if "default_80" in j.sals.nginx.main.websites.list_all(): 
+        if "default_80" in j.sals.nginx.main.websites.list_all():
             location_actors_80 = j.sals.nginx.main.websites.default_80.locations.get(name="transactionfunding_actors")
             location_actors_80.is_auth = False
             location_actors_80.is_admin = False
@@ -74,7 +75,7 @@ class transactionfunding_service:
         if "default_443" in j.sals.nginx.main.websites.list_all():
             j.sals.nginx.main.websites.default_443.configure()
 
-        if "default_80" in j.sals.nginx.main.websites.list_all(): 
+        if "default_80" in j.sals.nginx.main.websites.list_all():
             j.sals.nginx.main.websites.default_80.configure()
 
         start_funding_loop()
@@ -87,8 +88,8 @@ class transactionfunding_service:
         """
         if "default_443" in j.sals.nginx.main.websites.list_all():
             j.sals.nginx.main.websites.default_443.locations.delete("transactionfunding_root_proxy")
-        
-        if "default_80" in j.sals.nginx.main.websites.list_all(): 
+
+        if "default_80" in j.sals.nginx.main.websites.list_all():
             j.sals.nginx.main.websites.default_80.locations.delete("transactionfunding_root_proxy")
 
     def stop(self):
