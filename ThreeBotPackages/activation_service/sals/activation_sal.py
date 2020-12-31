@@ -17,8 +17,7 @@ def activate_account(address, token):
     trusted_token = j.core.config.get('TF_TRUSTED_SERVICE_TOKEN')
     if token != trusted_token:
         raise j.exceptions.Value("activation token is not correct")
-    pool.apply(_activate_account, args=(address))
-
+    pool.apply(_activate_account, args=(address,))
 
 def set_wallet(wallet):
     global WALLET
