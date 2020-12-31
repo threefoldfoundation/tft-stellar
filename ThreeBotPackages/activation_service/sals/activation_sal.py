@@ -13,9 +13,11 @@ def create_gevent_pool():
 def _activate_account(address):
     WALLET.activate_account(address, starting_balance="3.6")
 
-
-def activate_account(address):
-    pool.apply(_activate_account, args=(address,))
+def activate_account(address, token):
+    trusted_token = j.core.config.get('TF_TRUSTED_SERVICE_TOKEN')
+    if token != trusted_token:
+        raise j.exceptions.Value("activation token is not correct")
+    pool.apply(_activate_account, args=(address))
 
 
 def set_wallet(wallet):

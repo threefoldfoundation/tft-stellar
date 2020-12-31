@@ -22,27 +22,33 @@ class ActivationService(BaseActor):
         except stellar_sdk.exceptions.NotFoundError:
             return False
 
-    def _activate_account(self, address):
+    def _activate_account(self, address, token):
         if self._stellar_address_used_before(address):
             raise j.exceptions.Value("This address is not new")
-        activate_account_sal(address)
+        activate_account_sal(address, token)
 
     @actor_method
-    def create_activation_code(self, address: str = None, args: dict = None) -> str:
+    def create_activation_code(self, address: str = None, token: str = None, args: dict = None) -> str:
         # Backward compatibility with jsx service for request body {'args': {'address': <address>}}
-        if not address and not args:
-            raise j.exceptions.Value(f"missing a required argument: 'address'")
-        if args:
+        if not args:
+            if not address:
+                raise j.exceptions.Value(f"missing a required argument: 'address'")
+            if not token:
+                raise j.exceptions.Value(f"missing a required argument: 'token'")
+        else:
             try:
-                if "address" in args:
-                    address = args.get("address", None)
-                else:
+                if "address" not in args:
                     raise j.exceptions.Value(f"missing a required argument: 'address' in args dict")
+                elif "token" not in args:
+                    raise j.exceptions.Value(f"missing a required argument: 'token' in args dict")
+                else:
+                    address = args.get("address", None)
+                    token = args.get("token", None)
             except j.data.serializers.json.json.JSONDecodeError:
                 pass
 
         try:
-            self._activate_account(address)
+            self._activate_account(address, token)
             response = j.data.serializers.json.dumps(
                 {"activation_code": "abcd", "address": address, "phonenumbers": ["+1234567890"]}
             )
