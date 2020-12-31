@@ -6,54 +6,18 @@ Threefoldtoken on the stellar network
 
 ## TFT
 
-### Production network
-
 - assetCode: TFT
 - issuer: GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47
 
-### Testnet
-
-- assetCode: TFT
-- issuer: GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3
-
-Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
-
-### TFtech testnetwork
-
-Since the Stellar testnet network is overloaded lately, TFT is also available on the TFTech Stellar network.
-The assetcode is TFT and the issueraddress is the same as on the Stellar testnet (GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3)
-
-The network passphrase is  "TFTech Test Network ; December 2020".
-
-A horizon server is available at https://horizon.testnet.threefold.io
-
 ## TFTA
-
-### Production network
 
 - assetCode: TFTA
 - issuer: GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2
 
-### Testnet
-
-- assetCode: TFTA
-- issuer: GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT
-
-Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
-
 ## FreeTFT
-
-### Production network
 
 - assetCode: FreeTFT
 - issuer: GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT
-
-### Testnet
-
-- assetCode: FreeTFT
-- issuer: GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R
-
-Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
 
 ## Token statistics
 
@@ -81,10 +45,6 @@ This contains following tools:
 - [Transaction funding service](ThreeBotPackages/transactionfunding-service/readme.md): Service for funding TFT transactions with Lumens(XLM).
 - [Activation service](ThreeBotPackages/activation-service/readme.md): Service for activation of new accounts.
 
-## Deployed services
-
-### Production services
-
 Url: `https://tokenservices.threefold.io`
 
 Deployed services:
@@ -93,17 +53,3 @@ Deployed services:
 - Unlock Service
 - Transaction funding service
 - Activation service
-
-### Testnet services
-
-Url: `https://testnet.threefold.io`
-
-Deployed services:
-
-- Conversion service
-- Unlock Service
-- Transaction funding service
-- Activation service
-
-## Statistics
-
