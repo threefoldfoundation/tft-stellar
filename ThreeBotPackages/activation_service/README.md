@@ -43,19 +43,13 @@ If the wallet name does not exist and the secret or network are not set through 
 
 ## Actor
 
-There is one actor with 2 methods.
+There is one actor with 1 method.
 
-- `create_activation_code`: Activates an address
-  - param `address`: Stellar address to create an activation code for
-  - returns an activation code, the stellar address and possible phonenumbers to send the he activation code to via SMS.
+- `activate_account`: Activates an addressdoes nothing, here for backwards compatibility
+  - param `address`: Stellar address to activate
 
-```sh
- curl -k --header "Content-Type: application/json" --request POST --data '{"address":"<address>"}' https://<host>/activation_service/create_activation_code
- ```
-
-- `activate_account`: does nothing, here for backwards compatibility
-  - param `activation_code`: activation code created by the `create_activation_code` method
+  This returns an xdr encoded transaction signed by the activation service that activates the account and adds a trustline to TFT using sponsored reserves. It needs to be signed by the address to activate and submitted to the Stellar network within 60 seconds.
 
 ```sh
-curl -k --header "Content-Type: application/json" --request POST --data '{"activation_code":"<activation_code>"}' https://<host>/activation_service/activate_account
+curl -k --header "Content-Type: application/json" --request POST --data '{"address":"<address>"}' https://<host>/threefoldfoundation/activate_account
 ```
