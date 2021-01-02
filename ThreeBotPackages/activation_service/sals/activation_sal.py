@@ -11,7 +11,7 @@ def create_gevent_pool():
 
 
 def _activate_account(address):
-    WALLET.activate_account(address, starting_balance="3.6")
+    WALLET.activate_account(address, starting_balance="2.5")
 
 
 def activate_account(address):
@@ -22,8 +22,6 @@ def set_wallet(wallet):
     global WALLET
     WALLET = wallet
 
+
 def get_wallet():
     return WALLET
-
-
- 

@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 import stellar_sdk
 from stellar_sdk.exceptions import Ed25519PublicKeyInvalidError, BadRequestError, SdkError
@@ -13,7 +14,6 @@ sys.path.append(current_full_path + "/../sals/")
 from activation_sal import activate_account as activate_account_sal, get_wallet
 
 
-
 class ActivationService(BaseActor):
     def _stellar_address_used_before(self, stellar_address):
         try:
@@ -22,43 +22,53 @@ class ActivationService(BaseActor):
         except stellar_sdk.exceptions.NotFoundError:
             return False
 
+    def _get_network_passphrase(self,network: str) -> str:
+        if network == "TEST":
+            return stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
+        return stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
+
     def _activate_account(self, address):
+        # TODO: serialize with a gevent pool
+        wallet = get_wallet()
+        tftasset = wallet._get_asset()
+        a = get_wallet().load_account()
+        try:
+            if not a.last_created_sequence_is_used:
+                if (wallet.sequencedate + 60) > int(time.time()):
+                    raise j.exceptions.Value(f"Busy, try again later")
+        except AttributeError:  # TODO: should be handled in the wallet
+            pass
+
+        server = wallet._get_horizon_server()
+
+        source_account = wallet.load_account()
+
+        base_fee = server.fetch_base_fee()
+        transaction = (
+            stellar_sdk.TransactionBuilder(
+                source_account=source_account,
+                network_passphrase=self._get_network_passphrase(wallet.network.value),
+                base_fee=base_fee,
+            )
+            .append_begin_sponsoring_future_reserves_op(address)
+            .append_create_account_op(destination=address, starting_balance="2.5")
+            .append_change_trust_op(asset_issuer=tftasset.issuer, asset_code=tftasset.code,source=address)
+            .append_end_sponsoring_future_reserves_op(address)
+            .set_timeout(60)
+            .build()
+        )
+        source_keypair = stellar_sdk.Keypair.from_secret(wallet.secret)
+        transaction.sign(source_keypair)
+        return transaction.to_xdr()
+
+    @actor_method
+    def activate_account(self, address: str) -> str:
+
         if self._stellar_address_used_before(address):
             raise j.exceptions.Value("This address is not new")
-        activate_account_sal(address)
-
-    @actor_method
-    def create_activation_code(self, address: str = None, args: dict = None) -> str:
-        # Backward compatibility with jsx service for request body {'args': {'address': <address>}}
-        if not address and not args:
-            raise j.exceptions.Value(f"missing a required argument: 'address'")
-        if args:
-            try:
-                if "address" in args:
-                    address = args.get("address", None)
-                else:
-                    raise j.exceptions.Value(f"missing a required argument: 'address' in args dict")
-            except j.data.serializers.json.json.JSONDecodeError:
-                pass
-
-        try:
-            self._activate_account(address)
-            response = j.data.serializers.json.dumps(
-                {"activation_code": "abcd", "address": address, "phonenumbers": ["+1234567890"]}
-            )
-            return response
-        except (Ed25519PublicKeyInvalidError, BadRequestError):
-            raise j.exceptions.Value(f"Address is invalid")
-        except SdkError as e:
-            # Return a stellar sdk related error
-            raise j.exceptions.Value(f'{{"Stellar sdk error":{(e)}}}')
-        except j.exceptions.JSException as e:
-            # Return JS exception
-            raise j.exceptions.Value(e)
-
-    @actor_method
-    def activate_account(self, activation_code: str) -> str:
-        return None
+        tx = self._activate_account(address)
+        response = j.data.serializers.json.dumps({"activation_transaction": tx, "address": address})
+        return response
 
 
 Actor = ActivationService
