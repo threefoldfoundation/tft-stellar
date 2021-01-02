@@ -51,7 +51,7 @@ class ActivationService(BaseActor):
                 base_fee=base_fee,
             )
             .append_begin_sponsoring_future_reserves_op(address)
-            .append_create_account_op(destination=address, starting_balance="2.5")
+            .append_create_account_op(destination=address, starting_balance="0")
             .append_change_trust_op(asset_issuer=tftasset.issuer, asset_code=tftasset.code,source=address)
             .append_end_sponsoring_future_reserves_op(address)
             .set_timeout(60)
