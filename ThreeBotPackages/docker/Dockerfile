@@ -16,12 +16,11 @@ RUN pip3 install poetry
 #install js-sdk
 RUN mkdir /code
 WORKDIR /code
-RUN git clone https://github.com/threefoldtech/js-sdk
+# clone the development branch since that one has cors support and stellar sdk 2.10.0
+RUN git clone --branch development https://github.com/threefoldtech/js-sdk
 WORKDIR /code/js-sdk
 RUN poetry install
 
-#until this is included in js-sdk 
-RUN poetry run pip install stellar-sdk==2.10.0 
 #prepare the threebot
 
 #Create wallets not to crash the threebot on startup when checking the identity
