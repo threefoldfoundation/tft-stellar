@@ -31,7 +31,7 @@ class transactionfunding_service:
             network = kwargs.get("network", None)
 
             if not network:
-                network = os.environ.get("TFT_SERVICES_NETWORK", None)
+                network = os.environ.get("TFT_SERVICES_NETWORK", "TEST")
             if network:
                 main_wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
                 if not secret:
@@ -43,7 +43,6 @@ class transactionfunding_service:
         if wallet_name in j.clients.stellar.list_all() and main_wallet:
             main_wallet.add_known_trustline("TFT")
             main_wallet.add_known_trustline("TFTA")
-            main_wallet.add_known_trustline("FreeTFT")
 
         nr_of_slaves = kwargs.get("slaves", 30)
         ensure_slavewallets(nr_of_slaves)

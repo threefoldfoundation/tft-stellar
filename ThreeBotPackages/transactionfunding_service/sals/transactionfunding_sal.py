@@ -1,9 +1,11 @@
+import hashlib
 import gevent
 from decimal import Decimal
 
 from jumpscale.loader import j
 import gevent
 import gevent.queue
+import stellar_sdk
 
 gevent_queue = None
 funding_greenlet = None
@@ -15,18 +17,12 @@ _TFT_ISSUERS = {
     "STD": "GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47",
 }
 
-
 _TFTA_ISSUERS = {
     "TEST": "GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT",
     "STD": "GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2",
 }
 
-_FREETFT_ISSUERS = {
-    "TEST": "GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R",
-    "STD": "GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT",
-}
-
-ASSET_ISSUERS = {"TFT": _TFT_ISSUERS, "TFTA": _TFTA_ISSUERS, "FreeTFT": _FREETFT_ISSUERS}
+ASSET_ISSUERS = {"TFT": _TFT_ISSUERS, "TFTA": _TFTA_ISSUERS}
 
 
 def start_funding_loop():
@@ -48,18 +44,47 @@ def set_wallet_name(wallet_name):
     WALLET_NAME = wallet_name
 
 
+def generate_next_slave_wallet_secret(previous_secret: str) -> str:
+    prev_kp = stellar_sdk.Keypair.from_secret(previous_secret)
+    next_raw_secret = hashlib.blake2b(prev_kp.raw_secret_key(), digest_size=32).digest()
+    next_kp = stellar_sdk.Keypair.from_raw_ed25519_seed(next_raw_secret)
+    return next_kp.secret
+
+
+def slave_wallet_exists(address: str) -> bool:
+    main_wallet = j.clients.stellar.get(WALLET_NAME)
+    hs = main_wallet._get_horizon_server()
+    endpoint = hs.accounts()
+    endpoint.account_id(address)
+    try:
+        endpoint.call()
+    except stellar_sdk.exceptions.NotFoundError:
+        return False
+    return True
+
+
 def ensure_slavewallets(nr_of_slaves):
     global NUMBER_OF_SLAVES
     NUMBER_OF_SLAVES = nr_of_slaves
     if WALLET_NAME not in j.clients.stellar.list_all():
         return
     main_wallet = j.clients.stellar.get(WALLET_NAME)
+    previous_secret = main_wallet.secret
+
     for slaveindex in range(nr_of_slaves):
         walletname = str(main_wallet.instance_name) + "_" + str(slaveindex)
         if walletname not in j.clients.stellar.list_all():
-            print(f"activating slave {walletname}")
-            slave_wallet = j.clients.stellar.new(walletname, network=main_wallet.network)
+            secret = generate_next_slave_wallet_secret(previous_secret)
+            previous_secret = secret
+            slave_wallet = j.clients.stellar.new(walletname, network=main_wallet.network, secret=secret)
+            if slave_wallet_exists(slave_wallet.address):
+                print(f"slave {walletname} with address {slave_wallet.address} already exists")
+                continue
+            print(f"activating slave {walletname} with address {slave_wallet.address}")
             main_wallet.activate_account(slave_wallet.address, starting_balance="5")
+        else:
+            print(f"slave {walletname} already exists")
+            previous_secret = j.clients.stellar.get(walletname).secret
 
 
 def _funding_loop():
@@ -83,4 +108,3 @@ def fund_if_needed(walletname):
     gevent_queue.put(walletname)
 
     return None
-
