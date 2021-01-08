@@ -3,5 +3,5 @@
 This container image contains a threebot with all the tft services installed
 
 ```sh
-docker build . -t tftservices:1.2 --no-cache
+docker build . -t tftservices:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
 ```
