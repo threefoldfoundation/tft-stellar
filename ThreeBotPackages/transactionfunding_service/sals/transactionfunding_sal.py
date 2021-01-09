@@ -34,7 +34,7 @@ def start_funding_loop():
     funding_greenlet = gevent.spawn(_funding_loop)
 
 
-def stop_funding_loop(self):
+def stop_funding_loop():
     print("Halting transaction funding service refund loop")
     funding_greenlet.kill()
 
