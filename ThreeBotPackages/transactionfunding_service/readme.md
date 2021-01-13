@@ -74,7 +74,7 @@ If the wallet name does not exist and the secret or network are not set through 
 - **TXFUNDING_WALLET_SECRET**
 - **TFT_SERVICES_NETWORK**
 
-The server will start at `<HOST>/transactionfunding_service/` or `<HOST>/threefoldfoundation/transactionfunding_service/`
+The server will start at `<HOST>/transactionfunding_service/`
 
 Test out the transfer tokens:
 
@@ -84,6 +84,14 @@ There is one actor with 1 method.
 
 - `fund_transaction`: Funds and signs a TFT transaction.
   - param `transaction`: Stellar transaction envelope in xdr
+
+It can be called on the following url:`https://<host>//transactionfunding_service/actors/transactionfunding_service/fund_transaction`
+
+curl examle:
+
+```sh
+curl -v -k --insecure --header "Content-Type: application/json" --request POST --data '{"transaction":"AAAAAgAAAAAocv2DVEu84HDn4rR1dr/tUG6fhn0uwvzsugkRmtA1vwAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAEAAAAAKHL9g1RLvOBw5+K0dXa/7VBun4Z9LsL87LoJEZrQNb8AAAABAAAAAMGcYGKdx+mthKbi831OYZSPxzT3/LgwV3dq4oeLvUETAAAAAVRGVAAAAAAAOfxkG3qLTLHrhsPS6JsSUB7+ZjU/J4oT1YBMKb/3n2QAAAAAAJiWgAAAAAAAAAAA"}' https://localhost:443/transactionfunding_service/actors/transactionfunding_service/fund_transaction
+```
 
 ## Load distribution
 

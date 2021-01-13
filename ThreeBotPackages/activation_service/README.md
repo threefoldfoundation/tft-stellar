@@ -51,5 +51,5 @@ There is one actor with 1 method.
   This returns an xdr encoded transaction signed by the activation service that activates the account and adds a trustline to TFT using sponsored reserves. It needs to be signed by the address to activate and submitted to the Stellar network within 60 seconds.
 
 ```sh
-curl -k --header "Content-Type: application/json" --request POST --data '{"address":"<address>"}' https://<host>/threefoldfoundation/activate_account
+curl -k --header "Content-Type: application/json" --request POST --data '{"address":"<address>"}' https://<host>/activation_service/actors/activation_service/activate_account
 ```
