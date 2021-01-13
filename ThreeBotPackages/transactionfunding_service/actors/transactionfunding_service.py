@@ -45,7 +45,8 @@ class Transactionfunding_service(BaseActor):
         return least_recently_used_wallet
 
     @actor_method
-    def fund_transaction(self, transaction: str = None, args: dict = None):
+
+    def fund_transaction(self, transaction: str = None, args: dict = None) -> str:
         """
         param:transaction = (S)
         return: transaction_xdr = (S)
@@ -67,7 +68,7 @@ class Transactionfunding_service(BaseActor):
         if not funding_wallet:
             raise j.exceptions.Base("Service Unavailable")
 
-        if str(funding_wallet.network) == "TEST":
+        if str(funding_wallet.network.value) == "TEST":
             network_passphrase = stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
         else:
             network_passphrase = stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
@@ -84,7 +85,7 @@ class Transactionfunding_service(BaseActor):
                 raise j.exceptions.Value("Only payment operations are supported")
             if op.asset.code not in ASSET_ISSUERS:
                 raise j.exceptions.Value("Unsupported asset")
-            if ASSET_ISSUERS[op.asset.code][str(funding_wallet.network)] != op.asset.issuer:
+            if ASSET_ISSUERS[op.asset.code][str(funding_wallet.network.value)] != op.asset.issuer:
                 raise j.exceptions.Value("Unsupported asset")
             if asset:
                 if asset != op.asset:
@@ -95,7 +96,7 @@ class Transactionfunding_service(BaseActor):
         txe.transaction.operations.append(self._create_fee_payment(txe.transaction.operations[0].source, asset))
 
         # set the necessary fee
-        horizon_server = self._get_horizon_server(funding_wallet.network)
+        horizon_server = self._get_horizon_server(funding_wallet.network.value)
         base_fee = horizon_server.fetch_base_fee()
         txe.transaction.fee = base_fee * len(txe.transaction.operations)
 
@@ -107,7 +108,7 @@ class Transactionfunding_service(BaseActor):
         txe.sign(source_signing_kp)
 
         transaction_xdr = txe.to_xdr()
-        fund_if_needed(funding_wallet.name)
+        fund_if_needed(funding_wallet.instance_name)
         return transaction_xdr
 
 
