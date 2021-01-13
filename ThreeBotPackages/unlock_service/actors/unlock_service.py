@@ -19,12 +19,12 @@ class unlock_service(BaseActor):
         self, unlockhash: str = None, transaction_xdr: str = None, args: dict = None
     ) -> str:
         """
-      param:unlockhash (str)
-      param:transaction_xdr (str)
-      
-      return: unlockhash_transaction obj dict
-      
-      """
+        param:unlockhash (str)
+        param:transaction_xdr (str)
+
+        return: unlockhash_transaction obj dict
+
+        """
         # Backward compatibility with jsx service for request body {'args': ....}
         if (not unlockhash or not transaction_xdr) and not args:
             raise j.exceptions.Value(f"missing a required argument: 'unlockhash' and 'transaction_xdr'")
@@ -53,10 +53,10 @@ class unlock_service(BaseActor):
     def get_unlockhash_transaction(self, unlockhash: str = None, args: dict = None) -> str:
         """
         param:unlockhash (str)
-      
+
         return: unlockhash_transaction obj dict
-      
-      """
+
+        """
         # Backward compatibility with jsx service for request body {'args': ....}
         if not unlockhash and not args:
             raise j.exceptions.Value(f"missing a required argument: 'unlockhash'")

@@ -71,7 +71,7 @@ class Transactionfunding_service(BaseActor):
             network_passphrase = stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
         else:
             network_passphrase = stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
-        txe = stellar_sdk.transaction_envelope.TransactionEnvelope.from_xdr(transaction, network_passphrase)
+        txe = stellar_sdk.transaction_envelope.TransactionEnvelope.from_xdr(transaction + "===", network_passphrase)
 
         source_public_kp = stellar_sdk.Keypair.from_public_key(funding_wallet.address)
         source_signing_kp = stellar_sdk.Keypair.from_secret(funding_wallet.secret)

@@ -53,8 +53,7 @@ class transactionfunding_service:
         self.install(**kwargs)
 
     def uninstall(self):
-        """Called when package is deleted
-        """
+        """Called when package is deleted"""
         if "default_443" in j.sals.nginx.main.websites.list_all():
             j.sals.nginx.main.websites.default_443.locations.delete("transactionfunding_root_proxy")
 

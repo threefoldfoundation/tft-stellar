@@ -22,7 +22,7 @@ class ActivationService(BaseActor):
         except stellar_sdk.exceptions.NotFoundError:
             return False
 
-    def _get_network_passphrase(self,network: str) -> str:
+    def _get_network_passphrase(self, network: str) -> str:
         if network == "TEST":
             return stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
         return stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
@@ -52,7 +52,7 @@ class ActivationService(BaseActor):
             )
             .append_begin_sponsoring_future_reserves_op(address)
             .append_create_account_op(destination=address, starting_balance="0")
-            .append_change_trust_op(asset_issuer=tftasset.issuer, asset_code=tftasset.code,source=address)
+            .append_change_trust_op(asset_issuer=tftasset.issuer, asset_code=tftasset.code, source=address)
             .append_end_sponsoring_future_reserves_op(address)
             .set_timeout(60)
             .build()

@@ -13,4 +13,3 @@ if not j.sal.fs.exists(destination):
     j.sal.fs.touch(destination)
 j.sal.fs.writeFile(filename=destination, contents=data_json)
 print(f"Data exported successfully to {destination}")
-

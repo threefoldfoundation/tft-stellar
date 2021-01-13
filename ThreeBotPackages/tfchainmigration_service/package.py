@@ -26,15 +26,13 @@ class tfchainmigration_service:
                     wallet.activate_through_threefold_service()
             wallet.save()
 
-
-        if "default_443" in j.sals.nginx.main.websites.list_all(): 
+        if "default_443" in j.sals.nginx.main.websites.list_all():
             location_actors_443 = j.sals.nginx.main.websites.default_443.locations.get(name="tfchainmigration_actors")
             location_actors_443.is_auth = False
             location_actors_443.is_admin = False
             location_actors_443.save()
 
-
-        if "default_80" in j.sals.nginx.main.websites.list_all(): 
+        if "default_80" in j.sals.nginx.main.websites.list_all():
             location_actors_80 = j.sals.nginx.main.websites.default_80.locations.get(name="tfchainmigration_actors")
             location_actors_80.is_auth = False
             location_actors_80.is_admin = False
@@ -52,10 +50,10 @@ class tfchainmigration_service:
             j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_80").domain = domain
             j.sals.nginx.main.websites.get(f"{package_name}_{server_name}_80").configure()
 
-        if "default_443" in j.sals.nginx.main.websites.list_all(): 
+        if "default_443" in j.sals.nginx.main.websites.list_all():
             j.sals.nginx.main.websites.default_443.configure()
 
-        if "default_80" in j.sals.nginx.main.websites.list_all(): 
+        if "default_80" in j.sals.nginx.main.websites.list_all():
             j.sals.nginx.main.websites.default_80.configure()
 
         create_gevent_pools()
@@ -64,12 +62,10 @@ class tfchainmigration_service:
         self.install(**kwargs)
 
     def uninstall(self):
-        """Called when package is deleted
-        """
+        """Called when package is deleted"""
 
-        if "default_443" in j.sals.nginx.main.websites.list_all(): 
+        if "default_443" in j.sals.nginx.main.websites.list_all():
             j.sals.nginx.main.websites.default_443.locations.delete("tfchainmigration_root_proxy")
-        
-        if "default_80" in j.sals.nginx.main.websites.list_all(): 
-            j.sals.nginx.main.websites.default_80.locations.delete("tfchainmigration_root_proxy")
 
+        if "default_80" in j.sals.nginx.main.websites.list_all():
+            j.sals.nginx.main.websites.default_80.locations.delete("tfchainmigration_root_proxy")

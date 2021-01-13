@@ -36,4 +36,3 @@ def activate_account(address):
 def set_wallet_name(wallet_name):
     global WALLET_NAME
     WALLET_NAME = wallet_name
-
