@@ -1,15 +1,10 @@
 name = "activation_service"
 is_auth = false
 is_admin = false
-
-
-[[servers]]
-name = "activation_root_proxy"
 domain = "testnet.threefoldtoken.io"
 letsencryptemail = "tarekr@incubaid.com"
-includes = ["default_443.activation*"]
 
-[[servers.locations]]
+[[locations]]
 name = "custom"
 type = "custom"
 custom_config = """
