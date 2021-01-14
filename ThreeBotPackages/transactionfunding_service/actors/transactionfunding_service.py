@@ -45,7 +45,6 @@ class Transactionfunding_service(BaseActor):
         return least_recently_used_wallet
 
     @actor_method
-
     def fund_transaction(self, transaction: str = None, args: dict = None) -> str:
         """
         param:transaction = (S)

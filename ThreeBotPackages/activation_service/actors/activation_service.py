@@ -32,12 +32,9 @@ class ActivationService(BaseActor):
         wallet = get_wallet()
         tftasset = wallet._get_asset()
         a = get_wallet().load_account()
-        try:
-            if not a.last_created_sequence_is_used:
-                if (wallet.sequencedate + 60) > int(time.time()):
-                    raise j.exceptions.Value(f"Busy, try again later")
-        except AttributeError:  # TODO: should be handled in the wallet
-            pass
+        if not a.last_created_sequence_is_used:
+            if (wallet.sequencedate + 60) > int(time.time()):
+                raise j.exceptions.Value(f"Busy, try again later")
 
         server = wallet._get_horizon_server()
 
