@@ -15,7 +15,9 @@ from activation_sal import create_gevent_pool, set_wallet
 class activation_service:
     def install(self, **kwargs):
         wallet_name = kwargs.get("wallet", "activation_wallet")
+        j.logger.info(f"using {wallet_name} for the activation service")
         if wallet_name in j.clients.stellar.list_all():
+            j.logger.info(f"wallet {wallet_name} already exists, reusing it")
             wallet = j.clients.stellar.get(wallet_name)
         else:
             secret = kwargs.get("secret", None)
