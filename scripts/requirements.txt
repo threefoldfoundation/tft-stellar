@@ -1,2 +1,3 @@
 Click==7.0
-stellar-sdk==2.8.1
+stellar-sdk==2.10.0
+pyblake2
