@@ -18,3 +18,7 @@ This container image contains a threebot with the tft_statistics pacxkage instal
 ```sh
 docker build tftstatistics -t tftstatistics:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
 ```
+
+## helm charts
+
+The helm charts are locatred in the `helm` folder.
