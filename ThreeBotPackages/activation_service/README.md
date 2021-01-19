@@ -31,10 +31,6 @@ The following kwargs can also be given to configure the package:
 - *wallet* : Name of new/existing stellar wallet client instance
 - *secret* : Activation secret of wallet to import ( if you are not using an already existing wallet)
 - *network*: "STD" or "TEST" to indicate the type of the stellar network (required when importing a wallet through the secret argument). Default="None". When set to "TEST" and no secret is given, a wallet on the Stellar testnet will be created and funded through friendbot.
-- *domain* : domain configured to access the service
-
-Example with kwargs:
-`j.servers.threebot.default.packages.add(package_path,wallet="WALLET_NAME",domain="domain.test.1")`
 
 If the wallet name does not exist and the secret or network are not set through the install arguments, environment variables can be used to set the secret and network:
 
@@ -53,3 +49,9 @@ There is one actor with 1 method.
 ```sh
 curl -k --header "Content-Type: application/json" --request POST --data '{"address":"<address>"}' https://<host>/activation_service/actors/activation_service/activate_account
 ```
+
+## Threefoldfoundation deployed urls
+
+- Testnet: `https://testnet.threefold.io/threefoldfoundation/activation_service/activate_account`
+- Production: `https://tokenservices.threefold.io/threefoldfoundation/activation_service/activate_account`
+

@@ -65,7 +65,6 @@ The following kwargs can also be given to configure the package:
 
 - `wallet`: the wallet used to fund the transactions, default: `txfundingwallet`
 - `slaves`: the number of wallets to use to distribute the load, default: 30
-- `domain`: default: `testnet.threefoldtoken.io`
 - `secret`: Activation secret of wallet to import ( if you are not using an already existing wallet)
 - `network`: "STD" or "TEST" to indicate the type of the stellar network (required when importing a wallet through the secret argument). Defaults to `None`. When set to "TEST" and no secret is given, a wallet on the Stellar testnet will be created and funded through friendbot. 
 
@@ -93,18 +92,14 @@ curl examle:
 curl -v -k --insecure --header "Content-Type: application/json" --request POST --data '{"transaction":"AAAAAgAAAAAocv2DVEu84HDn4rR1dr/tUG6fhn0uwvzsugkRmtA1vwAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAEAAAAAKHL9g1RLvOBw5+K0dXa/7VBun4Z9LsL87LoJEZrQNb8AAAABAAAAAMGcYGKdx+mthKbi831OYZSPxzT3/LgwV3dq4oeLvUETAAAAAVRGVAAAAAAAOfxkG3qLTLHrhsPS6JsSUB7+ZjU/J4oT1YBMKb/3n2QAAAAAAJiWgAAAAAAAAAAA"}' https://localhost:443/transactionfunding_service/actors/transactionfunding_service/fund_transaction
 ```
 
+## Threefoldfoundation deployed urls
+
+- Testnet: `https://testnet.threefold.io/threefoldfoundation/transactionfunding_service/fund_transaction'
+- Production: `https://tokenservices.threefold.io/threefoldfoundation/transactionfunding_service/fund_transaction'
+
 ## Load distribution
 
 In Stellar sequence numbers for an account must increase.
 If only 1 account would be used, all request must essentially be executed in sequence and transmitted to the Stellar network before the next request to fund a transaction can be done.
 
 Ths package creates extra slave wallets with the name of the basewallet appended with `_index`. It loops over the slaves to search for one where the last sequence is already accepted by the network and if not found, takes the slave that was least recently used, given that it was longer than a minute ago.
-
-### Slave cleanup
-
-```python
-walletnames=j.clients.stellar._children_names_get()
-slaves=[w for w in walletnames if 'txfundingwallet_' in w]
-for slavename in slaves:
-    j.clients.stellar.delete(slavename)
-```
