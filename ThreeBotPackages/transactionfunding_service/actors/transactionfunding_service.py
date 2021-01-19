@@ -34,6 +34,8 @@ class Transactionfunding_service(BaseActor):
         r = range(startindex, startindex + NUMBER_OF_SLAVES)
         for slaveindex in [i % NUMBER_OF_SLAVES for i in r]:
             walletname = WALLET_NAME + "_" + str(slaveindex)
+            if walletname not in j.clients.stellar.list_all():
+                return None
             wallet = j.clients.stellar.get(walletname)
             a = wallet.load_account()
             if a.last_created_sequence_is_used:
@@ -65,7 +67,7 @@ class Transactionfunding_service(BaseActor):
 
         funding_wallet = self._get_slave_fundingwallet()
         if not funding_wallet:
-            raise j.exceptions.Base("Service Unavailable")
+            raise j.exceptions.Value("Service Unavailable")
 
         if str(funding_wallet.network.value) == "TEST":
             network_passphrase = stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE

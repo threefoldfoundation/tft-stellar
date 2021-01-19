@@ -67,7 +67,7 @@ The following kwargs can also be given to configure the package:
 - `slaves`: the number of wallets to use to distribute the load, default: 30
 - `domain`: default: `testnet.threefoldtoken.io`
 - `secret`: Activation secret of wallet to import ( if you are not using an already existing wallet)
-- `network`: "STD" or "TEST" to indicate the type of the stellar network (only required when importing a wallet through the secret argument).
+- `network`: "STD" or "TEST" to indicate the type of the stellar network (required when importing a wallet through the secret argument). Defaults to `None`. When set to "TEST" and no secret is given, a wallet on the Stellar testnet will be created and funded through friendbot. 
 
 If the wallet name does not exist and the secret or network are not set through the install arguments, environment variables can be used to set the secret and network:
 
