@@ -21,4 +21,25 @@ docker build tftstatistics -t tftstatistics:$(git describe --abbrev=0 --tags | s
 
 ## helm charts
 
-The helm charts are locatred in the `helm` folder.
+The helm charts are located in the `helm` folder.
+
+## Packaging the charts
+
+Create a "packagedcharts" folder here. It is already in the .gitignore.
+
+Empty the folder if it already existed and in this folder, package the charts you modified:
+
+```sh
+helm package ./../tftservices
+helm package ./../tftstatistics
+```
+
+## Update the index
+
+```sh
+curl -O https://raw.githubusercontent.com/threefoldfoundation/helmcharts/main/index.yaml
+helm repo index . --merge index.yaml
+```
+
+Modify the generated `index.yaml` to point to the right url and upload the helm package and the created index.yaml.
+
