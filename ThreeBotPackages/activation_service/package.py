@@ -14,6 +14,7 @@ from activation_sal import create_gevent_pool, set_wallet
 
 class activation_service:
     def install(self, **kwargs):
+        wallet = None
         wallet_name = kwargs.get("wallet", "activation_wallet")
         j.logger.info(f"using {wallet_name} for the activation service")
         if wallet_name in j.clients.stellar.list_all():
@@ -25,11 +26,11 @@ class activation_service:
                 secret = os.environ.get("ACTIVATION_WALLET_SECRET", None)
             network = kwargs.get("network", None)
             if not network:
-                network = os.environ.get("TFT_SERVICES_NETWORK", "TEST")
-            wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
-            if not secret:
-                if network == "TEST":
-                    wallet.activate_through_friendbot()
+                network = os.environ.get("TFT_SERVICES_NETWORK", None)
+            if network:
+                wallet = j.clients.stellar.new(wallet_name, secret=secret, network=network)
+            if not secret and network == "TEST":
+                wallet.activate_through_friendbot()
 
         set_wallet(wallet)
 

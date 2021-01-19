@@ -30,7 +30,7 @@ The following kwargs can also be given to configure the package:
 
 - *wallet* : Name of new/existing stellar wallet client instance
 - *secret* : Activation secret of wallet to import ( if you are not using an already existing wallet)
-- *network*: "STD" or "TEST" to indicate the type of the stellar network (only required when importing a wallet through the secret argument). Default="TEST"
+- *network*: "STD" or "TEST" to indicate the type of the stellar network (required when importing a wallet through the secret argument). Default="None". When set to "TEST" and no secret is given, a wallet on the Stellar testnet will be created and funded through friendbot.
 - *domain* : domain configured to access the service
 
 Example with kwargs:

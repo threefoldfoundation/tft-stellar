@@ -30,6 +30,8 @@ class ActivationService(BaseActor):
     def _activate_account(self, address):
         # TODO: serialize with a gevent pool
         wallet = get_wallet()
+        if not wallet:
+            raise j.exceptions.Value("Service unavailable")
         tftasset = wallet._get_asset()
         a = get_wallet().load_account()
         if not a.last_created_sequence_is_used:
