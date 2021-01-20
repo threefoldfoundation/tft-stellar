@@ -41,5 +41,4 @@ curl -O https://raw.githubusercontent.com/threefoldfoundation/helmcharts/main/in
 helm repo index . --merge index.yaml
 ```
 
-Modify the generated `index.yaml` to point to the right url and upload the helm package and the created index.yaml.
-
+Modify the generated `index.yaml` to point to the right url and upload the helm package and the created `index.yaml.`
