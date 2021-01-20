@@ -109,8 +109,9 @@ class Transactionfunding_service(BaseActor):
         txe.sign(source_signing_kp)
 
         transaction_xdr = txe.to_xdr()
+        response = j.data.serializers.json.dumps({"transaction_xdr": transaction_xdr})
         fund_if_needed(funding_wallet.instance_name)
-        return transaction_xdr
+        return response
 
 
 Actor = Transactionfunding_service
