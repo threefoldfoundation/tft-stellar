@@ -47,12 +47,7 @@ class Transactionfunding_service(BaseActor):
         return least_recently_used_wallet
 
     @actor_method
-    def fund_transaction(self, transaction: str = None, args: dict = None) -> str:
-        """
-        param:transaction = (S)
-        return: transaction_xdr = (S)
-        ```
-        """
+    def fund_transaction(self, transaction: str = None, args: dict = None) -> dict:
         # Backward compatibility with jsx service for request body {'args': {'transaction': <transaction>}}
         if not transaction and not args:
             raise j.exceptions.Value(f"missing a required argument: 'transaction'")
@@ -109,9 +104,8 @@ class Transactionfunding_service(BaseActor):
         txe.sign(source_signing_kp)
 
         transaction_xdr = txe.to_xdr()
-        response = j.data.serializers.json.dumps({"transaction_xdr": transaction_xdr})
         fund_if_needed(funding_wallet.instance_name)
-        return response
+        return {"transaction_xdr": transaction_xdr}
 
 
 Actor = Transactionfunding_service
