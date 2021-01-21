@@ -17,7 +17,7 @@ class unlock_service(BaseActor):
     @actor_method
     def create_unlockhash_transaction(
         self, unlockhash: str = None, transaction_xdr: str = None, args: dict = None
-    ) -> str:
+    ) -> dict:
         """
         param:unlockhash (str)
         param:transaction_xdr (str)
@@ -47,10 +47,10 @@ class unlock_service(BaseActor):
 
         unlockhash_transaction.save()
 
-        return j.data.serializers.json.dumps(unlockhash_transaction.to_dict())
+        return unlockhash_transaction.to_dict()
 
     @actor_method
-    def get_unlockhash_transaction(self, unlockhash: str = None, args: dict = None) -> str:
+    def get_unlockhash_transaction(self, unlockhash: str = None, args: dict = None) -> dict:
         """
         param:unlockhash (str)
 
@@ -74,7 +74,7 @@ class unlock_service(BaseActor):
             transactions = unlock_transaction_hash_model.find_many(unlockhash=unlockhash)
             for transaction in transactions[2]:
                 if transaction:
-                    return j.data.serializers.json.dumps(transaction.to_dict())
+                    return transaction.to_dict()
         except j.exceptions.NotFound:
             raise j.exceptions.NotFound("unlocktransaction with hash %s not found" % unlockhash)
 
