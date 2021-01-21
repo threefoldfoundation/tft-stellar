@@ -25,13 +25,22 @@ The helm charts are located in the `helm` folder.
 
 ## Packaging the charts
 
+Upgrade the version if working on alpha's,beta's or releasecandidates of the chart you are working on.
+
 Create a "packagedcharts" folder here. It is already in the .gitignore.
 
 Empty the folder if it already existed and in this folder, package the charts you modified:
 
 ```sh
-helm package ./../tftservices
-helm package ./../tftstatistics
+helm package ./../tftservices --appversion $(git describe --abbrev=0 --tags | sed 's/^v//')
+helm package ./../tftstatistics --appversion $(git describe --abbrev=0 --tags | sed 's/^v//')
+```
+
+If packaging a semver version, there is no need to upgrade the helm vhart version manually, execute the required commands, setting the chart version to the semver git tag:
+
+```sh
+helm package ./../tftservices --appversion $(git describe --abbrev=0 --tags | sed 's/^v//') --version $(git describe --abbrev=0 --tags | sed 's/^v//') 
+helm package ./../tftstatistics --appversion $(git describe --abbrev=0 --tags | sed 's/^v//') --version $(git describe --abbrev=0 --tags | sed 's/^v//') 
 ```
 
 ## Update the index
