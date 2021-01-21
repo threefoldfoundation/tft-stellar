@@ -38,7 +38,7 @@ helm package ./../tftstatistics
 
 ```sh
 curl -O https://raw.githubusercontent.com/threefoldfoundation/helmcharts/main/index.yaml
-helm repo index . --merge index.yaml
+helm repo index . --merge index.yaml --url https://github.com/threefoldfoundation/tft-stellar/releases/download/$(git describe --abbrev=0 --tags)/
 ```
 
-Modify the generated `index.yaml` to point to the right url and upload the helm package and the created `index.yaml.`
+Upload the helm package in the release and the replace the `index.yaml` file in github at threefoldfoundation/helmcharts/index.yaml
