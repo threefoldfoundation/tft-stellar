@@ -30,6 +30,7 @@ def get_escrowaccount_unlocktime(address):
     horizon_server = stellar_sdk.Server("https://horizon.stellar.org")
     accounts_endpoint = horizon_server.accounts()
     accounts_endpoint.account_id(address)
+
     response = accounts_endpoint.call()
     preauth_signer = [signer["key"] for signer in response["signers"] if signer["type"] == "preauth_tx"][0]
     resp = requests.post(
@@ -85,8 +86,12 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
             issuedtokens.append(f"{amount} {tokencode} {address} Free")
         else:
             totallockedissued += amount
-            unlocktime = get_escrowaccount_unlocktime(address)
-            issuedtokens.append(f"{amount} {tokencode} {address} Locked {unlocktime}")
+            try:
+                unlocktime = get_escrowaccount_unlocktime(address)
+                issuedtokens.append(f"{amount} {tokencode} {address} Locked {unlocktime}")
+            except (stellar_sdk.exceptions.NotFoundError, IndexError):
+               issuedtokens.append(f"{amount} {tokencode} {address} already unlocked") 
+            
 
     print(f"Stellar wallet address: {mainstellaraddress}")
 
