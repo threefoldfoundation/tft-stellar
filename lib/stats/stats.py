@@ -47,8 +47,9 @@ def get_unlockhash_transaction(network, unlockhash):
     return resp.json()
 
 
-def get_locked_accounts(network, tokencode: str, issuer: str):
+def get_locked_accounts(network, tokencode: str):
     locked_accounts = []
+    issuer = _ASSET_ISUERS[network][tokencode]
     horizon_server = get_horizon_server(network)
     asset = stellar_sdk.Asset(tokencode, issuer)
     accounts_endpoint = horizon_server.accounts().for_asset(asset).limit(50)
@@ -95,7 +96,7 @@ class StatisticsCollector(object):
         return _NETWORK_PASSPHRASES[self._network]
 
     def lookup_lock_time(self, preauth_signer: str):
-        unlock_tx = get_unlockhash_transaction(self._network,unlockhash=preauth_signer)
+        unlock_tx = get_unlockhash_transaction(self._network, unlockhash=preauth_signer)
         if unlock_tx is None:
             return None
         txe = stellar_sdk.TransactionEnvelope.from_xdr(unlock_tx["transaction_xdr"], self._network_passphrase)
@@ -113,7 +114,7 @@ class StatisticsCollector(object):
         record = response["_embedded"]["records"][0]
         stats["total"] = float(record["amount"])
         stats["num_accounts"] = record["num_accounts"]
-        locked_accounts = get_locked_accounts(self._network, tokencode, asset_issuer)
+        locked_accounts = get_locked_accounts(self._network, tokencode)
         total_locked = 0.0
         for locked_account in locked_accounts:
             total_locked += locked_account["amount"]

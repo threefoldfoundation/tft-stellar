@@ -26,5 +26,6 @@ def import_unlockhash_transaction_data(source, unlock_service_host):
             json={"unlockhash": unlockhash, "transaction_xdr": transaction_xdr},
         )
 
+
 if __name__ == "__main__":
     import_unlockhash_transaction_data()
