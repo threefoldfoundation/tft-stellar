@@ -5,7 +5,9 @@ import stellar_sdk
 import datetime
 import os
 import sys
+import requests
 
+from jumpscale.loader import j
 from urllib import parse
 
 
@@ -22,7 +24,17 @@ def export(network):
         locked_accounts = get_locked_accounts(network, tokencode)
 
         for locked_account in locked_accounts:
-            print(get_unlockhash_transaction(network,locked_account["preauth_signers"][0]))
+            unlockhash = locked_account["preauth_signers"][0]
+            try:
+                transaction = get_unlockhash_transaction(network, unlockhash)
+                print(f"{j.data.serializers.json.dumps(transaction)}\n")
+            except requests.exceptions.HTTPError as e:
+                if e.response.status_code == 404:
+                    print(
+                        f"Unlockhash {unlockhash} for escrow account {locked_account['account']} not found",
+                        file=sys.stderr,
+                    )
+
 
 if __name__ == "__main__":
     export()
