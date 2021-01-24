@@ -31,10 +31,12 @@ docker build js-sdk -t jssdk:development --no-cache
 
 Requires the `jssdk:development` image.
 
-
 ```sh
-docker build tftbackup -t tftbackup:development $(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
+docker build tftbackup -t tftbackup:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
 ```
+
+There is an example of deployinmg this image on kubernetes as a cronjob int the [tftbackup readme](./tftbackup/readme.md)
+
 
 ## helm charts
 
