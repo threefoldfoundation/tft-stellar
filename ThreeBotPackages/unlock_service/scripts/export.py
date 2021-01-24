@@ -27,7 +27,7 @@ def export(network):
             unlockhash = locked_account["preauth_signers"][0]
             try:
                 transaction = get_unlockhash_transaction(network, unlockhash)
-                print(f"{j.data.serializers.json.dumps(transaction)}\n")
+                print(f"{j.data.serializers.json.dumps(transaction)}")
             except requests.exceptions.HTTPError as e:
                 if e.response.status_code == 404:
                     print(
