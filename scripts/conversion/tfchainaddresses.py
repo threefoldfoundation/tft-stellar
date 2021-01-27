@@ -71,8 +71,8 @@ class ExplorerBlockchainInfo:
 
 def blockchain_info_get():
     """
-        Get the current blockchain info, using the last known block, as reported by an explorer.
-        """
+    Get the current blockchain info, using the last known block, as reported by an explorer.
+    """
     response = requests.get(TFCHAIN_EXPLORER + "/explorer")
     last_height = response.json()["height"]
     response = requests.get(TFCHAIN_EXPLORER + f"/explorer/blocks/{last_height}")

@@ -17,7 +17,11 @@ def list_locked_addresses():
     currentheight = j["height"]
 
     while currentheight > 500000:
-        response = requests.get(TFCHAIN_EXPLORER + f"/explorer/blocks/{currentheight}")
+        try:
+            response = requests.get(TFCHAIN_EXPLORER + f"/explorer/blocks/{currentheight}")
+        except requests.exceptions.ConnectionError:
+            time.sleep(2)
+            continue
         j = response.json()
         for transaction in j["block"]["transactions"]:
             if transaction["rawtransaction"]["version"] != 176:

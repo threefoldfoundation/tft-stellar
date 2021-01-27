@@ -34,7 +34,7 @@ class PublicKeySpecifier(IntEnum):
 class PublicKey(BaseDataTypeClass):
     """
     A PublicKey is a public key prefixed by a Specifier. The Specifier
-	indicates the algorithm used for signing and verification.
+        indicates the algorithm used for signing and verification.
     The other part of the PublicKey is the hash itself.
     """
 
