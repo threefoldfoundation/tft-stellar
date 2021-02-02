@@ -26,13 +26,6 @@ A horizon server is available at https://horizon.testnet.threefold.io
 
 Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
 
-## FreeTFT on Stellar Testnet
-
-- assetCode: FreeTFT
-- issuer: GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R
-
-Keep in mind that the stellar testnet is [reset every quarter](https://www.stellar.org/developers/guides/concepts/test-net.html#periodic-reset-of-testnet-data).
-
 ## Deployed Testnet services
 
 Url: `https://testnet.threefold.io`

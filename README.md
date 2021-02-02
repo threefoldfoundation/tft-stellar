@@ -14,11 +14,6 @@ Threefoldtoken on the stellar network
 - assetCode: TFTA
 - issuer: GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2
 
-## FreeTFT
-
-- assetCode: FreeTFT
-- issuer: GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT
-
 ## Token statistics
 
  Token statistics can be seen on https://tokenstats.threefoldtoken.com.
