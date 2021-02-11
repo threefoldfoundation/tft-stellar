@@ -17,7 +17,7 @@ The assetcode is TFT and the issueraddress is the same as on the Stellar testnet
 
 The network passphrase is  "TFTech Test Network ; December 2020".
 
-A horizon server is available at https://horizon.testnet.threefold.io
+A horizon server is available at `https://horizon.testnet.threefold.io`
 
 ## TFTA on Stellar Testnet
 
