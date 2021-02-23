@@ -14,6 +14,8 @@ from transactionfunding_sal import ASSET_ISSUERS, WALLET_NAME, NUMBER_OF_SLAVES,
 
 _HORIZON_NETWORKS = {"TEST": "https://horizon-testnet.stellar.org", "STD": "https://horizon.stellar.org"}
 
+_TFT_TRANSACTION_FEE = "0.01"
+
 
 class Transactionfunding_service(BaseActor):
     def _get_horizon_server(self, network):
@@ -24,7 +26,7 @@ class Transactionfunding_service(BaseActor):
         main_wallet = j.clients.stellar.get(WALLET_NAME)
         fee_target = main_wallet.address
 
-        return stellar_sdk.Payment(fee_target, asset, "0.1", from_address)
+        return stellar_sdk.Payment(fee_target, asset, _TFT_TRANSACTION_FEE, from_address)
 
     def _get_slave_fundingwallet(self):
         earliest_sequence = int(time.time()) - 60  # 1 minute

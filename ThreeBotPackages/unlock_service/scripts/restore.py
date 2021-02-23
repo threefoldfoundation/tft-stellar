@@ -7,30 +7,27 @@ import requests
 from jumpscale.loader import j
 
 
-UNLOCK_SERVICE_DEFAULT_HOSTS = {
-    "test":"https://testnet.threefold.io",
-    "public":"https://tokenservices.threefold.io"
-}
+UNLOCK_SERVICE_DEFAULT_HOSTS = {"test": "https://testnet.threefold.io", "public": "https://tokenservices.threefold.io"}
 
 
 @click.command()
 @click.option("--source", default="export_data", help="Sourcefile to import data from")
 @click.option("--network", type=click.Choice(["test", "public"], case_sensitive=False), default="public")
 @click.option("--unlock_service_host", default=None, help="Destination to restore to (overrides the network parameter)")
-def import_unlockhash_transaction_data(source, network,unlock_service_host):
-    
+def import_unlockhash_transaction_data(source, network, unlock_service_host):
+
     if not unlock_service_host:
-        unlock_service_host=UNLOCK_SERVICE_DEFAULT_HOSTS[network]
+        unlock_service_host = UNLOCK_SERVICE_DEFAULT_HOSTS[network]
     print(f"Restoring data to {unlock_service_host} from {source}\n")
     file_content = j.sals.fs.read_file(source)
     for line in file_content.splitlines():
-        if line.strip()=="":
+        if line.strip() == "":
             continue
-        unlockhash_transaction_data=j.data.serializers.json.loads(line) 
+        unlockhash_transaction_data = j.data.serializers.json.loads(line)
         unlockhash = unlockhash_transaction_data.get("unlockhash")
         transaction_xdr = unlockhash_transaction_data.get("transaction_xdr")
-        
-        r=requests.post(
+
+        r = requests.post(
             f"{unlock_service_host}/threefoldfoundation/unlock_service/create_unlockhash_transaction",
             json={"unlockhash": unlockhash, "transaction_xdr": transaction_xdr},
         )
