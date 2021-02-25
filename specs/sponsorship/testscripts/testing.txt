@@ -1,0 +1,37 @@
+% ./createactivator.py 
+Generated account GBWP4PVAL2SWFVW6LI67HKR6GTKPQBD2ATZGB7BR2A4SYY2YIZF5YVJG with secret SXXX
+Account activated through friendbot
+
+% ./createsponsoredaccount.py SCHW5G35THPYIEVBARQOSHKYJF276ZDVG2UKMBCDJN4N53VNQG7TIQZS VEST:GDWKHLMDL5QWTO32CCIZA5BV6LDJPNPNH3LYI5JXMCNQF7ACGTJEKCME
+Activated account GC5NNRUVTLO2VM7WNV2C3H4TEY7FD27YK4KV27IJGGOUM7JUGSMQMIVD with secret SXXXÍ
+
+./endsponsorship.py SXXX GC5NNRUVTLO2VM7WNV2C3H4TEY7FD27YK4KV27IJGGOUM7JUGSMQMIVD
+
+stellar_sdk.exceptions.BadRequestError: {
+  "type": "https://stellar.org/horizon-errors/transaction_failed",
+  "title": "Transaction Failed",
+  "status": 400,
+  "detail": "The transaction failed when submitted to the stellar network. The `extras.result_codes` field on this response contains further details.  Descriptions of each code can be found at: https://www.stellar.org/developers/guides/concepts/list-of-operations.html",
+  "extras": {
+    "envelope_xdr": "AAAAAgAAAABs/j6gXqVi1t5aPfOqPjTU+AR6BPJg/DHQOSxjWEZL3AAAAGQAHiBrAAAAAgAAAAAAAAAAAAAAAQAAAAAAAAASAAAAAAAAAAAAAAAAutbGlZrdqrP2bXQtn5MmPlHr+FcVXX0JMZ1GfTQ0mQYAAAAAAAAAAVhGS9wAAABA6Q1jmsWPrCkrfQF/4DqnT5b7Ak6lSgnZ1ErXYDtGBt26g4ZN2nDRANTHLIJr5Pmv/6rXKNxckU2Pb3tdEWPzBQ==",
+    "result_codes": {
+      "transaction": "tx_failed",
+      "operations": [
+        "op_low_reserve"
+      ]
+    },
+    "result_xdr": "AAAAAAAAAGT/////AAAAAQAAAAAAAAAS/////QAAAAA="
+  }
+
+  After sending 1 xlm and removing the trustline the result stays the same.
+
+  Trying an account merge to remove the account gives a stellar `{"transaction":"tx_internal_error"}` error. 
+  This is a known bug: https://github.com/stellar/stellar-core/issues/2914
+
+  According to the bug report:
+  "The workaround for Account Merge is to first transfer sufficient quantity of Lumens to remove sponsorship, revoke sponsorship, then perform Account Merge"
+
+  Revoking sponsorship needs to be done by the sponsoring account though.
+
+
+
