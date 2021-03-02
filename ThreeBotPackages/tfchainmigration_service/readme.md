@@ -50,6 +50,10 @@ Test out the transfer tokens:
 
 `curl -H "Content-Type: application/json" -d '{ "tfchain_address": "", "stellar_address": "" }' -XPOST http://localhost/threefoldfoundation/tfchainmigration_service/migrate_tokens`
 
+## Production deployment
+
+In Production it is deployed at `https://tokenservices.threefold.io/threefoldfoundation/conversion_service/<actor_method>`
+
 ## Actor
 
 There is one actor with 2 methods.
