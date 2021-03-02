@@ -35,8 +35,7 @@ Requires the `jssdk:development` image.
 docker build tftbackup -t tftbackup:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
 ```
 
-There is an example of deployinmg this image on kubernetes as a cronjob int the [tftbackup readme](./tftbackup/readme.md)
-
+There is an example of deploying this image on kubernetes as a cronjob int the [tftbackup readme](./tftbackup/readme.md)
 
 ## helm charts
 
@@ -44,7 +43,7 @@ The helm charts are located in the `helm` folder.
 
 ## Packaging the charts
 
-Upgrade the version if working on alpha's,beta's or releasecandidates of the chart you are working on.
+Upgrade the version if working on alpha's, beta's or releasecandidates of the chart you are working on.
 
 Create a "packagedcharts" folder here. It is already in the .gitignore.
 
@@ -66,7 +65,7 @@ helm package ./../tftstatistics --appversion $(git describe --abbrev=0 --tags | 
 
 ```sh
 curl -O https://raw.githubusercontent.com/threefoldfoundation/helmcharts/main/index.yaml
-helm repo index . --merge index.yaml --url https://github.com/threefoldfoundation/tft-stellar/releases/download/$(git describe --abbrev=0 --tags)/
+helm repo index . --merge index.yaml --url https://github.com/threefoldfoundation/tft-stellar/releases/download/$(git describe --abbrev=0 --tags)
 ```
 
 Upload the helm package in the release and the replace the `index.yaml` file in github at threefoldfoundation/helmcharts/index.yaml
