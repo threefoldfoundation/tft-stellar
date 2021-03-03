@@ -11,8 +11,9 @@ import click
 @click.option("--destination", type=str, default="GDAZYYDCTXD6TLMEU3RPG7KOMGKI7RZU676LQMCXO5VOFB4LXVARGMDP")
 @click.option("--amount", type=str, default="1")
 @click.option("--asset", default="TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3")
+@click.option("--network", default="public",type=click.Choice(["test", "public"], case_sensitive=False))
 @click.option("--from_address", type=str, default="")
-def createpayment_transaction(destination, asset, amount, from_address):
+def createpayment_transaction(destination, asset, amount, network,from_address):
     if from_address == "":
         keypair = Keypair.random()
         from_address = keypair.public_key
@@ -30,7 +31,7 @@ def createpayment_transaction(destination, asset, amount, from_address):
         source=stellar_sdk.Keypair.from_public_key(from_address), sequence=1, fee=0, operations=[op]
     )
     transaction_envelope = TransactionEnvelope(
-        transaction=transaction, network_passphrase=stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
+        transaction=transaction, network_passphrase=stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE if network=="test" else stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
     )
     print(transaction_envelope.to_xdr())
 

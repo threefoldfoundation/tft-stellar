@@ -9,9 +9,6 @@ Generate an unfunded TFTA payment:
 
 `./createunfundedpayment.py --asset="TFTA:GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT"`
 
-Generate an unfunded FreeTFT payment:
-`./createunfundedpayment.py --asset="FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R"`
-
 Generate an unfunded TFT from unknown issuer payment:
 `./createunfundedpayment.py --asset="TFT:GAKONCKYJ7PRRKBZSWVPG3MURUNX4H44AB3CU2YGVKF2FD7KXJBB3XID"`
 
@@ -31,9 +28,9 @@ curl -v -H "Content-Type: application/json" -d '{ "args": { "transaction": "" }}
 
 ## Production
 
-Generate an unfunded TFTA payment:
+Generate an unfunded TFT payment:
 
-`./createunfundedpayment.py --asset="TFTA:GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2"`
+`./createunfundedpayment.py --asset="TFT:GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47" --network=public`
 
 ```sh
 curl -v -H "Content-Type: application/json" -d '{ "args": { "transaction": "" }}' "https://tokenservices.threefold.io/threefoldfoundation/transactionfunding_service/fund_transaction"
