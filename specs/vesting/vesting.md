@@ -4,7 +4,7 @@ People lock (vest), an amount of TFT for a specific time-period. If the price of
 
 The vesting is done over a period of 48 months. Every month 1/48th of the amount is released
 
-Since there are no smart contracts in Stellar,  we need to be a bit creativevon how wev implement this.
+Since there are no smart contracts in Stellar,  we need to be a bit creative on how we implement this.
 
 ## Nice to have
 
