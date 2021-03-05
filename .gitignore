@@ -4,3 +4,4 @@ issued.txt
 deauthorizedbalances.txt
 ThreeBotPackages/docker/helm/packagedcharts
 matched.txt
+cosigners.json
