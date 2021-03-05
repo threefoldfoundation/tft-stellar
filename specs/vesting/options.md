@@ -1,4 +1,4 @@
-# Vesting
+# Vesting options
 
 People lock (vest), an amount of TFT for a specific time-period. If the price of TFT goes above some predefined limits, 25%, ( or another number) is already released.
 
@@ -46,7 +46,7 @@ Cons:
 
 - Very complex and very inflexible
 
-### Use 1 escrow account with normal multisig
+### Use 1 escrow account per vesting user with normal multisig
 
 Set up an escrow account with the beneficiasry ( or any account chosen) having a signing weight of 5 and 9 oracle signers with a weight of 1. The weight required to transfer funds or change the signers is set to 10.
 
@@ -70,6 +70,6 @@ At first it seems bit weird since it is not set in stone but in essence it is th
 
 The oracle code for the cosigning will be published to github so everyone can check the code and since all the data resides on-chain, everyone can validate that no rules have been violated.
 
+## Conclusion
 
-
-
+Use 1 escrow account per vesting user with normal multisig.
