@@ -16,14 +16,23 @@ def activate_through_friendbot(address: str):
     resp.raise_for_status()
 
 
-@click.command()
-def create_holder():
+def create_account() -> map:
     keypair = Keypair.random()
-    address = keypair.public_key
-    print(f"Generated account {address } with secret {keypair.secret}")
+    return {"address": keypair.public_key, "secret": keypair.secret}
+
+
+def create_activated_account() -> map:
+    account = create_account()
+    address = account["address"]
     activate_through_friendbot(address)
-    print(f"Account activated through friendbot")
+    return account
+
+
+@click.command()
+def create_account_command():
+    account = create_activated_account()
+    print(f"Generated account {account['address']} with secret {account['secret']}")
 
 
 if __name__ == "__main__":
-    create_holder()
+    create_account_command()
