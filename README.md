@@ -16,7 +16,7 @@ Threefoldtoken on the stellar network
 
 ## Token statistics
 
- Token statistics can be seen on https://tokenstats.threefoldtoken.com.
+Token statistics can be seen on [https://tokenstats.threefoldtoken.com](https://tokenstats.threefoldtoken.com).
 
 [A js-sdk script for getting statistics about  one of the tokens is also available](lib/stats/readme.md).
 
@@ -30,9 +30,7 @@ While we provide some tooling to make it easier for users of only these tokens, 
 
 These tokens are regular Stellar custom assets so the normal Stellar documentation for custom assets appplies.
 
-## tft-stellar tooling
-
-This contains following tools:
+## tft-stellar services
 
 - [Conversion Service](ThreeBotPackages/conversion-service/readme.md): Service for converting TFChain TFT's to Stellar TFT's.
 - [Stellar Faucet](ThreeBotPackages/stellar_faucet/readme.md): Faucet for receiving Testnet Stellar TFT's to any testnet Stellar address.
