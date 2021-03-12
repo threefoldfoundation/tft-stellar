@@ -8,7 +8,9 @@ Transferring vested funds is not foreseen in the first version but can be added 
 
 ## Implementation
 
-### concept
+### Concept
+
+Vesting is done on the Stellar network
 
 Use 1 escrow account per vesting user with normal multisig
 
@@ -40,4 +42,3 @@ These XLM's can be recovered by demanding that the last transaction  contains a 
 ### Examples and testcode
 
 The [testscripts](./testscripts/) folder contains testscripts in Python to create escrow accounts on the Stellar test network.
-

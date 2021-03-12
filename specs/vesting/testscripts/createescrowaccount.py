@@ -34,7 +34,7 @@ def create_escrow_account(activationaccountsecret, owneraddress, cosignersfile, 
     cosigners = json.load(cosignersfile)
     for cosigner in cosigners:
         txb.append_ed25519_public_key_signer(cosigner["address"], weight=1, source=escrow_address)
-    txb.append_manage_data_op("vesting","here comes the formula or reference", source=escrow_address)
+    txb.append_manage_data_op("tft-vesting", "here comes the formula or reference", source=escrow_address)
     txb.append_set_options_op(
         master_weight=0, low_threshold=10, med_threshold=10, high_threshold=10, source=escrow_address
     )
