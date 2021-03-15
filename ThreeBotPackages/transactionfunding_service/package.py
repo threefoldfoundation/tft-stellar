@@ -41,7 +41,7 @@ class transactionfunding_service:
 
         # make sure the trustlines exist for the main wallet
         if wallet_name in j.clients.stellar.list_all() and main_wallet:
-            for asset in ASSET_FEES[str(mainmain_wallet.network.value)].keys():
+            for asset in ASSET_FEES[str(main_wallet.network.value)].keys():
                 split_asset = asset.split(":", 1)
                 asset_code = split_asset[0]
                 asset_issuer = split_asset[1]
