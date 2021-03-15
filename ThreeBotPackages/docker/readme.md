@@ -43,7 +43,7 @@ The helm charts are located in the `helm` folder.
 
 ## Packaging the charts
 
-Upgrade the version. 
+Upgrade the version.
 
 Create a "packagedcharts" folder here. It is already in the .gitignore.
 

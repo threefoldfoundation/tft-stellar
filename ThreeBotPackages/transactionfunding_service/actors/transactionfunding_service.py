@@ -9,24 +9,44 @@ from jumpscale.servers.gedis.baseactor import BaseActor, actor_method
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/sals/")
-from transactionfunding_sal import ASSET_ISSUERS, WALLET_NAME, NUMBER_OF_SLAVES, fund_if_needed
+from transactionfunding_sal import ASSET_FEES, WALLET_NAME, NUMBER_OF_SLAVES, fund_if_needed
 
 
 _HORIZON_NETWORKS = {"TEST": "https://horizon-testnet.stellar.org", "STD": "https://horizon.stellar.org"}
 
-_TFT_TRANSACTION_FEE = "0.01"
+
+def asset_to_full_asset_string(asset: stellar_sdk.Asset) -> str:
+    if asset.is_native():
+        return "XLM"
+    return f"{asset.code.upper()}:{asset.issuer}"
+
+
+def is_signed_transaction(txe: stellar_sdk.TransactionEnvelope) -> bool:
+    return len(txe.signatures) > 0
 
 
 class Transactionfunding_service(BaseActor):
-    def _get_horizon_server(self, network):
+    def _get_network(self) -> str:
+        return str(j.clients.stellar.get(WALLET_NAME).network.value)
 
-        return stellar_sdk.Server(horizon_url=_HORIZON_NETWORKS[str(network)])
+    def _get_network_passphrase(self) -> str:
+        if self._get_network() == "TEST":
+            return stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
+        return stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
 
-    def _create_fee_payment(self, from_address, asset):
-        main_wallet = j.clients.stellar.get(WALLET_NAME)
-        fee_target = main_wallet.address
+    def _get_asset_fees(self) -> dict:
+        return ASSET_FEES[self._get_network()]
 
-        return stellar_sdk.Payment(fee_target, asset, _TFT_TRANSACTION_FEE, from_address)
+    def _get_horizon_server(self):
+
+        return stellar_sdk.Server(horizon_url=_HORIZON_NETWORKS[self._get_network()])
+
+    def _create_fee_payment_operation(self, from_address, asset):
+        condition=[condition for condition in self.conditions() if condition["asset"]==asset_to_full_asset_string(asset)][0]
+        fee_amount=condition["fee_fixed"]
+        fee_target = condition["fee_account_id"]
+
+        return stellar_sdk.Payment(fee_target, asset, fee_amount, from_address)
 
     def _get_slave_fundingwallet(self):
         earliest_sequence = int(time.time()) - 60  # 1 minute
@@ -46,7 +66,74 @@ class Transactionfunding_service(BaseActor):
                 if wallet.sequencedate < earliest_sequence:
                     earliest_sequence = wallet.sequencedate
                     least_recently_used_wallet = wallet
+        if not least_recently_used_wallet:  # Can not happen
+            raise j.exceptions.Value("Service Unavailable")
         return least_recently_used_wallet
+
+    @actor_method
+    def conditions(self) -> list:
+        main_wallet = j.clients.stellar.get(WALLET_NAME)
+        fee_target = main_wallet.address
+        asset_fees = self._get_asset_fees()
+        conditions = [
+            {"asset": asset, "fee_account_id": fee_target, "fee_fixed": fee} for asset, fee in asset_fees.items()
+        ]
+        return conditions
+
+    def _fee_bump(self,txe: stellar_sdk.TransactionEnvelope) -> dict:
+
+        funding_wallet = self._get_slave_fundingwallet()
+
+        source_public_kp = stellar_sdk.Keypair.from_public_key(funding_wallet.address)
+        source_signing_kp = stellar_sdk.Keypair.from_secret(funding_wallet.secret)
+
+        horizon_server = self._get_horizon_server()
+        base_fee = horizon_server.fetch_base_fee()
+
+        source_account = funding_wallet.load_account()
+        fb_txe = stellar_sdk.TransactionBuilder.build_fee_bump_transaction(
+            source_public_kp,
+            base_fee=base_fee,
+            inner_transaction_envelope=txe,
+            network_passphrase=self._get_network_passphrase(),
+        )
+        fb_txe.sign(source_signing_kp)
+        response = horizon_server.submit_transaction(fb_txe)
+
+        fund_if_needed(funding_wallet.instance_name)
+
+        return {"transactionhash": response["hash"]}
+
+    def _append_fee_payment(self,txe: stellar_sdk.TransactionEnvelope) -> dict:
+
+        txe.transaction.operations.append(
+            self._create_fee_payment_operation(
+                txe.transaction.operations[0].source, txe.transaction.operations[0].asset
+            )
+        )
+
+        horizon_server = self._get_horizon_server()
+        base_fee = horizon_server.fetch_base_fee()
+        txe.transaction.fee = base_fee * len(txe.transaction.operations)
+
+
+        funding_wallet = self._get_slave_fundingwallet()
+
+        source_public_kp = stellar_sdk.Keypair.from_public_key(funding_wallet.address)
+        source_signing_kp = stellar_sdk.Keypair.from_secret(funding_wallet.secret)
+
+        source_account = funding_wallet.load_account()
+        source_account.increment_sequence_number()
+        txe.transaction.source = source_public_kp
+
+        txe.transaction.sequence = source_account.sequence
+        txe.sign(source_signing_kp)
+
+        transaction_xdr = txe.to_xdr()
+
+        fund_if_needed(funding_wallet.instance_name)
+
+        return {"transaction_xdr": transaction_xdr}
 
     @actor_method
     def fund_transaction(self, transaction: str = None, args: dict = None) -> dict:
@@ -62,18 +149,9 @@ class Transactionfunding_service(BaseActor):
             except j.data.serializers.json.json.JSONDecodeError:
                 pass
 
-        funding_wallet = self._get_slave_fundingwallet()
-        if not funding_wallet:
-            raise j.exceptions.Value("Service Unavailable")
+        txe = stellar_sdk.transaction_envelope.TransactionEnvelope.from_xdr(transaction + "===", self._get_network_passphrase())
 
-        if str(funding_wallet.network.value) == "TEST":
-            network_passphrase = stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
-        else:
-            network_passphrase = stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
-        txe = stellar_sdk.transaction_envelope.TransactionEnvelope.from_xdr(transaction + "===", network_passphrase)
-
-        source_public_kp = stellar_sdk.Keypair.from_public_key(funding_wallet.address)
-        source_signing_kp = stellar_sdk.Keypair.from_secret(funding_wallet.secret)
+        asset_fees = self._get_asset_fees()
 
         if len(txe.transaction.operations) == 0:
             raise j.exceptions.NotFound("No operations in the supplied transaction")
@@ -81,9 +159,9 @@ class Transactionfunding_service(BaseActor):
         for op in txe.transaction.operations:
             if type(op) != stellar_sdk.operation.Payment:
                 raise j.exceptions.Value("Only payment operations are supported")
-            if op.asset.code not in ASSET_ISSUERS:
-                raise j.exceptions.Value("Unsupported asset")
-            if ASSET_ISSUERS[op.asset.code][str(funding_wallet.network.value)] != op.asset.issuer:
+            full_asset_code = asset_to_full_asset_string(op.asset)
+
+            if full_asset_code not in asset_fees:
                 raise j.exceptions.Value("Unsupported asset")
             if asset:
                 if asset != op.asset:
@@ -91,23 +169,9 @@ class Transactionfunding_service(BaseActor):
             else:
                 asset = op.asset
 
-        txe.transaction.operations.append(self._create_fee_payment(txe.transaction.operations[0].source, asset))
-
-        # set the necessary fee
-        horizon_server = self._get_horizon_server(funding_wallet.network.value)
-        base_fee = horizon_server.fetch_base_fee()
-        txe.transaction.fee = base_fee * len(txe.transaction.operations)
-
-        source_account = funding_wallet.load_account()
-        source_account.increment_sequence_number()
-        txe.transaction.source = source_public_kp
-
-        txe.transaction.sequence = source_account.sequence
-        txe.sign(source_signing_kp)
-
-        transaction_xdr = txe.to_xdr()
-        fund_if_needed(funding_wallet.instance_name)
-        return {"transaction_xdr": transaction_xdr}
+        if is_signed_transaction(txe):
+            return self._fee_bump(txe)
+        return self._append_fee_payment(txe)
 
 
 Actor = Transactionfunding_service
