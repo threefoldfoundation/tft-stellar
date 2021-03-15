@@ -17,4 +17,4 @@ Using this information, new TFT are issued  to the sending addresses for these a
 
 ## side effects
 
-Since 0.1 TFTA is added as a transaction fee when using the 3bot wallet, 0.1 TFT less will be issued tan the user has totally spent. 
+Since 0.1 TFTA is added as a transaction fee when using the 3bot wallet, 0.1 TFT less will be issued than the user has totally spent. 
