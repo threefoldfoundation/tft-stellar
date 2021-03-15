@@ -11,6 +11,7 @@ from jumpscale.loader import j
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/sals/")
 from transactionfunding_sal import (
+    ASSET_FEES,
     ensure_slavewallets,
     start_funding_loop,
     set_wallet_name,
