@@ -11,7 +11,6 @@ from jumpscale.loader import j
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/sals/")
 from transactionfunding_sal import (
-    ASSET_ISSUERS,
     ensure_slavewallets,
     start_funding_loop,
     set_wallet_name,
@@ -41,8 +40,11 @@ class transactionfunding_service:
 
         # make sure the trustlines exist for the main wallet
         if wallet_name in j.clients.stellar.list_all() and main_wallet:
-            main_wallet.add_known_trustline("TFT")
-            main_wallet.add_known_trustline("TFTA")
+            for asset in ASSET_FEES[str(mainmain_wallet.network.value)].keys():
+                split_asset = asset.split(":", 1)
+                asset_code = split_asset[0]
+                asset_issuer = split_asset[1]
+                main_wallet.add_trustline(asset_code,asset_issuer)
 
         nr_of_slaves = kwargs.get("slaves", 30)
         ensure_slavewallets(nr_of_slaves)
