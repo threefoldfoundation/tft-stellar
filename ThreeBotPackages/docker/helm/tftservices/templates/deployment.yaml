@@ -44,6 +44,11 @@ spec:
                 secretKeyRef:
                   name: tftservices-config
                   key: TXFUNDING_WALLET_SECRET
+            - name: VESTING_WALLET_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: tftservices-config
+                  key: VESTING_WALLET_SECRET
             - name: TFT_SERVICES_NETWORK
               value:  {{ .Values.tftservicesnetwork }}
           ports:
