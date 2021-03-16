@@ -4,11 +4,3 @@ is_admin = false
 domain = "testnet.threefoldtoken.io"
 letsencryptemail = "tarekr@incubaid.com"
 
-[[locations]]
-name = "custom"
-type = "custom"
-custom_config = """
-location /threefoldfoundation/transactionfunding_service {
-    rewrite /threefoldfoundation/transactionfunding_service/(.*)$ /transactionfunding_service/actors/transactionfunding_service/$1;
-}
-"""
