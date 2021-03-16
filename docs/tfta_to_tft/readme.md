@@ -1,5 +1,7 @@
 # TFTA to TFT conversion
 
+see https://new.threefold.io/info/threefold#/threefold__tfta_to_tft
+
 ## Concept
 
 The total amount of TFTA+TFT can not change. This means that newly issued TFT requires the same amount of TFTA to be destroyed.
