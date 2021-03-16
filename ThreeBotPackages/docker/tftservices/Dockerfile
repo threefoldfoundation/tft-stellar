@@ -36,6 +36,9 @@ RUN poetry run jsng 'j.servers.threebot.default.packages.add(giturl="https://git
 # Install the transaction funding service
 RUN poetry run jsng 'j.servers.threebot.default.packages.add(giturl="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/transactionfunding_service")'
 
+# Install the vesting  service
+RUN poetry run jsng 'j.servers.threebot.default.packages.add(giturl="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/vesting_service")'
+
 # Install the unlock service
 RUN poetry run jsng 'j.servers.threebot.default.packages.add(giturl="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/unlock_service")'
 
