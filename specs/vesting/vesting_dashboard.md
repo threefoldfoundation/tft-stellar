@@ -26,3 +26,5 @@ When going to the detail of the vesting account, the amount of TFT is shown and 
 Also a link to stellar.expert should be present where users can view the details of the vesting account and verify themselves that the vesting account is what we say it is if they want to.
 
 Later, an overview of the locked and free TFT's will be added.
+
+>> [User stories on Vesting UI](https://secure.threefold.tech/pad/#/2/pad/edit/o9WPyE1hZsgeR80ctoYGEovo/)
