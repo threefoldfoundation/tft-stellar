@@ -23,4 +23,6 @@ List the owner addresses and associated vesting accounts stored at the vesting a
 
 When going to the detail of the vesting account, the amount of TFT is shown and when it was deposited.
 
+Also a link to stellar.expert should be present where users can view the details of the vesting account and verify themselves that the vesting account is what we say it is if they want to.
+
 Later, an overview of the locked and free TFT's will be added.
