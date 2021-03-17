@@ -1,6 +1,6 @@
 # Vesting UI
 
-The [Vesting spec](./vesting.md) desribes how vesting accounts are set up. The [vesting service](../../)ThreeBotPackages/vesting_service) implements a service that creates vesting accounts.
+The [Vesting spec](./vesting.md) desribes how vesting accounts are set up. The [vesting service](../../ThreeBotPackages/vesting_service) implements a service that creates vesting accounts.
 
 The problem is that wallets do not support this setup and even importing or viewing multisig wallets where you are the signer is not possible in most Stellar wallets like Solar for example.
 
@@ -15,7 +15,7 @@ A webpage that requires a threefold connect login where a user can
 
 The user needs to provide the owner address. The vesting service is then called to create a vesting account.
 
-The  owner address and the address of the vesting account are stored for the authententicated user.
+The owner address and the address of the vesting account are stored for the authententicated user.
 
 ## View created vesting accounts
 
