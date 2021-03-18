@@ -2,11 +2,35 @@
   <div>
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="vestinginfo"
       :items-per-page="5"
+      v-if="vestinginfo"
       class="elevation-1 mt-16"
-      @click:row="handleClick"
-    ></v-data-table>
+      @click:row="handleClick()"
+    >
+      <template slot="no-data">No accounts added</template>
+        <template v-slot:item.owner="{ item }">
+          <div>{{ item.owner }}</div>
+        </template>
+
+        <template v-slot:item.vesting="{ item }">
+          <div>{{ item.vesting }}</div>
+        </template>
+
+
+        <template v-slot:item.transactions="{ item }">
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon @click.stop="viewTransactions(item.transactions)">
+                <v-icon v-bind="attrs" v-on="on" color="#810000"
+                  >mdi-information-outline</v-icon
+                >
+              </v-btn>
+            </template>
+            <span>Transactions</span>
+          </v-tooltip>
+      </template>
+    </v-data-table>
 
     <Dialog v-if="selected" v-model="info" :data="selected" />
   </div>
@@ -14,6 +38,7 @@
 
 <script>
 import Dialog from "./Dialog";
+import VestingServices from "../services/VestingServices";
 export default {
   components: {
     Dialog,
@@ -22,102 +47,21 @@ export default {
     return {
       selected: null,
       info: false,
+      vestinginfo: null,
       headers: [
-        {
-          text: "Dessert (100g serving)",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-        { text: "Calories", value: "calories" },
-        { text: "Fat (g)", value: "fat" },
-        { text: "Carbs (g)", value: "carbs" },
-        { text: "Protein (g)", value: "protein" },
-        { text: "Iron (%)", value: "iron" },
-      ],
-      desserts: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%",
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%",
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: "7%",
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: "8%",
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: "16%",
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: "0%",
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: "2%",
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: "45%",
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: "22%",
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: "6%",
-        },
-      ],
+        { text: "Owner", value: "owner" },
+        { text: "Vesting", value: "vesting" },
+        { text: "Transactions", value: "transactions" },
+      ]
     };
+  },
+  computed: {
+    vestings() {
+      if (!this.vestinginfo) {
+        this.getVestingInfo();
+      }
+      return this.vestinginfo;
+    },
   },
   methods: {
     handleClick(account) {
@@ -125,6 +69,23 @@ export default {
       this.info = true;
       console.log(account);
     },
+    viewTransactions(transactions){
+      console.log(transactions);
+    },
+    getVestingInfo(){
+      VestingServices.listAccounts()
+      .then((response) => {
+        console.log(response.data.data);
+        this.vestinginfo = response.data.data;
+      })
+      .catch((error) => {
+        console.log("Error! Could not reach the API. " + error);
+      });
+    }
   },
+  mounted() {
+    this.getVestingInfo();
+  },
+
 };
 </script>

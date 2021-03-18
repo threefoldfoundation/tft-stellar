@@ -6,7 +6,7 @@ frontend = "/vesting_dashboard"
 [[static_dirs]]
 name = "frontend"
 path_url = ""
-path_location = "frontend/"
+path_location = "frontend/dist/"
 index = "index.html"
 spa = true
 

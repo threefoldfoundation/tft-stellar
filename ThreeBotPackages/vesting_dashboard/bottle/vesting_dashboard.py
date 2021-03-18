@@ -33,10 +33,10 @@ def create_escrow_account():
     owner_address = data["owner_address"]
     if not owner_address:
         abort(400, "Error: owner_address param missing")
-    # To be removed later when multiple vesting accounts per user enabled
-    _, vesting_check_count, _ = vesting_entry_model.find_many(username=username)
-    if vesting_check_count > 0:
-        abort(400, "Warning: User can add currently only add one vesting account")
+    # To be added to limit user to one vesting account creation
+    # _, vesting_check_count, _ = vesting_entry_model.find_many(username=username)
+    # if vesting_check_count > 0:
+    #     abort(400, "Warning: User can add currently only add one vesting account")
 
     _, vesting_check_count, _ = vesting_entry_model.find_many(
         f"{username}_{owner_address}", owner_address=owner_address
@@ -71,7 +71,7 @@ def list_vesting_accounts():
     _, _, vesting_accounts = vesting_entry_model.find_many(username=username)
 
     tmp_wallet = j.clients.stellar.get(wallet_name)
-    result_payments = {}
+    result_payments = []
     for account in vesting_accounts:
         vesting_address = account.vesting_address
         payments = tmp_wallet.list_payments(vesting_address)
@@ -83,10 +83,9 @@ def list_vesting_accounts():
             transactions.append(
                 {"timestamp": time, "amount": payment.balance.balance, "transaction_hash": payment.transaction_hash}
             )
-        result_payments[account.owner_address] = {
-            "transactions": transactions,
-            "vesting_address": account.vesting_address,
-        }
+        result_payments.append(
+            {"owner": account.owner_address, "transactions": transactions, "vesting": account.vesting_address}
+        )
 
     return j.data.serializers.json.dumps({"data": result_payments})
 

@@ -35,6 +35,7 @@ export default {
       VestingServices.createAccount(this.address)
         .then((response) => {
           console.log(response);
+          this.$router.go(0);
         })
         .catch((error) => {
           console.log("Error! Could not reach the API. " + error);
