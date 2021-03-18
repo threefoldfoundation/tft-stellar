@@ -10,14 +10,13 @@ vesting.threefoldtoken.com
 ### Epic: create new vesting account
 
 1. sign in with tf connect
-2. accept **vesting t&c / policies **(maximillian, pieter), need vesting part on token https://legal.threefold.io/#/terms_conditions_griduser
-3. see the vesting dashboard
-4. click button create vesting account
-5. supply owner address (copy paste on a form), click next
-6. transfer tft to the vesting with provided address, QR Scan / copy paste,
-   check on box "by clicking 'transfer TFT' I agree to the to the [vesting procedure](link to the vesting document)"
-7. Click 'Transfer TFT'
-8. done, token vested
+2. see the vesting dashboard
+3. click button create vesting account
+4. supply owner address (copy paste on a form), click next
+5. insert number of transfer tft to the vesting with provided address, (QR Scan / copy paste)
+6. add "by clicking 'transfer TFT' I agree to the to the [vesting procedure](https://secure.threefold.me/sheet/#/2/sheet/edit/nIcZQiIpsJaM8TEHbGw1iSfI/)"
+6. Click 'Transfer TFT'
+7. done, token vested
 
 ### Epic: see list of my vesting accounts
 1. see dashboard
