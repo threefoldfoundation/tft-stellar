@@ -10,9 +10,9 @@ vesting.threefoldtoken.com
 ### Epic: create new vesting account
 
 1. sign in with tf connect
-2. accept **vesting t&c / policies **(maximillian, pieter)
+2. accept **vesting t&c / policies **(maximillian, pieter), need vesting part on token https://legal.threefold.io/#/terms_conditions_griduser
 3. see the vesting dashboard
-4. click button create vesting account
+4. click button create vesting account
 5. supply owner address (copy paste on a form), click next
 6. Select **vesting scheme (maximillian/weynand/kds)**, remind people deadline 2 weeks
 options; Predefined scheme plans, or give user parameters, click next
