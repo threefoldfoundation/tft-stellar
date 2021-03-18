@@ -14,7 +14,7 @@ vesting.threefoldtoken.com
 3. click button create vesting account
 4. supply owner address (copy paste on a form), click next
 5. insert number of transfer tft to the vesting with provided address, (QR Scan / copy paste)
-6. add "by clicking 'transfer TFT' I agree to the to the [vesting procedure](https://secure.threefold.me/sheet/#/2/sheet/edit/nIcZQiIpsJaM8TEHbGw1iSfI/)"
+6. add "by clicking 'transfer TFT' I agree to the to the [vesting procedure](https://secure.threefold.me/sheet/#/2/sheet/edit/nIcZQiIpsJaM8TEHbGw1iSfI/), If enough TFT are vested until 22nd of March 2021, the new TFT strategy will start."
 6. Click 'Transfer TFT'
 7. done, token vested
 
