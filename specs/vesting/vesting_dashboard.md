@@ -27,4 +27,4 @@ Also a link to stellar.expert should be present where users can view the details
 
 Later, an overview of the locked and free TFT's will be added.
 
->> [User stories on Vesting UI](https://secure.threefold.tech/pad/#/2/pad/edit/o9WPyE1hZsgeR80ctoYGEovo/)
+>> [User stories on Vesting UI](https://github.com/threefoldfoundation/tft-stellar/blob/master/specs/vesting/vesting_dashboard_userstories.md)
