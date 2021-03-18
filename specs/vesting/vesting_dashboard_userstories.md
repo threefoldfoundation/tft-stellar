@@ -1,5 +1,5 @@
 # vesting dashboard UI 
-deadline: friday 19th
+deadline: friday 19th --- sunday 21st march
 
 ## Domain
 vesting.threefoldtoken.com
