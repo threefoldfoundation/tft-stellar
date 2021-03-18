@@ -19,7 +19,7 @@ options; Predefined scheme plans, or give user parameters, click next
 7. transfer tft to the vesting with provided address, QR Scan / copy paste, click send
 8. done, token vested
 
-### Epic: see list of vesting accounts
+### Epic: see list of my vesting accounts
 1. see dashboard
 2. see list of vesting accounts
 3. click on details -->
