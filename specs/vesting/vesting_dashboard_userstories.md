@@ -14,9 +14,9 @@ vesting.threefoldtoken.com
 3. see the vesting dashboard
 4. click button create vesting account
 5. supply owner address (copy paste on a form), click next
-6. Select **vesting scheme (maximillian/weynand/kds)**, remind people deadline 2 weeks
-options; Predefined scheme plans, or give user parameters, click next
-7. transfer tft to the vesting with provided address, QR Scan / copy paste, click send
+6. transfer tft to the vesting with provided address, QR Scan / copy paste,
+   check on box "by clicking 'transfer TFT' I agree to the to the [vesting procedure](link to the vesting document)"
+7. Click 'Transfer TFT'
 8. done, token vested
 
 ### Epic: see list of my vesting accounts
