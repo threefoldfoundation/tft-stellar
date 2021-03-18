@@ -39,6 +39,26 @@ Since an escrow account has 12 subentries, it requires 7 XLM. In order to financ
 
 These XLM's can be recovered by demanding that the last transaction  contains a setoptions operation  setting the signing weight of the owner to 0 and modifying the tresholds to 5  so the cosigners can merge the escrow account to recover the remaining XLM and the do not remain lost forever.
 
+## Recovery of unused vesting accounts
+
+If people create vesting accounts but do not vest, this creates dangling vesting accounts and drains XLM from the vesting account creation services.
+
+In order to clean up dangling vesting accounts, a preauthorization transaction is added as a signer.
+
+This transaction signer has a weight of 10, can only be executed as the next transaction on the vesting account, and executes the following operations:
+
+- Removes the TFT trustline
+- Removes the tft-vesting data entry
+- Merges the account back to the account that created it to recover the XLM on it
+
+This transaction will fail if there are TFT's on the vesting account since the removal of the trustline will fail after which this transaction signer is removed from the vesting account.
+
+The recovery transaction can only be submitted 2 weeks after the creation giving the user more than enough time to transfer TFT's to it.
+
+Adding this extra signer requires an extra 0.5 XLM per escrow account.
+
+They are published to the unlock-service  which already contain the unlocktransactions for the locked tokens so people can verify that this transaction is nothing fishy.
+
 ### Examples and testcode
 
 The [testscripts](./testscripts/) folder contains testscripts in Python to create escrow accounts on the Stellar test network.
