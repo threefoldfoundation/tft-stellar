@@ -1,25 +1,21 @@
 from jumpscale.loader import j
 
+wallet_name = "vesting_temp_wallet"
+
 
 class vesting_dashboard:
-    def install(self):
+    def install(self, **kwargs):
         """Called when package is added"""
+        wallet = None
+        wallet_name = "vesting_temp_wallet"  # Only to be used to check balance of other wallets, no need to activate
+        if "vesting_temp_wallet" not in j.clients.stellar.list_all():
+            wallet_network = kwargs.get("wallet_network", "STD")
+            wallet = j.clients.stellar.get(wallet_name)
+            wallet.network = wallet_network
+            wallet.save()
 
-        location_actors_443 = j.sals.nginx.main.websites.default_443.locations.get(name="vesting_dashboard_actors")
-        location_actors_443.is_auth = True
-        location_actors_443.is_admin = False
-        location_actors_443.save()
-
-        location_actors_80 = j.sals.nginx.main.websites.default_80.locations.get(name="vesting_dashboard_actors")
-        location_actors_80.is_auth = True
-        location_actors_80.is_admin = False
-        location_actors_80.save()
-
-        j.sals.nginx.main.websites.default_443.configure()
-        j.sals.nginx.main.websites.default_80.configure()
-
-    def start(self):
-        self.install()
+    def start(self, **kwargs):
+        self.install(**kwargs)
 
     def uninstall(self):
         """Called when package is deleted"""

@@ -10,9 +10,17 @@ path_location = "frontend/"
 index = "index.html"
 spa = true
 
+[[bottle_servers]]
+name = "main"
+file_path = "bottle/vesting_dashboard.py"
+path_url = "/api/"
+path_dest = "/api/"
+host = "0.0.0.0"
+port = 5389
+
 [[servers]]
 name = "vesting_dashboard_root_proxy"
-domain = "gettft.testnet.grid.tf"
+domain = "vesting.threefoldtoken.com"
 letsencryptemail = "tarekr@incubaid.com"
 includes = ["default_443.chatflows_*", "default_443.auth_*", "default_443.vesting_dashboard*"]
 
