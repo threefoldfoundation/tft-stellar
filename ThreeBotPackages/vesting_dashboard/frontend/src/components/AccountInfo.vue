@@ -54,8 +54,8 @@
                 
                 <v-card-subtitle>for {{info.vesting}}</v-card-subtitle>
                 
-                <v-card-text class="pa-5">
-                    <p v-if="transactions.length === 0">No transactions yet!</p>
+                <v-card-text class="pa-1">
+                    <p v-if="info.transactions.length === 0">No transactions yet!</p>
                     <ul v-else>
                         <li v-for="tx in info.transactions" :key="tx.transaction_hash">
                             hash: {{tx.transaction_hash}} for {{tx.amount}} TFT's @{{tx.timestamp}} 
@@ -86,10 +86,12 @@ export default {
   },
   data() {
     return {
-      transactions: [],
       escrow: '',
       dialog: false,
     }
+  },
+  mounted () {
+    console.log(this.info.transactions)
   },
   computed: {
     qrCodeValue () {
