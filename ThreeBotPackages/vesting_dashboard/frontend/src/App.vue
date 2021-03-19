@@ -9,22 +9,18 @@
           src="./assets/3bot_robot.png"
           class="mx-auto mt-5"
         ></v-img>
-        <VestingForm class="mb-16" />
-
-        <AccountTable />
+        <Overview class="mb-16" />
       </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import VestingForm from "./components/VestingForm";
-import AccountTable from "./components/AccountTable";
+import Overview from "./components/Overview"
 export default {
   name: "App",
   components: {
-    VestingForm,
-    AccountTable,
+    Overview,
   },
 };
 </script>

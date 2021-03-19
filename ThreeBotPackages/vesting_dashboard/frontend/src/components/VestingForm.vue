@@ -18,9 +18,10 @@
 </template>
 
 <script>
-import VestingServices from "../services/VestingServices";
+import VestingServices from "../services/VestingServices"
 
 export default {
+  props: ['getVestingInfo', 'setLoading'],
   name: "VestingForm",
   data() {
     return {
@@ -28,24 +29,27 @@ export default {
       valid: true,
       address: null,
       addressRules: [(v) => !!v || "Address is required"],
-    };
+    }
   },
   methods: {
     submit() {
+      this.setLoading(true)
       VestingServices.createAccount(this.address)
-        .then((response) => {
-          console.log(response);
-          this.$router.go(0);
+        .then(() => {
+          this.$toasted.show('Created vesting account!', { type: 'success', duration: 5000 })
+          this.getVestingInfo()
         })
         .catch((error) => {
-          console.log("Error! Could not reach the API. " + error);
-        });
+          this.setLoading(false)
+          console.log("Error! Could not reach the API. " + error)
+          this.$toasted.show('Error creating vesting account.', { type: 'error', duration: 5000 })
+        })
     },
     validate() {
-      this.$refs.form.validate();
+      this.$refs.form.validate()
     },
   },
-};
+}
 </script>
 
 <style scoped>

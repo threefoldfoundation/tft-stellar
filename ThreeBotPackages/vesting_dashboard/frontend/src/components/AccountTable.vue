@@ -1,91 +1,66 @@
 <template>
   <div>
     <v-data-table
+      v-if="loading"
+      item-key="name"
+      class="elevation-1 mt-16"
+      loading
+      loading-text="Loading... Please wait"
+    ></v-data-table>
+    <v-data-table
+      v-else
       :headers="headers"
       :items="vestinginfo"
       :items-per-page="5"
-      v-if="vestinginfo"
       class="elevation-1 mt-16"
-      @click:row="handleClick()"
+      item-key="owner"
+      show-expand
+      :single-expand="singleExpand"
+      :expanded.sync="expanded"
     >
       <template slot="no-data">No accounts added</template>
-        <template v-slot:item.owner="{ item }">
-          <div>{{ item.owner }}</div>
-        </template>
 
-        <template v-slot:item.vesting="{ item }">
-          <div>{{ item.vesting }}</div>
-        </template>
+      <template v-slot:item.owner="{ item }">
+        <div>{{ item.owner }}</div>
+      </template>
 
+      <template v-slot:item.vesting="{ item }">
+        <div>{{ item.vesting }}</div>
+      </template>
 
-        <template v-slot:item.transactions="{ item }">
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn icon @click.stop="viewTransactions(item.transactions)">
-                <v-icon v-bind="attrs" v-on="on" color="#810000"
-                  >mdi-information-outline</v-icon
-                >
-              </v-btn>
-            </template>
-            <span>Transactions</span>
-          </v-tooltip>
+      <template v-slot:expanded-item="{ headers, item }">
+        <td :colspan="headers.length">
+          <AccountInfo :key="item.id" :info=item />
+        </td>
       </template>
     </v-data-table>
 
-    <Dialog v-if="selected" v-model="info" :data="selected" />
   </div>
 </template>
 
 <script>
-import Dialog from "./Dialog";
-import VestingServices from "../services/VestingServices";
+import AccountInfo from "./AccountInfo"
 export default {
+  props: ['vestinginfo', 'loading'],
   components: {
-    Dialog,
+    AccountInfo
   },
   data() {
     return {
-      selected: null,
-      info: false,
-      vestinginfo: null,
       headers: [
-        { text: "Owner", value: "owner" },
-        { text: "Vesting", value: "vesting" },
-        { text: "Transactions", value: "transactions" },
-      ]
-    };
-  },
-  computed: {
-    vestings() {
-      if (!this.vestinginfo) {
-        this.getVestingInfo();
-      }
-      return this.vestinginfo;
-    },
-  },
-  methods: {
-    handleClick(account) {
-      this.selected = account;
-      this.info = true;
-      console.log(account);
-    },
-    viewTransactions(transactions){
-      console.log(transactions);
-    },
-    getVestingInfo(){
-      VestingServices.listAccounts()
-      .then((response) => {
-        console.log(response.data.data);
-        this.vestinginfo = response.data.data;
-      })
-      .catch((error) => {
-        console.log("Error! Could not reach the API. " + error);
-      });
+        { text: "Owner Address", value: "owner" },
+        { text: "Vesting Address", value: "vesting" }
+      ],
+      expanded: [],
+      singleExpand: true
     }
   },
-  mounted() {
-    this.getVestingInfo();
+  methods: {
+    openAccountDetails (account) {
+      const index = this.expanded.indexOf(account)
+      if (index > -1) this.expanded.splice(index, 1)
+      else this.expanded.push(account)
+    }
   },
-
-};
+}
 </script>

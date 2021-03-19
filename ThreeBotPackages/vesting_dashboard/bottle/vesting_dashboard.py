@@ -74,6 +74,7 @@ def list_vesting_accounts():
     result_payments = []
     for account in vesting_accounts:
         vesting_address = account.vesting_address
+
         payments = tmp_wallet.list_payments(vesting_address)
         transactions = []
         for payment in payments:
@@ -83,8 +84,17 @@ def list_vesting_accounts():
             transactions.append(
                 {"timestamp": time, "amount": payment.balance.balance, "transaction_hash": payment.transaction_hash}
             )
+
+        account_balances = []
+        balances = tmp_wallet.get_balance(vesting_address).balances
+
+        for b in balances:
+            account_balances.append(
+                { "asset": b.asset_code, "issuer": b.asset_issuer, "balance": b.balance }
+            )
+
         result_payments.append(
-            {"owner": account.owner_address, "transactions": transactions, "vesting": account.vesting_address}
+            {"owner": account.owner_address, "transactions": transactions, "vesting": account.vesting_address, "balances": account_balances}
         )
 
     return j.data.serializers.json.dumps({"data": result_payments})

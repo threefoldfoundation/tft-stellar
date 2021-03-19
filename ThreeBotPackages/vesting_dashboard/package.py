@@ -10,8 +10,8 @@ class vesting_dashboard:
         wallet_name = "vesting_temp_wallet"  # Only to be used to check balance of other wallets, no need to activate
         if "vesting_temp_wallet" not in j.clients.stellar.list_all():
             wallet_network = kwargs.get("wallet_network", "STD")
-            wallet = j.clients.stellar.get(wallet_name)
-            wallet.network = wallet_network
+            print(wallet_network)
+            wallet = j.clients.stellar.new(wallet_name, network=wallet_network)
             wallet.save()
 
     def start(self, **kwargs):
