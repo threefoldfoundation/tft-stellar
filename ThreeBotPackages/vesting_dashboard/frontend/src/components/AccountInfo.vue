@@ -36,46 +36,65 @@
       </v-row>
 
       <v-row>
-        <v-icon
-          small
-          class="mr-2"
-          @click.stop="viewTransactions(info.transactions, info.vesting)"
-        >
-          mdi-information-outline
-        </v-icon>
+        <v-dialog v-model="dialog" width="700">
+            
+            <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    color="blue lighten-2"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                >
+                Check transactions
+                </v-btn>
+            </template>
+
+            <v-card>
+                <v-card-title class="headline">Transactions</v-card-title>
+                
+                <v-card-subtitle>for {{info.vesting}}</v-card-subtitle>
+                
+                <v-card-text class="pa-5">
+                    <p v-if="transactions.length === 0">No transactions yet!</p>
+                    <ul v-else>
+                        <li v-for="tx in info.transactions" :key="tx.transaction_hash">
+                            hash: {{tx.transaction_hash}} for {{tx.amount}} TFT's @{{tx.timestamp}} 
+                        </li>
+                    </ul>
+                    <slot name="default"></slot>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <slot name="actions"></slot>
+                </v-card-actions>
+            </v-card>
+
+        </v-dialog>
+
       </v-row>
-      <Dialog :show="show" :escrow="escrow" :transactions="transactions" />
     <v-container />
   </v-col>
 </template>
 
 <script>
-import Dialog from "./Dialog"
 import VueQrcode from 'vue-qrcode'
 export default {
   props: ['info'],
   components: {
-    VueQrcode,
-    Dialog
+    VueQrcode
   },
   data() {
     return {
       transactions: [],
-      escrow: undefined,
-      show: false,
+      escrow: '',
+      dialog: false,
     }
   },
   computed: {
     qrCodeValue () {
         return `TFT:${this.info.vesting}`
     }
-  },
-  methods: {
-    viewTransactions(transactions, escrow){
-      this.transactions = transactions
-      this.escrow = escrow
-      this.show = true
-    },
-  },
+  }
 }
 </script>
