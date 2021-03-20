@@ -18,4 +18,4 @@ curl  -H "Content-Type: application/json" -d '{ "owner_address": "GBB375L64ZDTW2
 
 url: `https://tokenservices.threefold.io/threefoldfoundation/vesting_service/create_vesting_account`
 
-Not available yet
+Not available yet.

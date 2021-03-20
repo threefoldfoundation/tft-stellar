@@ -11,10 +11,10 @@ from createaccount import create_account
 
 DATA_ENTRY_KEY="tft-vesting"
 
-def create_recovery_transaction(vesting_kp, asset_code:str, asset_issuer:str, activation_account:str)-> stellar_sdk.TransactionEnvelope:
+def create_recovery_transaction(vesting_address, asset_code:str, asset_issuer:str, activation_account:str)-> stellar_sdk.TransactionEnvelope:
 
     horizon_server = stellar_sdk.Server()
-    source_account=horizon_server.load_account(vesting_kp.public_key)
+    source_account=horizon_server.load_account(vesting_address)
     source_account.sequence+=1
     txe=(TransactionBuilder(source_account,network_passphrase=stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE)
         .append_change_trust_op(asset_code=asset_code,asset_issuer=asset_issuer,limit="0")
@@ -46,7 +46,6 @@ def create_escrow_account(activationaccountsecret, owneraddress, cosignersfile, 
         TransactionBuilder(activation_account, network_passphrase=stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE)
         .append_create_account_op(escrow_address, starting_balance="7.6")
         .append_change_trust_op(asset_code, asset_issuer, source=escrow_address)
-        .append_ed25519_public_key_signer(owneraddress, weight=5, source=escrow_address)
     )
     tx = txb.build()
     tx.sign(activation_kp)
@@ -62,7 +61,7 @@ def create_escrow_account(activationaccountsecret, owneraddress, cosignersfile, 
         txb.append_ed25519_public_key_signer(cosigner["address"], weight=1, source=escrow_address)
     txb.append_manage_data_op(DATA_ENTRY_KEY, "here comes the formula or reference", source=escrow_address)
 
-    recovery_transaction=create_recovery_transaction(vesting_kp,asset_code,asset_issuer, activation_kp.public_key)
+    recovery_transaction=create_recovery_transaction(escrow_address,asset_code,asset_issuer, activation_kp.public_key)
     txb.append_pre_auth_tx_signer(recovery_transaction.hash(),weight=10,source=escrow_address)
 
     txb.append_set_options_op(
