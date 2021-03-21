@@ -28,7 +28,8 @@ _NETWORK_PASSPHRASES = {
     "public": stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE,
 }
 
-VESTING_DATA_ENTRY_KEY="tft-vesting"
+VESTING_DATA_ENTRY_KEY = "tft-vesting"
+
 
 def get_horizon_server(network):
     server_url = _HORIZON_NETWORKS[network]
@@ -47,7 +48,6 @@ def get_unlockhash_transaction(network, unlockhash):
     )
     resp.raise_for_status()
     return resp.json()
-
 
 
 def get_vesting_accounts(network, tokencode: str):
@@ -70,7 +70,7 @@ def get_vesting_accounts(network, tokencode: str):
             account_id = account["account_id"]
             if VESTING_DATA_ENTRY_KEY not in account["data"]:
                 continue
-            vesting_scheme=base64.b64decode((account["data"][VESTING_DATA_ENTRY_KEY])).decode('utf-8')
+            vesting_scheme = base64.b64decode((account["data"][VESTING_DATA_ENTRY_KEY])).decode("utf-8")
             preauth_signers = [signer["key"] for signer in account["signers"] if signer["type"] == "preauth_tx"]
             tokenbalances = [
                 float(b["balance"])
@@ -82,9 +82,15 @@ def get_vesting_accounts(network, tokencode: str):
             tokenbalance = tokenbalances[0] if tokenbalances else 0
             if len(preauth_signers) > 0:
                 vesting_accounts.append(
-                    {"account": account_id, "amount": tokenbalance, "preauth_signers": preauth_signers, "scheme":vesting_scheme}
+                    {
+                        "account": account_id,
+                        "amount": tokenbalance,
+                        "preauth_signers": preauth_signers,
+                        "scheme": vesting_scheme,
+                    }
                 )
     return vesting_accounts
+
 
 def get_locked_accounts(network, tokencode: str):
     locked_accounts = []

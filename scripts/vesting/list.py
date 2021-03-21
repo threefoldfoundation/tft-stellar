@@ -23,9 +23,11 @@ def list_vesting_accounts(network):
     vesting_accounts = get_vesting_accounts(network, "TFT")
 
     for vesting_account in vesting_accounts:
-        print(f"{vesting_account['account']} has {vesting_account['amount']} TFT with vesting scheme '{vesting_account['scheme']}'")
-        if len(vesting_account["preauth_signers"])==0:
-            continue 
+        print(
+            f"{vesting_account['account']} has {vesting_account['amount']} TFT with vesting scheme '{vesting_account['scheme']}'"
+        )
+        if len(vesting_account["preauth_signers"]) == 0:
+            continue
         unlockhash = vesting_account["preauth_signers"][0]
         try:
             transaction = get_unlockhash_transaction(network, unlockhash)
