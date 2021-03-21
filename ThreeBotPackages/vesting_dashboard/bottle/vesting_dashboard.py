@@ -95,8 +95,11 @@ def list_vesting_accounts():
                 {"timestamp": time, "amount": payment.balance.balance, "transaction_hash": payment.transaction_hash}
             )
 
-        account_balances = []
-        account_balances = _get_balance_details(tmp_wallet.get_balance(account.owner_address))
+        vesting_account_balances = []
+        vesting_account_balances = _get_balance_details(tmp_wallet.get_balance(account.vesting_address))
+
+        owner_account_balances = []
+        owner_account_balances = _get_balance_details(tmp_wallet.get_balance(account.owner_address))
 
         locked_balances_details = []
         locked_accounts = tmp_wallet.get_balance(account.owner_address).escrow_accounts
@@ -111,8 +114,9 @@ def list_vesting_accounts():
                 "owner": account.owner_address,
                 "transactions": transactions,
                 "vesting": account.vesting_address,
-                "balances": account_balances,
+                "balances": {"vesting": vesting_account_balances, "owner": owner_account_balances},
                 "locked": locked_balances_details,
+                "network": tmp_wallet.network,
             }
         )
 

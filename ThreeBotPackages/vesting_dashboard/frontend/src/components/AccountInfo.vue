@@ -18,7 +18,14 @@
         </v-flex>
       </v-row>
 
-      <v-row :key="balance.balance" v-for="balance in info.balances">
+      <v-row :key="balance.balance" v-for="balance in info.balances.vesting">
+        <v-flex xs3 class="text-left pr-2 text-truncate" >Vesting {{ balance.asset }} </v-flex>
+        <v-flex class="text-truncate font-weight-bold">
+            <span>{{balance.balance}}</span>
+        </v-flex>
+      </v-row>
+
+      <v-row :key="balance.balance" v-for="balance in info.balances.owner">
         <v-flex xs3 class="text-left pr-2 text-truncate" >Owner {{ balance.asset }} </v-flex>
         <v-flex class="text-truncate font-weight-bold">
             <span>{{balance.balance}}</span>
@@ -58,7 +65,9 @@
                     <p v-if="info.transactions.length === 0">No transactions yet!</p>
                     <ul v-else>
                         <li v-for="tx in info.transactions" :key="tx.transaction_hash">
-                            hash: {{tx.transaction_hash}} for {{tx.amount}} TFT's @{{tx.timestamp}} 
+                            hash: {{tx.transaction_hash}} <br>
+                            for {{tx.amount}} TFT <br>
+                            at {{new Date(tx.timestamp * 1000).toLocaleString('en-GB')}}
                         </li>
                     </ul>
                     <slot name="default"></slot>
@@ -72,7 +81,7 @@
 
         </v-dialog>
 
-        <v-dialog v-model="dialog" width="700">
+        <v-dialog v-model="dialogbalances" width="700">
             
             <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -82,7 +91,7 @@
                     v-on="on"
                     class="ml-6"
                 >
-                Locked Balances
+                Owner Locked Balances
                 </v-btn>
             </template>
 
@@ -93,7 +102,8 @@
                     <ul v-else>
                         <li v-for="locked in info.locked" :key="locked.vesting">
                           <ul>
-                              <p>For: {{locked.vesting}}</p>
+                              For: <a :href="`${stellarUrl}/${locked.vesting}`" target="_blank">{{locked.vesting}}  </a>
+                              
                               <li :key="lockedbalances" v-for="lockedbalances in locked.lockedbalances">
                                   {{lockedbalances.asset}} {{lockedbalances.balance}}
                               </li>
@@ -126,10 +136,19 @@ export default {
     return {
       escrow: '',
       dialog: false,
+      dialogbalances:false,
+      stellarUrl:null
     }
   },
-  mounted () {
-    console.log(this.info.transactions)
+  mounted(){
+    if(this.info.network === "STD"){
+      this.stellarUrl = "https://stellar.expert/explorer/public/account";
+    }
+    else{
+      this.stellarUrl = "https://stellar.expert/explorer/testnet/account"
+    }
+
+
   },
   computed: {
     qrCodeValue () {
