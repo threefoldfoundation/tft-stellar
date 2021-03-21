@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # pylint: disable=no-value-for-parameter
 
-from jumpscale.loader import j
 import click
 import stellar_sdk
 import datetime
+import requests
+import base64
 
 from urllib import parse
 
@@ -27,6 +28,7 @@ _NETWORK_PASSPHRASES = {
     "public": stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE,
 }
 
+VESTING_DATA_ENTRY_KEY="tft-vesting"
 
 def get_horizon_server(network):
     server_url = _HORIZON_NETWORKS[network]
@@ -40,12 +42,49 @@ def get_url(network, endpoint):
 
 def get_unlockhash_transaction(network, unlockhash):
     data = {"unlockhash": unlockhash}
-    resp = j.tools.http.post(
+    resp = requests.post(
         get_url(network, "/threefoldfoundation/unlock_service/get_unlockhash_transaction"), json={"args": data}
     )
     resp.raise_for_status()
     return resp.json()
 
+
+
+def get_vesting_accounts(network, tokencode: str):
+    vesting_accounts = []
+    issuer = _ASSET_ISUERS[network][tokencode]
+    horizon_server = get_horizon_server(network)
+    asset = stellar_sdk.Asset(tokencode, issuer)
+    accounts_endpoint = horizon_server.accounts().for_asset(asset).limit(50)
+    old_cursor = "old"
+    new_cursor = ""
+    while new_cursor != old_cursor:
+        old_cursor = new_cursor
+        accounts_endpoint.cursor(new_cursor)
+        response = accounts_endpoint.call()
+        next_link = response["_links"]["next"]["href"]
+        next_link_query = parse.urlsplit(next_link).query
+        new_cursor = parse.parse_qs(next_link_query)["cursor"][0]
+        accounts = response["_embedded"]["records"]
+        for account in accounts:
+            account_id = account["account_id"]
+            if VESTING_DATA_ENTRY_KEY not in account["data"]:
+                continue
+            vesting_scheme=base64.b64decode((account["data"][VESTING_DATA_ENTRY_KEY])).decode('utf-8')
+            preauth_signers = [signer["key"] for signer in account["signers"] if signer["type"] == "preauth_tx"]
+            tokenbalances = [
+                float(b["balance"])
+                for b in account["balances"]
+                if b["asset_type"] == "credit_alphanum4"
+                and b["asset_code"] == tokencode
+                and b["asset_issuer"] == issuer
+            ]
+            tokenbalance = tokenbalances[0] if tokenbalances else 0
+            if len(preauth_signers) > 0:
+                vesting_accounts.append(
+                    {"account": account_id, "amount": tokenbalance, "preauth_signers": preauth_signers, "scheme":vesting_scheme}
+                )
+    return vesting_accounts
 
 def get_locked_accounts(network, tokencode: str):
     locked_accounts = []

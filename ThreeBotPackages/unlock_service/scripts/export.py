@@ -6,8 +6,7 @@ import datetime
 import os
 import sys
 import requests
-
-from jumpscale.loader import j
+import json
 from urllib import parse
 
 
@@ -16,7 +15,7 @@ sys.path.append(current_full_path + "/../../../lib/stats/")
 from stats import get_locked_accounts, get_unlockhash_transaction
 
 
-@click.command(help="Exports the used unlocktransactions from the unlock service for TFT and TFTA")
+@click.command(help="Exports the active unlocktransactions from the unlock service for TFT and TFTA")
 @click.option("--network", type=click.Choice(["test", "public"], case_sensitive=False), default="public")
 def export(network):
     for tokencode in ["TFT", "TFTA"]:
@@ -27,7 +26,7 @@ def export(network):
             unlockhash = locked_account["preauth_signers"][0]
             try:
                 transaction = get_unlockhash_transaction(network, unlockhash)
-                print(f"{j.data.serializers.json.dumps(transaction)}")
+                print(f"{json.dumps(transaction)}")
             except requests.exceptions.HTTPError as e:
                 if e.response.status_code == 404:
                     print(
