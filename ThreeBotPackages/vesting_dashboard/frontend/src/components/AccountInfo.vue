@@ -19,7 +19,7 @@
       </v-row>
 
       <v-row :key="balance.balance" v-for="balance in info.balances">
-        <v-flex xs3 class="text-left pr-2 text-truncate" >{{ balance.asset }} </v-flex>
+        <v-flex xs3 class="text-left pr-2 text-truncate" >Owner {{ balance.asset }} </v-flex>
         <v-flex class="text-truncate font-weight-bold">
             <span>{{balance.balance}}</span>
         </v-flex>
@@ -70,6 +70,44 @@
                 </v-card-actions>
             </v-card>
 
+        </v-dialog>
+
+        <v-dialog v-model="dialog" width="700">
+            
+            <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    color="blue lighten-2"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                    class="ml-6"
+                >
+                Locked Balances
+                </v-btn>
+            </template>
+
+            <v-card>
+                <v-card-title class="headline">Owner Locked Balances</v-card-title>
+                <v-card-text class="pa-1">
+                    <p v-if="info.locked.length === 0">No Locked Balances!</p>
+                    <ul v-else>
+                        <li v-for="locked in info.locked" :key="locked.vesting">
+                          <ul>
+                              <p>For: {{locked.vesting}}</p>
+                              <li :key="lockedbalances" v-for="lockedbalances in locked.lockedbalances">
+                                  {{lockedbalances.asset}} {{lockedbalances.balance}}
+                              </li>
+                          </ul>
+                        </li>
+                    </ul>
+                    <slot name="default"></slot>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <slot name="actions"></slot>
+                </v-card-actions>
+            </v-card>
         </v-dialog>
 
       </v-row>

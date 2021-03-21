@@ -24,6 +24,16 @@ vesting_service_url = {
 }
 
 
+def _get_balance_details(account):
+    balance_details = []
+    balances = account.balances
+
+    for b in balances:
+        balance_details.append({"asset": b.asset_code, "issuer": b.asset_issuer, "balance": b.balance})
+
+    return balance_details
+
+
 @app.route("/api/account/create", method="POST")
 @login_required
 def create_escrow_account():
@@ -86,15 +96,24 @@ def list_vesting_accounts():
             )
 
         account_balances = []
-        balances = tmp_wallet.get_balance(vesting_address).balances
+        account_balances = _get_balance_details(tmp_wallet.get_balance(account.owner_address))
 
-        for b in balances:
-            account_balances.append(
-                { "asset": b.asset_code, "issuer": b.asset_issuer, "balance": b.balance }
+        locked_balances_details = []
+        locked_accounts = tmp_wallet.get_balance(account.owner_address).escrow_accounts
+        for locked_account in locked_accounts:
+            locked_account_balances = _get_balance_details(locked_account)
+            locked_balances_details.append(
+                {"vesting": locked_account.address, "lockedbalances": locked_account_balances}
             )
 
         result_payments.append(
-            {"owner": account.owner_address, "transactions": transactions, "vesting": account.vesting_address, "balances": account_balances}
+            {
+                "owner": account.owner_address,
+                "transactions": transactions,
+                "vesting": account.vesting_address,
+                "balances": account_balances,
+                "locked": locked_balances_details,
+            }
         )
 
     return j.data.serializers.json.dumps({"data": result_payments})
