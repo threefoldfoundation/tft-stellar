@@ -34,6 +34,7 @@ _COSIGNERS = {
 }
 
 DATA_ENTRY_KEY = "tft-vesting"
+VESTING_SCHEME = "month1=05/2021,48months,priceunlock=tftvalue>month*0.015+0.15"
 
 
 class VestingService(BaseActor):
@@ -111,12 +112,11 @@ class VestingService(BaseActor):
             vesting_account, network_passphrase=self._get_network_passphrase()
         ).append_ed25519_public_key_signer(owner_address, weight=5, source=escrow_address)
         recovery_transaction = self._create_recovery_transaction(escrow_address)
-        # TODO: publish recovery transaction
-        print(f"Recovery transaction:\n{recovery_transaction.to_xdr()}")
+
         txb.append_pre_auth_tx_signer(recovery_transaction.hash(), weight=10, source=escrow_address)
         for cosigner in self._get_cosigners():
             txb.append_ed25519_public_key_signer(cosigner, weight=1, source=escrow_address)
-        txb.append_manage_data_op(DATA_ENTRY_KEY, "here comes the formula or reference", source=escrow_address)
+        txb.append_manage_data_op(DATA_ENTRY_KEY, VESTING_SCHEME, source=escrow_address)
         txb.append_set_options_op(
             master_weight=0, low_threshold=10, med_threshold=10, high_threshold=10, source=escrow_address
         )
