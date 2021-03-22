@@ -3,10 +3,10 @@
     <v-main>
       <v-container class="my-5">
         <v-img
-          lazy-src="./assets/3bot_robot.png"
+          lazy-src="./assets/3fold_logo.png"
           height="auto"
-          width="150"
-          src="./assets/3bot_robot.png"
+          width="325"
+          src="./assets/3fold_logo.png"
           class="mx-auto mt-5"
         ></v-img>
         <Overview class="mb-16" />
