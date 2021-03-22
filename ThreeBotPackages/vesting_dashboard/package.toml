@@ -1,0 +1,34 @@
+name = "vesting_dashboard"
+is_auth = true
+is_admin = false
+frontend = "/vesting_dashboard"
+
+[[static_dirs]]
+name = "frontend"
+path_url = ""
+path_location = "frontend/dist/"
+index = "index.html"
+spa = true
+
+[[bottle_servers]]
+name = "main"
+file_path = "bottle/vesting_dashboard.py"
+path_url = "/api/"
+path_dest = "/api/"
+host = "0.0.0.0"
+port = 5389
+
+[[servers]]
+name = "vesting_dashboard_root_proxy"
+domain = "vesting.threefoldtoken.com"
+letsencryptemail = "tarekr@incubaid.com"
+includes = ["default_443.chatflows_*", "default_443.auth_*", "default_443.vesting_dashboard*"]
+
+[[servers.locations]]
+name = "custom"
+type = "custom"
+custom_config = """
+location / {
+   rewrite ^(.+) /vesting_dashboard;
+}
+"""
