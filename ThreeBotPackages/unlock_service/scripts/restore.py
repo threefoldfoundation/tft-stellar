@@ -4,7 +4,7 @@ import click
 import os
 import sys
 import requests
-from jumpscale.loader import j
+import json
 
 
 UNLOCK_SERVICE_DEFAULT_HOSTS = {"test": "https://testnet.threefold.io", "public": "https://tokenservices.threefold.io"}
@@ -19,19 +19,21 @@ def import_unlockhash_transaction_data(source, network, unlock_service_host):
     if not unlock_service_host:
         unlock_service_host = UNLOCK_SERVICE_DEFAULT_HOSTS[network]
     print(f"Restoring data to {unlock_service_host} from {source}\n")
-    file_content = j.sals.fs.read_file(source)
-    for line in file_content.splitlines():
-        if line.strip() == "":
-            continue
-        unlockhash_transaction_data = j.data.serializers.json.loads(line)
-        unlockhash = unlockhash_transaction_data.get("unlockhash")
-        transaction_xdr = unlockhash_transaction_data.get("transaction_xdr")
 
-        r = requests.post(
-            f"{unlock_service_host}/threefoldfoundation/unlock_service/create_unlockhash_transaction",
-            json={"unlockhash": unlockhash, "transaction_xdr": transaction_xdr},
-        )
-        r.raise_for_status()
+    with open(source,mode="r") as f:
+        
+        for line in f.readlines():
+            if line.strip() == "":
+                continue
+            unlockhash_transaction_data = json.loads(line)
+            unlockhash = unlockhash_transaction_data.get("unlockhash")
+            transaction_xdr = unlockhash_transaction_data.get("transaction_xdr")
+
+            r = requests.post(
+                f"{unlock_service_host}/threefoldfoundation/unlock_service/create_unlockhash_transaction",
+                json={"unlockhash": unlockhash, "transaction_xdr": transaction_xdr},
+            )
+            r.raise_for_status()
 
 
 if __name__ == "__main__":
