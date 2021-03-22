@@ -116,7 +116,7 @@ def list_vesting_accounts():
                 "vesting": account.vesting_address,
                 "balances": {"vesting": vesting_account_balances, "owner": owner_account_balances},
                 "locked": locked_balances_details,
-                "network": tmp_wallet.network,
+                "network": tmp_wallet.network.value,
             }
         )
 
