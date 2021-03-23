@@ -6,3 +6,4 @@ ThreeBotPackages/docker/helm/packagedcharts
 matched.txt
 specs/vesting/testscripts/cosigners.json
 specs/vesting/testscripts/testing.txt
+ThreeBotPackages/unlock_service/scripts/testnetdata
