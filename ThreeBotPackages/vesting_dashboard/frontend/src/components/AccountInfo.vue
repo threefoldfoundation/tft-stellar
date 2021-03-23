@@ -121,7 +121,7 @@
         </v-dialog>
 
       </v-row>
-    <v-container />
+    </v-container>
   </v-col>
 </template>
 
