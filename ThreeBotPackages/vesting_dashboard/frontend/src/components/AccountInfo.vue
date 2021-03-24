@@ -74,44 +74,9 @@
 
         </v-dialog>
 
-        <v-dialog v-model="dialogbalances" width="700">
-            
-            <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    color="blue lighten-2"
-                    dark
-                    v-bind="attrs"
-                    v-on="on"
-                    class="ml-6"
-                >
-                Owner Locked Balances
-                </v-btn>
-            </template>
-
-            <v-card>
-                <v-card-title class="headline">Owner Locked Balances</v-card-title>
-                <v-card-text class="pa-1">
-                    <p v-if="info.locked.length === 0">No Locked Balances!</p>
-                    <ul v-else>
-                        <li v-for="locked in info.locked" :key="locked.vesting">
-                          <ul>
-                              For: <a :href="`${stellarUrl}/${locked.vesting}`" target="_blank">{{locked.vesting}}  </a>
-                              
-                              <li :key="lockedbalances" v-for="lockedbalances in locked.lockedbalances">
-                                  {{lockedbalances.asset}} {{lockedbalances.balance}}
-                              </li>
-                          </ul>
-                        </li>
-                    </ul>
-                    <slot name="default"></slot>
-                </v-card-text>
-
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <slot name="actions"></slot>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+        <v-btn color="blue lighten-2" dark class="ml-2" :href="`${stellarUrl}/${info.vesting}`" target="_blank">
+        Show Vesting account details
+        </v-btn>
 
       </v-row>
     </v-container>
