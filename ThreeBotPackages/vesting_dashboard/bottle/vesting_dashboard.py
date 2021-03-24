@@ -29,7 +29,7 @@ def _get_balance_details(account):
     balances = account.balances
 
     for b in balances:
-        if b.asset_code == 'TFT':
+        if b.asset_code == "TFT":
             balance_details.append({"asset": b.asset_code, "issuer": b.asset_issuer, "balance": b.balance})
 
     return balance_details
@@ -53,7 +53,11 @@ def create_escrow_account():
         f"{username}_{owner_address}", owner_address=owner_address
     )
     if vesting_check_count > 0:
-        abort(400, "Warning: User already created vesting account for this address")
+        return HTTPResponse(
+            "Warning: User already created vesting account for this address",
+            status=400,
+            headers={"Content-Type": "application/json"},
+        )
 
     vesting_response = j.tools.http.get(
         url=f"{vesting_service_url['testnet']}/create_vesting_account",
@@ -61,7 +65,11 @@ def create_escrow_account():
         headers={"Content-Type": "application/json"},
     )
     if vesting_response.status_code != 200:
-        abort(vesting_response.status_code, "Error occured creating vesting account")
+        return HTTPResponse(
+            j.data.serializers.json.dumps({"Error": vesting_response.text}),
+            status=vesting_response.status_code,
+            headers={"Content-Type": "application/json"},
+        )
 
     vesting_address = vesting_response.json()["address"]
     vesting_entry = vesting_entry_model.new(f"{username}_{owner_address}")

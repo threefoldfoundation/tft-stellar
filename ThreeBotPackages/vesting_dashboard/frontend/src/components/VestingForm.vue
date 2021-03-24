@@ -41,9 +41,9 @@ export default {
         })
         .catch((error) => {
           this.setLoading(false)
-          console.log("Error! Could not reach the API. " + error)
           console.log(error.response)
-          this.$toasted.show('Error creating vesting account.', { type: 'error', duration: 5000 })
+          let message = error.response.data
+          this.$toasted.show(message, { type: 'error', duration: 5000 })
         })
     },
     validate() {

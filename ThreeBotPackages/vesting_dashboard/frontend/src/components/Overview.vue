@@ -30,7 +30,6 @@ export default {
       VestingServices.listAccounts()
         .then((response) => {
           this.loading = false
-          console.log(response.data.data)
           this.vestinginfo = response.data.data
         })
         .catch((error) => {
