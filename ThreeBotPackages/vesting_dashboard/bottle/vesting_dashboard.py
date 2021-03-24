@@ -1,4 +1,3 @@
-import pdb
 from beaker.middleware import SessionMiddleware
 from bottle import Bottle, request, HTTPResponse, abort, redirect
 import os, sys
@@ -6,6 +5,7 @@ import os, sys
 from jumpscale.loader import j
 from jumpscale.packages.auth.bottle.auth import SESSION_OPTS, login_required, get_user_info
 from jumpscale.core.base import StoredFactory
+import stellar_sdk
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/../models/")
@@ -99,7 +99,11 @@ def list_vesting_accounts():
         vesting_account_balances = _get_balance_details(tmp_wallet.get_balance(account.vesting_address))
 
         owner_account_balances = []
-        owner_account_balances = _get_balance_details(tmp_wallet.get_balance(account.owner_address))
+        try:
+            owner_account_balances = _get_balance_details(tmp_wallet.get_balance(account.owner_address))
+        except stellar_sdk.exceptions.NotFoundError:
+            j.logger.info(f"owner addresss {account.owner_address} of vesting account {vesting_address} not found")
+            continue
 
         locked_balances_details = []
         locked_accounts = tmp_wallet.get_balance(account.owner_address).escrow_accounts
