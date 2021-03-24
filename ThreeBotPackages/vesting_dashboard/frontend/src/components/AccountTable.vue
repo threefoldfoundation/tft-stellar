@@ -48,8 +48,8 @@ export default {
   data() {
     return {
       headers: [
-        { text: "Owner Address", value: "owner" },
-        { text: "Vesting Address", value: "vesting" }
+        { text: "Owner Account Address", value: "owner" },
+        { text: "Vesting Account Address", value: "vesting" }
       ],
       expanded: [],
       singleExpand: true

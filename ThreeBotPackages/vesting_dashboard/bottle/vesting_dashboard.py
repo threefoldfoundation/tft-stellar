@@ -29,7 +29,8 @@ def _get_balance_details(account):
     balances = account.balances
 
     for b in balances:
-        balance_details.append({"asset": b.asset_code, "issuer": b.asset_issuer, "balance": b.balance})
+        if b.asset_code == 'TFT':
+            balance_details.append({"asset": b.asset_code, "issuer": b.asset_issuer, "balance": b.balance})
 
     return balance_details
 
@@ -98,13 +99,6 @@ def list_vesting_accounts():
         vesting_account_balances = []
         vesting_account_balances = _get_balance_details(tmp_wallet.get_balance(account.vesting_address))
 
-        owner_account_balances = []
-        try:
-            owner_account_balances = _get_balance_details(tmp_wallet.get_balance(account.owner_address))
-        except stellar_sdk.exceptions.NotFoundError:
-            j.logger.info(f"owner addresss {account.owner_address} of vesting account {vesting_address} not found")
-            continue
-
         locked_balances_details = []
         locked_accounts = tmp_wallet.get_balance(account.owner_address).escrow_accounts
         for locked_account in locked_accounts:
@@ -118,7 +112,7 @@ def list_vesting_accounts():
                 "owner": account.owner_address,
                 "transactions": transactions,
                 "vesting": account.vesting_address,
-                "balances": {"vesting": vesting_account_balances, "owner": owner_account_balances},
+                "balances": {"vesting": vesting_account_balances},
                 "locked": locked_balances_details,
                 "network": tmp_wallet.network.value,
             }

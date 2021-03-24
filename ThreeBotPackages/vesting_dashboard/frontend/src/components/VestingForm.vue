@@ -4,7 +4,7 @@
     <v-row>
       <v-col sm="12">
         <v-text-field
-          label="Address"
+          label="Owner Account Address"
           :rules="addressRules"
           v-model="address"
           :loading="loading"
@@ -42,6 +42,7 @@ export default {
         .catch((error) => {
           this.setLoading(false)
           console.log("Error! Could not reach the API. " + error)
+          console.log(error.response)
           this.$toasted.show('Error creating vesting account.', { type: 'error', duration: 5000 })
         })
     },
