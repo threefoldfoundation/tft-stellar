@@ -29,15 +29,5 @@ RUN poetry run jsng 'j.clients.stellar.new("test",network="TEST"); j.clients.ste
 #Create the default threebot
 RUN poetry run jsng 'j.servers.threebot.new("default"); j.servers.threebot.default.save()'
 
-
-#Install the activation service
-RUN poetry run jsng 'j.servers.threebot.default.packages.add(giturl="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/activation_service")'
-
-# Install the transaction funding service
-RUN poetry run jsng 'j.servers.threebot.default.packages.add(giturl="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/transactionfunding_service")'
-
-# Install the unlock service
-RUN poetry run jsng 'j.servers.threebot.default.packages.add(giturl="https://github.com/threefoldfoundation/tft-stellar/tree/master/ThreeBotPackages/unlock_service")'
-
 # Start it with the development flag to prevent the threebot from checking the identity
 CMD poetry run threebot start --development

@@ -35,7 +35,15 @@ Requires the `jssdk:development` image.
 docker build tftbackup -t tftbackup:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
 ```
 
-There is an example of deploying this image on kubernetes as a cronjob int the [tftbackup readme](./tftbackup/readme.md)
+There is an example of deploying this image on kubernetes as a cronjob in the [tftbackup readme](./tftbackup/readme.md)
+
+## vesting dashboard
+
+Requires the `jssdk:development` image.
+
+```sh
+docker build vestingdashboard -t vestingdashboard:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
+```
 
 ## helm charts
 
