@@ -97,6 +97,8 @@ def list_vesting_accounts():
         payments = tmp_wallet.list_payments(vesting_address)
         transactions = []
         for payment in payments:
+            if not payment.balance:
+                continue
             if payment.balance.asset_code != "TFT" or payment.payment_type != "payment":
                 continue
             time = j.data.time.get(payment.created_at).timestamp
@@ -105,7 +107,10 @@ def list_vesting_accounts():
             )
 
         vesting_account_balances = []
-        vesting_account_balances = _get_balance_details(tmp_wallet.get_balance(account.vesting_address))
+        try:
+            vesting_account_balances = _get_balance_details(tmp_wallet.get_balance(account.vesting_address))
+        except stellar_sdk.exceptions.NotFoundError: # Vesting account is cleaned up
+            continue
 
         result_payments.append(
             {
