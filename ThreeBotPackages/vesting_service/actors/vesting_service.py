@@ -65,6 +65,11 @@ class VestingService(BaseActor):
     def _get_cosigners(self) -> list:
         return _COSIGNERS[self._get_network()]
 
+    def _is_multisig_account(self, address: str) -> bool:
+        horizon_server = selg._get_horizon_server()
+        resp = horizon_server.accounts().account_id(address).call()
+        return len(resp["signers"]) != 1
+
     def _create_recovery_transaction(self, vesting_address: str) -> stellar_sdk.TransactionEnvelope:
         activation_account_id = get_wallet().address
         horizon_server = self._get_horizon_server()
@@ -86,6 +91,9 @@ class VestingService(BaseActor):
         return txe
 
     def _create_vesting_account(self, owner_address) -> str:
+
+        if self._is_multisig_account(owner_address):
+            raise j.exceptions.Value("Multisig owner accounts are not supported")
 
         escrow_kp = stellar_sdk.Keypair.random()
         escrow_address = escrow_kp.public_key
