@@ -19,7 +19,7 @@ def import_unlockhash_transaction_data(source, network, unlock_service_host):
     if not unlock_service_host:
         unlock_service_host = UNLOCK_SERVICE_DEFAULT_HOSTS[network]
     print(f"Restoring data to {unlock_service_host} from {source}\n")
-
+    restored=[]
     with open(source,mode="r") as f:
         
         for line in f.readlines():
@@ -28,12 +28,15 @@ def import_unlockhash_transaction_data(source, network, unlock_service_host):
             unlockhash_transaction_data = json.loads(line)
             unlockhash = unlockhash_transaction_data.get("unlockhash")
             transaction_xdr = unlockhash_transaction_data.get("transaction_xdr")
-
+            if unlockhash in restored:
+                continue
             r = requests.post(
                 f"{unlock_service_host}/threefoldfoundation/unlock_service/create_unlockhash_transaction",
                 json={"unlockhash": unlockhash, "transaction_xdr": transaction_xdr},
             )
             r.raise_for_status()
+            restored.append(unlockhash)
+
 
 
 if __name__ == "__main__":
