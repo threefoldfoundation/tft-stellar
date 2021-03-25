@@ -1,6 +1,7 @@
 import datetime
 import os
 import sys
+import os
 
 from beaker.middleware import SessionMiddleware
 from bottle import Bottle, request
@@ -15,6 +16,11 @@ sys.path.append(current_full_path + "/../../../lib/stats/")
 from stats import StatisticsCollector
 
 app = Bottle()
+
+
+def get_cache_time():
+    caching_time = os.environ.get("TFT_STATISTICS_CACHINGTIME", "600")
+    return int(caching_time)
 
 
 @app.route("/api/stats")
@@ -50,7 +56,7 @@ def get_stats():
                 f"{locked_amount['amount']:,.7f} locked until {datetime.datetime.fromtimestamp(locked_amount['until'])}"
             )
     results = j.data.serializers.json.dumps(res)
-    redis.set(f"{network}-{tokencode}-{detailed}", results, ex=600)
+    redis.set(f"{network}-{tokencode}-{detailed}", results, ex=get_cache_time())
 
     return results
 
@@ -71,7 +77,7 @@ def total_tft():
     stats = collector.getstatistics(tokencode, False)
 
     total = stats["total"]
-    redis.set(f"{network}-{tokencode}-total_tft", total, ex=600)
+    redis.set(f"{network}-{tokencode}-total_tft", total, ex=get_cache_time())
     return f"{total}"
 
 
@@ -94,7 +100,7 @@ def total_unlocked_tft():
     total_locked_tft = stats["total_locked"]
     total_unlocked_tft = total_tft - total_locked_tft
 
-    redis.set(f"{network}-{tokencode}-total_unlocked_tft", total_unlocked_tft, ex=600)
+    redis.set(f"{network}-{tokencode}-total_unlocked_tft", total_unlocked_tft, ex=get_cache_time())
     return f"{total_unlocked_tft}"
 
 
