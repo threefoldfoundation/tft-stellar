@@ -66,7 +66,7 @@ class VestingService(BaseActor):
         return _COSIGNERS[self._get_network()]
 
     def _is_multisig_account(self, address: str) -> bool:
-        horizon_server = selg._get_horizon_server()
+        horizon_server = self._get_horizon_server()
         resp = horizon_server.accounts().account_id(address).call()
         return len(resp["signers"]) != 1
 
