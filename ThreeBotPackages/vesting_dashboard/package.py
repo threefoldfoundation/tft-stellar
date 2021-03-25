@@ -12,7 +12,7 @@ class vesting_dashboard:
         if "vesting_temp_wallet" not in j.clients.stellar.list_all():
             wallet_network = kwargs.get("wallet_network", None)
             if not wallet_network:
-                wallet_network = os.environ.get("TFT_SERVICES_NETWORK", "STD")
+                wallet_network = os.environ.get("TFT_SERVICES_NETWORK", "TEST")
             wallet = j.clients.stellar.new(wallet_name, network=wallet_network)
             wallet.save()
 

@@ -19,9 +19,13 @@ app = Bottle()
 
 wallet_name = "vesting_temp_wallet"
 vesting_service_url = {
-    "testnet": "https://testnet.threefold.io/threefoldfoundation/vesting_service",
-    "mainnet": "https://tokenservices.threefold.io/threefoldfoundation/vesting_service",
+    "TEST": "https://testnet.threefold.io/threefoldfoundation/vesting_service",
+    "STD": "https://tokenservices.threefold.io/threefoldfoundation/vesting_service",
 }
+
+
+def _get_vesting_service_url() -> str:
+    return vesting_service_url[str(j.clients.stellar.get(wallet_name).network.value)]
 
 
 def _get_balance_details(account):
@@ -60,7 +64,7 @@ def create_escrow_account():
         )
 
     vesting_response = j.tools.http.get(
-        url=f"{vesting_service_url['testnet']}/create_vesting_account",
+        url=f"{_get_vesting_service_url()}/create_vesting_account",
         data=j.data.serializers.json.dumps({"owner_address": owner_address}),
         headers={"Content-Type": "application/json"},
     )
@@ -98,7 +102,7 @@ def list_vesting_accounts():
         transactions = []
         for payment in payments:
             if not payment.balance:
-                continue # Vesting account is cleaned up
+                continue  # Vesting account is cleaned up
             if payment.balance.asset_code != "TFT" or payment.payment_type != "payment":
                 continue
             time = j.data.time.get(payment.created_at).timestamp
@@ -109,7 +113,7 @@ def list_vesting_accounts():
         vesting_account_balances = []
         try:
             vesting_account_balances = _get_balance_details(tmp_wallet.get_balance(account.vesting_address))
-        except stellar_sdk.exceptions.NotFoundError: # Vesting account is cleaned up
+        except stellar_sdk.exceptions.NotFoundError:  # Vesting account is cleaned up
             continue
 
         result_payments.append(
