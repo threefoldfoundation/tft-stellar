@@ -98,7 +98,7 @@ def list_vesting_accounts():
         transactions = []
         for payment in payments:
             if not payment.balance:
-                continue
+                continue # Vesting account is cleaned up
             if payment.balance.asset_code != "TFT" or payment.payment_type != "payment":
                 continue
             time = j.data.time.get(payment.created_at).timestamp

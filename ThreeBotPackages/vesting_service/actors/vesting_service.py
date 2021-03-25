@@ -97,21 +97,21 @@ class VestingService(BaseActor):
 
         escrow_kp = stellar_sdk.Keypair.random()
         escrow_address = escrow_kp.public_key
-        # TODO: serialize with a gevent pool
 
-        wallet = get_wallet()
-        activation_account = wallet.load_account()
-        if not activation_account.last_created_sequence_is_used:
-            if (wallet.sequencedate + 30) > int(time.time()):
-                raise j.exceptions.Value(f"Busy, try again later")
-
-        if not wallet:
-            raise j.exceptions.Value("Service unavailable")
-        tftasset = wallet._get_asset()
 
         horizon_server = self._get_horizon_server()
 
         base_fee = horizon_server.fetch_base_fee()
+        # TODO: serialize with a gevent pool
+
+        wallet = get_wallet()
+        if not wallet:
+            raise j.exceptions.Value("Service unavailable")
+
+        activation_account = wallet.load_account()
+
+        tftasset = wallet._get_asset()
+
 
         txb = (
             stellar_sdk.TransactionBuilder(activation_account, network_passphrase=self._get_network_passphrase())
