@@ -12,7 +12,7 @@ from urllib import parse
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/../../../lib/stats/")
-from stats import get_locked_accounts, get_unlockhash_transaction
+from stats import get_locked_accounts, get_unlockhash_transaction, get_vesting_accounts
 
 
 @click.command(help="Exports the active unlocktransactions from the unlock service for TFT and TFTA")
@@ -21,7 +21,7 @@ def export(network):
     for tokencode in ["TFT", "TFTA"]:
 
         locked_accounts = get_locked_accounts(network, tokencode)
-
+        locked_accounts+= get_vesting_accounts(network, tokencode)
         for locked_account in locked_accounts:
             unlockhash = locked_account["preauth_signers"][0]
             try:
