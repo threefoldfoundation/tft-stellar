@@ -76,4 +76,4 @@ tolerations: []
 
 affinity: {}
 
-cachetime: "600"
+cachetime: '"600"'
