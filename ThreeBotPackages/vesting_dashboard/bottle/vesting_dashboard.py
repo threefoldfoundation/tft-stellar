@@ -63,7 +63,7 @@ def create_escrow_account():
             headers={"Content-Type": "application/json"},
         )
 
-    vesting_response = j.tools.http.get(
+    vesting_response = j.tools.http.post(
         url=f"{_get_vesting_service_url()}/create_vesting_account",
         data=j.data.serializers.json.dumps({"owner_address": owner_address}),
         headers={"Content-Type": "application/json"},
