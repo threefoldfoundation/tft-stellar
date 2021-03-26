@@ -10,7 +10,7 @@ explorer_api_urls={
 
 def set_identity():
     network=os.environ.get("TFT_SERVICES_NETWORK", "TEST")
-    j.core.identity.new("vestingdashboard","vestingdashboard.3bot",email="rob@threefold.tech",explorer_url=explorer_api_urls[network]).save()
+    j.core.identity.new("vestingdashboard","vestingdashboard.3bot",email="vestingdashboard@threefold.tech",explorer_url=explorer_api_urls[network]).save()
 
 
 
