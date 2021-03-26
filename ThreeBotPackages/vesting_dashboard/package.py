@@ -13,8 +13,8 @@ class vesting_dashboard:
             wallet_network = kwargs.get("wallet_network", None)
             if not wallet_network:
                 wallet_network = os.environ.get("TFT_SERVICES_NETWORK", "TEST")
-            wallet = j.clients.stellar.new(wallet_name, network=wallet_network)
-            wallet.save()
+            j.clients.stellar.new(wallet_name, network=wallet_network)
+            
 
     def start(self, **kwargs):
         self.install(**kwargs)
