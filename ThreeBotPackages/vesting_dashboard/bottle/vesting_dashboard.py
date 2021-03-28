@@ -63,6 +63,20 @@ def create_escrow_account():
             headers={"Content-Type": "application/json"},
         )
 
+    # Validate address given by user
+    tmp_wallet = j.clients.stellar.get(wallet_name)
+    try:
+        tmp_wallet.get_balance(owner_address)
+    except stellar_sdk.exceptions.NotFoundError as e:
+        return HTTPResponse(f"Error: Address not found", status=e.status, headers={"Content-Type": "application/json"})
+    except stellar_sdk.exceptions.BadRequestError as e:
+        if e.extras.get("invalid_field", "") == "account_id":
+            message = f"Error: Address not valid"
+        else:
+            message = f"{e.title}:{e.detail}."
+        j.logger.exception(message, exception=e)
+        return HTTPResponse(message, status=e.status, headers={"Content-Type": "application/json"})
+
     vesting_response = j.tools.http.post(
         url=f"{_get_vesting_service_url()}/create_vesting_account",
         data=j.data.serializers.json.dumps({"owner_address": owner_address}),
