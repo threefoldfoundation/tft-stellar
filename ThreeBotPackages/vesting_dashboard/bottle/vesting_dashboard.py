@@ -63,20 +63,6 @@ def create_escrow_account():
             headers={"Content-Type": "application/json"},
         )
 
-    # Validate address given by user
-    tmp_wallet = j.clients.stellar.get(wallet_name)
-    try:
-        tmp_wallet.get_balance(owner_address)
-    except stellar_sdk.exceptions.NotFoundError as e:
-        return HTTPResponse(f"Error: Address not found", status=e.status, headers={"Content-Type": "application/json"})
-    except stellar_sdk.exceptions.BadRequestError as e:
-        if e.extras.get("invalid_field", "") == "account_id":
-            message = f"Error: Address not valid"
-        else:
-            message = f"{e.title}:{e.detail}."
-        j.logger.exception(message, exception=e)
-        return HTTPResponse(message, status=e.status, headers={"Content-Type": "application/json"})
-
     vesting_response = j.tools.http.post(
         url=f"{_get_vesting_service_url()}/create_vesting_account",
         data=j.data.serializers.json.dumps({"owner_address": owner_address}),
@@ -89,7 +75,14 @@ def create_escrow_account():
             headers={"Content-Type": "application/json"},
         )
 
-    vesting_address = vesting_response.json()["address"]
+    # Validate address given by user
+    vesting_response_json = vesting_response.json()
+    if "Error" in vesting_response_json:
+        return HTTPResponse(
+            f"Error: {vesting_response_json['Error']}", status=400, headers={"Content-Type": "application/json"}
+        )
+
+    vesting_address = vesting_response_json["address"]
     vesting_entry = vesting_entry_model.new(f"{username}_{owner_address}")
     vesting_entry.username = username
     vesting_entry.owner_address = owner_address

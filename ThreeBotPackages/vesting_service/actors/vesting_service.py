@@ -98,7 +98,6 @@ class VestingService(BaseActor):
         escrow_kp = stellar_sdk.Keypair.random()
         escrow_address = escrow_kp.public_key
 
-
         horizon_server = self._get_horizon_server()
 
         base_fee = horizon_server.fetch_base_fee()
@@ -111,7 +110,6 @@ class VestingService(BaseActor):
         activation_account = wallet.load_account()
 
         tftasset = wallet._get_asset()
-
 
         txb = (
             stellar_sdk.TransactionBuilder(activation_account, network_passphrase=self._get_network_passphrase())
@@ -146,8 +144,22 @@ class VestingService(BaseActor):
 
     @actor_method
     def create_vesting_account(self, owner_address: str) -> dict:
-        escrow_address = self._create_vesting_account(owner_address)
-        return {"address": escrow_address}
+        try:
+            escrow_address = self._create_vesting_account(owner_address)
+            data = {"address": escrow_address}
+
+        except stellar_sdk.exceptions.NotFoundError as e:
+            j.logger.exception("Error: Address not found", exception=e)
+            data = {"Error": "Address not found"}
+
+        except stellar_sdk.exceptions.BadRequestError as e:
+            if e.extras.get("invalid_field", "") == "account_id":
+                data = {"Error": "Address not valid"}
+            else:
+                data = {"Error": f"{e.title}: {e.detail}"}
+            j.logger.exception(str(data), exception=e)
+
+        return data
 
 
 Actor = VestingService
