@@ -70,6 +70,15 @@ class VestingService(BaseActor):
         resp = horizon_server.accounts().account_id(address).call()
         return len(resp["signers"]) != 1
 
+    def _check_has_vesting_account(self, address: str):
+        accounts = get_wallet()._get_horizon_server().accounts()
+        accounts_for_signer = accounts.for_signer(address).call()
+        for record in accounts_for_signer["_embedded"]["records"]:
+            if "tft-vesting" in record.get("data"):
+                decoded_data = j.data.serializers.base64.decode(record["data"]["tft-vesting"]).decode()
+                if decoded_data == "here comes the formula or reference":  # TODO should it be this sentence?
+                    return record["account_id"]
+
     def _create_recovery_transaction(self, vesting_address: str) -> stellar_sdk.TransactionEnvelope:
         activation_account_id = get_wallet().address
         horizon_server = self._get_horizon_server()
@@ -94,6 +103,10 @@ class VestingService(BaseActor):
 
         if self._is_multisig_account(owner_address):
             raise j.exceptions.Value("Multisig owner accounts are not supported")
+
+        existing_escrow_address = self._check_has_vesting_account(owner_address)
+        if existing_escrow_address:
+            return existing_escrow_address
 
         escrow_kp = stellar_sdk.Keypair.random()
         escrow_address = escrow_kp.public_key
