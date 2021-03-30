@@ -76,7 +76,7 @@ class VestingService(BaseActor):
         for record in accounts_for_signer["_embedded"]["records"]:
             if "tft-vesting" in record.get("data"):
                 decoded_data = j.data.serializers.base64.decode(record["data"]["tft-vesting"]).decode()
-                if decoded_data == "here comes the formula or reference":  # TODO should it be this sentence?
+                if decoded_data == VESTING_SCHEME:
                     return record["account_id"]
 
     def _create_recovery_transaction(self, vesting_address: str) -> stellar_sdk.TransactionEnvelope:
