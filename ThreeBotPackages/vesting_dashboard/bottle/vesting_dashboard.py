@@ -75,7 +75,14 @@ def create_escrow_account():
             headers={"Content-Type": "application/json"},
         )
 
-    vesting_address = vesting_response.json()["address"]
+    # Validate address given by user
+    vesting_response_json = vesting_response.json()
+    if "Error" in vesting_response_json:
+        return HTTPResponse(
+            f"Error: {vesting_response_json['Error']}", status=400, headers={"Content-Type": "application/json"}
+        )
+
+    vesting_address = vesting_response_json["address"]
     vesting_entry = vesting_entry_model.new(f"{username}_{owner_address}")
     vesting_entry.username = username
     vesting_entry.owner_address = owner_address
