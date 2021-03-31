@@ -76,14 +76,18 @@ class VestingService(BaseActor):
             f"https://{'testnet.threefold.io' if self._get_network()=='TEST' else'tokenservices.threefold.io'}/threefoldfoundation/unlock_service/get_unlockhash_transaction",
             json={"args": data},
         )
+        if resp.status_code == j.tools.http.status_codes.codes.NOT_FOUND:
+            return None
         resp.raise_for_status()
         return resp.json()["transaction_xdr"]
 
     def _is_valid_cleanup_transaction(self, vesting_account_id: str, preauth_signer: str) -> bool:
 
         unlock_tx = self._get_cleanup_transaction(unlockhash=preauth_signer)
+        if not unlock_tx:
+            return False
         txe = stellar_sdk.TransactionEnvelope.from_xdr(
-            unlock_tx["transaction_xdr"],
+            unlock_tx,
             stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
             if self._get_network() == "TEST"
             else stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE,
