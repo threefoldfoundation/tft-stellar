@@ -72,7 +72,7 @@ class VestingService(BaseActor):
 
     def _get_cleanup_transaction(self, unlockhash: str):
         data = {"unlockhash": unlockhash}
-        resp = requests.post(
+        resp = j.tools.http.post(
             f"https://{'testnet.threefold.io' if self._get_network()=='TEST' else'tokenservices.threefold.io'}/threefoldfoundation/unlock_service/get_unlockhash_transaction",
             json={"args": data},
         )
