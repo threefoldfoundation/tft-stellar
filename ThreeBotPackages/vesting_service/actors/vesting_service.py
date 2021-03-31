@@ -200,7 +200,7 @@ class VestingService(BaseActor):
     def _create_vesting_account(self, owner_address) -> str:
 
         if self._is_multisig_account(owner_address):
-            raise j.exceptions.Value("Multisig owner accounts are not supported")
+            raise j.exceptions.Value("Multisig accounts are not supported")
 
         existing_escrow_address = self._check_has_vesting_account(owner_address)
         if existing_escrow_address:
@@ -268,6 +268,10 @@ class VestingService(BaseActor):
                 data = {"Error": "Address not valid"}
             else:
                 data = {"Error": f"{e.title}: {e.detail}"}
+            j.logger.exception(str(data), exception=e)
+
+        except j.exceptions.Value as e:
+            data = {"Error": e.args[0]}
             j.logger.exception(str(data), exception=e)
 
         return data
