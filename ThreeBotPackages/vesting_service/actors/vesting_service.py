@@ -188,7 +188,6 @@ class VestingService(BaseActor):
         tx.append_manage_data_op(DATA_ENTRY_KEY, None)
         tx.append_account_merge_op(activation_account_id)
         txe = tx.build()
-        # TODO: set minium timebound to two weeks from now
 
         # save the preauth transaction in our unlock service
         unlock_hash_signer = stellar_sdk.strkey.StrKey.encode_pre_auth_tx(txe.hash())
