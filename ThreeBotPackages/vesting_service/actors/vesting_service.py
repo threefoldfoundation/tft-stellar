@@ -123,6 +123,10 @@ class VestingService(BaseActor):
         return True
 
     def _verify_signers(self, account_record, owner_address: str) -> bool:
+        # verify tresholds
+        tresholds = account_record["thresholds"]
+        if tresholds["low_threshold"] != 10 or tresholds["med_threshold"] != 10 or tresholds["high_threshold"] != 10:
+            return False
         ## signers found for account
         signers = {signer["key"]: (signer["weight"], signer["type"]) for signer in account_record["signers"]}
         # example of signers item --> {'GCWPSLTHDH3OYH226EVCLOG33NOMDEO4KUPZQXTU7AWQNJPQPBGTLAVM':(5,'ed25519_public_key')}
@@ -156,8 +160,8 @@ class VestingService(BaseActor):
             if signer["key"] == owner_address:
                 owner_key_weight_correct = signer["weight"] == 5
 
-        if len(account_record["signers"]) == 12 and (not cleanup_signer_correct):
-            return False
+        if len(account_record["signers"]) == 12:
+            return cleanup_signer_correct and master_key_weight_correct and owner_key_weight_correct
         return len(account_record["signers"]) == 11 and master_key_weight_correct and owner_key_weight_correct
 
     def _check_has_vesting_account(self, address: str):
