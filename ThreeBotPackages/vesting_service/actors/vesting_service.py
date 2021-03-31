@@ -70,6 +70,27 @@ class VestingService(BaseActor):
         resp = horizon_server.accounts().account_id(address).call()
         return len(resp["signers"]) != 1
 
+    def _verify_signers(self, account_record):
+        ## signers found for account
+        signers = {signer["key"]: (signer["weight"], signer["type"]) for signer in account_record["signers"]}
+        # example of signers item --> {'GCWPSLTHDH3OYH226EVCLOG33NOMDEO4KUPZQXTU7AWQNJPQPBGTLAVM':(5,'ed25519_public_key')}
+
+        # Check all cosigners are in account signers with weight 1
+        for correct_signer in _COSIGNERS[self._get_network()]:
+            if correct_signer in signers.keys() and signers[correct_signer][0] == 1:
+                continue
+            else:
+                raise j.exceptions.Validation(f"Signer with address {correct_signer} not found for account")
+
+        # Validate signer with weight 10 has type preauth_tx
+        for signer in account_record["signers"]:
+            if signer["weight"] == 10:
+                if signer["type"] != "preauth_tx":
+                    raise j.exceptions.Validation(f"Signer doesnt have signature type :preauth_tx")
+                else:
+                    return
+        raise j.exceptions.Validation(f"Signer with weight 10 not found for account")
+
     def _check_has_vesting_account(self, address: str):
         accounts = get_wallet()._get_horizon_server().accounts()
         accounts_for_signer = accounts.for_signer(address).call()
@@ -77,6 +98,7 @@ class VestingService(BaseActor):
             if "tft-vesting" in record.get("data"):
                 decoded_data = j.data.serializers.base64.decode(record["data"]["tft-vesting"]).decode()
                 if decoded_data == VESTING_SCHEME:
+                    self._verify_signers(record)
                     return record["account_id"]
 
     def _create_recovery_transaction(self, vesting_address: str) -> stellar_sdk.TransactionEnvelope:
