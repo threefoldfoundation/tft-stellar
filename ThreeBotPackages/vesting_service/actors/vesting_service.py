@@ -70,26 +70,95 @@ class VestingService(BaseActor):
         resp = horizon_server.accounts().account_id(address).call()
         return len(resp["signers"]) != 1
 
-    def _verify_signers(self, account_record):
+    def _get_cleanup_transaction(self, unlockhash: str):
+        data = {"unlockhash": unlockhash}
+        resp = requests.post(
+            f"https://{'testnet.threefold.io' if self._get_network()=='TEST' else'tokenservices.threefold.io'}/threefoldfoundation/unlock_service/get_unlockhash_transaction",
+            json={"args": data},
+        )
+        resp.raise_for_status()
+        return resp.json()["transaction_xdr"]
+
+    def _is_valid_cleanup_transaction(self, vesting_account_id: str, preauth_signer: str) -> bool:
+
+        unlock_tx = self._get_cleanup_transaction(unlockhash=preauth_signer)
+        txe = stellar_sdk.TransactionEnvelope.from_xdr(
+            unlock_tx["transaction_xdr"],
+            stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
+            if self._get_network() == "TEST"
+            else stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE,
+        )
+        tx = txe.transaction
+        if not type(tx.source) is stellar_sdk.keypair.Keypair:
+            return False
+        if tx.source.public_key != vesting_account_id:
+            return False
+        if len(tx.operations) != 3:
+            return False
+        change_trust_op = tx.operations[0]
+        if not type(change_trust_op) is stellar_sdk.operation.change_trust.ChangeTrust:
+            return False
+        if not change_trust_op.source is None:
+            return False
+        if int(change_trust_op.limit) != 0:
+            return False
+        if change_trust_op.asset.code != "TFT" or change_trust_op.asset.issuer != self._get_tft_issuer():
+            return False
+        manage_data_op = tx.operations[1]
+        if not type(manage_data_op) is stellar_sdk.operation.manage_data.ManageData:
+            return False
+        if not manage_data_op.source is None:
+            return False
+        if manage_data_op.data_name != DATA_ENTRY_KEY:
+            return False
+        if not manage_data_op.data_value is None:
+            return False
+        account_merge_op = tx.operations[2]
+        if not type(account_merge_op) is stellar_sdk.operation.account_merge.AccountMerge:
+            return False
+        if not account_merge_op.source is None:
+            return False
+        if account_merge_op.destination != get_wallet().address:
+            return False
+        return True
+
+    def _verify_signers(self, account_record, owner_address: str) -> bool:
         ## signers found for account
         signers = {signer["key"]: (signer["weight"], signer["type"]) for signer in account_record["signers"]}
         # example of signers item --> {'GCWPSLTHDH3OYH226EVCLOG33NOMDEO4KUPZQXTU7AWQNJPQPBGTLAVM':(5,'ed25519_public_key')}
 
         # Check all cosigners are in account signers with weight 1
         for correct_signer in _COSIGNERS[self._get_network()]:
-            if correct_signer in signers.keys() and signers[correct_signer][0] == 1:
+            if (
+                correct_signer in signers.keys()
+                and signers[correct_signer][0] == 1
+                and signers[correct_signer][1] == "ed25519_public_key"
+            ):
                 continue
             else:
-                raise j.exceptions.Validation(f"Signer with address {correct_signer} not found for account")
+                return False
 
-        # Validate signer with weight 10 has type preauth_tx
+        account_id = account_record["account_id"]
+
+        cleanup_signer_correct = False
+        master_key_weight_correct = False
+        owner_key_weight_correct = False
         for signer in account_record["signers"]:
-            if signer["weight"] == 10:
-                if signer["type"] != "preauth_tx":
-                    raise j.exceptions.Validation(f"Signer doesnt have signature type :preauth_tx")
-                else:
-                    return
-        raise j.exceptions.Validation(f"Signer with weight 10 not found for account")
+            if signer["type"] == "preauth_tx":
+                if signer["weight"] != 10:
+                    return False
+                cleanup_signer_correct = self._is_valid_cleanup_transaction(account_id, signer["key"])
+                continue
+            if signer["type"] != "ed25519_public_key":
+                return False
+            if signer["key"] == account_id:
+                master_key_weight_correct = signer["weight"] == 0
+            if signer["key"] == owner_address:
+                owner_key_weight_correct = signer["weight"] == 5
+
+        if len(account_record["signers"]) == 12 and (not cleanup_signer_correct):
+            return False
+        return len(account_record["signers"]) == 11 and master_key_weight_correct and owner_key_weight_correct
 
     def _check_has_vesting_account(self, address: str):
         accounts = get_wallet()._get_horizon_server().accounts()
@@ -98,8 +167,8 @@ class VestingService(BaseActor):
             if "tft-vesting" in record.get("data"):
                 decoded_data = j.data.serializers.base64.decode(record["data"]["tft-vesting"]).decode()
                 if decoded_data == VESTING_SCHEME:
-                    self._verify_signers(record)
-                    return record["account_id"]
+                    if self._verify_signers(record, address):
+                        return record["account_id"]
 
     def _create_recovery_transaction(self, vesting_address: str) -> stellar_sdk.TransactionEnvelope:
         activation_account_id = get_wallet().address
