@@ -34,6 +34,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: tftbackup-pv-claim
 spec:
+  volumeName: tftbackup-volume
   storageClassName: manual
   accessModes:
     - ReadWriteOnce

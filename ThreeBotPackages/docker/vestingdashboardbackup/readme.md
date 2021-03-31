@@ -38,6 +38,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: vestingdashboardbackup-pv-claim
 spec:
+  volumeName: vestingdashboardbackup-volume
   storageClassName: manual
   accessModes:
     - ReadWriteOnce
@@ -65,7 +66,7 @@ spec:
                 claimName: vestingdashboardbackup-pv-claim
           containers:
             - name: vestingdashboardbackup
-              image: vestingdashboardbackup:1.2.1-rc8
+              image: vestingdashboardbackup:1.3.0-rc2
               imagePullPolicy: IfNotPresent
               volumeMounts:
                 - name: vestingdashboardbackup-pv-storage
