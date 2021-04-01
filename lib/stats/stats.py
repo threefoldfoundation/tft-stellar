@@ -120,31 +120,24 @@ def get_locked_accounts(network, tokencode: str):
                 and b["asset_issuer"] == issuer
             ]
             tokenbalance = tokenbalances[0] if tokenbalances else 0
+
+            if VESTING_DATA_ENTRY_KEY in account["data"]:
+                vesting_scheme = base64.b64decode((account["data"][VESTING_DATA_ENTRY_KEY])).decode("utf-8")
+                vesting_accounts.append(
+                    {
+                        "account": account_id,
+                        "amount": tokenbalance,
+                        "preauth_signers": preauth_signers,
+                        "scheme": vesting_scheme,
+                    }
+                )
+                continue
+
             if len(preauth_signers) > 0:
                 locked_accounts.append(
                     {"account": account_id, "amount": tokenbalance, "preauth_signers": preauth_signers}
                 )
 
-            if VESTING_DATA_ENTRY_KEY in account["data"]:
-                vesting_scheme = base64.b64decode((account["data"][VESTING_DATA_ENTRY_KEY])).decode("utf-8")
-                preauth_signers = [signer["key"] for signer in account["signers"] if signer["type"] == "preauth_tx"]
-                vesting_tokenbalances = [
-                    float(b["balance"])
-                    for b in account["balances"]
-                    if b["asset_type"] == "credit_alphanum4"
-                    and b["asset_code"] == tokencode
-                    and b["asset_issuer"] == issuer
-                ]
-                vesting_tokenbalance = vesting_tokenbalances[0] if vesting_tokenbalances else 0
-                if len(preauth_signers) > 0:
-                    vesting_accounts.append(
-                        {
-                            "account": account_id,
-                            "amount": vesting_tokenbalance,
-                            "preauth_signers": preauth_signers,
-                            "scheme": vesting_scheme,
-                        }
-                    )
     return locked_accounts, vesting_accounts
 
 
