@@ -191,7 +191,7 @@ class StatisticsCollector(object):
         total_vesting = 0.0
         for vesting_account in vesting_accounts:
             total_vesting += vesting_account["amount"]
-        stats["total_vesting"] = total_vesting
+        stats["total_vested_tokens"] = total_vesting
         if not detailed:
             return stats
         amounts_per_locktime = {}
@@ -232,7 +232,7 @@ def show_stats(tokencode, network, detailed):
     print(f"Total amount of tokens: {stats['total']:,.7f}")
     print(f"Number of accounts: {stats['num_accounts']}")
     print(f"Amount of locked tokens: {stats['total_locked']:,.7f}")
-    print(f"Amount of vesting tokens: {stats['total_vesting']:,.7f}")
+    print(f"Amount of vested tokens: {stats['total_vested_tokens']:,.7f}")
     if detailed:
         for locked_amount in stats["locked"]:
             print(
