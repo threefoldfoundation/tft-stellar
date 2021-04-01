@@ -94,6 +94,7 @@ def get_vesting_accounts(network, tokencode: str):
 
 def get_locked_accounts(network, tokencode: str):
     locked_accounts = []
+    vesting_accounts = []
     issuer = _ASSET_ISUERS[network][tokencode]
     horizon_server = get_horizon_server(network)
     asset = stellar_sdk.Asset(tokencode, issuer)
@@ -123,7 +124,28 @@ def get_locked_accounts(network, tokencode: str):
                 locked_accounts.append(
                     {"account": account_id, "amount": tokenbalance, "preauth_signers": preauth_signers}
                 )
-    return locked_accounts
+
+            if VESTING_DATA_ENTRY_KEY in account["data"]:
+                vesting_scheme = base64.b64decode((account["data"][VESTING_DATA_ENTRY_KEY])).decode("utf-8")
+                preauth_signers = [signer["key"] for signer in account["signers"] if signer["type"] == "preauth_tx"]
+                vesting_tokenbalances = [
+                    float(b["balance"])
+                    for b in account["balances"]
+                    if b["asset_type"] == "credit_alphanum4"
+                    and b["asset_code"] == tokencode
+                    and b["asset_issuer"] == issuer
+                ]
+                vesting_tokenbalance = vesting_tokenbalances[0] if vesting_tokenbalances else 0
+                if len(preauth_signers) > 0:
+                    vesting_accounts.append(
+                        {
+                            "account": account_id,
+                            "amount": vesting_tokenbalance,
+                            "preauth_signers": preauth_signers,
+                            "scheme": vesting_scheme,
+                        }
+                    )
+    return locked_accounts, vesting_accounts
 
 
 class StatisticsCollector(object):
@@ -159,11 +181,17 @@ class StatisticsCollector(object):
         record = response["_embedded"]["records"][0]
         stats["total"] = float(record["amount"])
         stats["num_accounts"] = record["num_accounts"]
-        locked_accounts = get_locked_accounts(self._network, tokencode)
+        locked_accounts, vesting_accounts = get_locked_accounts(self._network, tokencode)
         total_locked = 0.0
         for locked_account in locked_accounts:
             total_locked += locked_account["amount"]
         stats["total_locked"] = total_locked
+
+        # Calculate total vesting ammounts
+        total_vesting = 0.0
+        for vesting_account in vesting_accounts:
+            total_vesting += vesting_account["amount"]
+        stats["total_vesting"] = total_vesting
         if not detailed:
             return stats
         amounts_per_locktime = {}
@@ -179,13 +207,17 @@ class StatisticsCollector(object):
             amounts_per_locktime[locked_account["until"]] = amount
         locked_amounts = []
         for until, amount in amounts_per_locktime.items():
-            locked_amounts.append({"until": until, "amount": amount})
+            if until:
+                locked_amounts.append({"until": until, "amount": amount})
 
         def sort_key(a):
             return a["until"]
 
         locked_amounts.sort(key=sort_key)
         stats["locked"] = locked_amounts
+
+        stats["vesting"] = vesting_accounts
+
         return stats
 
 
@@ -200,10 +232,18 @@ def show_stats(tokencode, network, detailed):
     print(f"Total amount of tokens: {stats['total']:,.7f}")
     print(f"Number of accounts: {stats['num_accounts']}")
     print(f"Amount of locked tokens: {stats['total_locked']:,.7f}")
+    print(f"Amount of vesting tokens: {stats['total_vesting']:,.7f}")
     if detailed:
         for locked_amount in stats["locked"]:
             print(
                 f"{locked_amount['amount']:,.7f} locked until {datetime.datetime.fromtimestamp(locked_amount['until'])}"
+            )
+    print(f"Amount of vesting tokens: {stats['total_vesting']:,.7f}")
+    if detailed and stats["vesting"]:
+        print("Vesting accound details")
+        for vesting_account in stats["vesting"]:
+            print(
+                f"Vesting Account {vesting_account['account']} has {vesting_account['amount']} with scheme {vesting_account['scheme']}"
             )
 
 
