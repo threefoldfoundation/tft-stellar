@@ -16,7 +16,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <span>The vested tokens will be returned to your wallet according to these <a target="blank" href="https://github.com/threefoldfoundation/info_foundation_archive/blob/development/src/token/vesting_pool.md">specifications</a></span>
+        <span>The vested tokens will be returned to your wallet according to these <a target="blank" href="https://new.threefold.io/info/threefold#/threefold__vesting_pool">specifications</a></span>
       </v-col>
     </v-row>
   </v-form>
