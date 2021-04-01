@@ -16,17 +16,25 @@
     </v-row>
     <v-row>
       <v-col>
-        <span>The vested tokens will be returned to your wallet according to these <a target="blank" href="https://new.threefold.io/info/threefold#/threefold__vesting_pool">specifications</a></span>
+        <span
+          >The vested tokens become available for transfer according to the
+          following
+          <a
+            target="blank"
+            href="https://new.threefold.io/info/threefold#/threefold__vesting_pool"
+            >conditions</a
+          ></span
+        >
       </v-col>
     </v-row>
   </v-form>
 </template>
 
 <script>
-import VestingServices from "../services/VestingServices"
+import VestingServices from "../services/VestingServices";
 
 export default {
-  props: ['getVestingInfo', 'setLoading'],
+  props: ["getVestingInfo", "setLoading"],
   name: "VestingForm",
   data() {
     return {
@@ -34,28 +42,31 @@ export default {
       valid: true,
       address: null,
       addressRules: [(v) => !!v || "Address is required"],
-    }
+    };
   },
   methods: {
     submit() {
-      this.setLoading(true)
+      this.setLoading(true);
       VestingServices.createAccount(this.address)
         .then(() => {
-          this.$toasted.show('Created vesting account!', { type: 'success', duration: 5000 })
-          this.getVestingInfo()
+          this.$toasted.show("Created vesting account!", {
+            type: "success",
+            duration: 5000,
+          });
+          this.getVestingInfo();
         })
         .catch((error) => {
-          this.setLoading(false)
-          console.log(error.response)
-          let message = error.response.data
-          this.$toasted.show(message, { type: 'error', duration: 5000 })
-        })
+          this.setLoading(false);
+          console.log(error.response);
+          let message = error.response.data;
+          this.$toasted.show(message, { type: "error", duration: 5000 });
+        });
     },
     validate() {
-      this.$refs.form.validate()
+      this.$refs.form.validate();
     },
   },
-}
+};
 </script>
 
 <style scoped>
