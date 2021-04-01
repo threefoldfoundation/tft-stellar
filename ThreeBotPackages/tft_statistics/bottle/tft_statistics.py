@@ -19,7 +19,7 @@ app = Bottle()
 
 
 def get_cache_time():
-    caching_time = os.environ.get("TFT_STATISTICS_CACHINGTIME", "600")
+    caching_time = os.environ.get("TFTSTATISTICS_CACHETIME", "600")
     return int(caching_time)
 
 
@@ -49,6 +49,7 @@ def get_stats():
     res["total_tokens"] = f"{stats['total']:,.7f}"
     res["total_accounts"] = f"{stats['num_accounts']}"
     res["total_locked_tokens"] = f"{stats['total_locked']:,.7f}"
+    res["total_vested_tokens"] = f"{stats['total_vested']:,.7f}"
     if detailed:
         res["locked_tokens_info"] = []
         for locked_amount in stats["locked"]:
@@ -98,7 +99,8 @@ def total_unlocked_tft():
 
     total_tft = stats["total"]
     total_locked_tft = stats["total_locked"]
-    total_unlocked_tft = total_tft - total_locked_tft
+    total_vested_tft = stats["total_vested"]
+    total_unlocked_tft = total_tft - total_locked_tft - total_vested_tft
 
     redis.set(f"{network}-{tokencode}-total_unlocked_tft", total_unlocked_tft, ex=get_cache_time())
     return f"{total_unlocked_tft}"
