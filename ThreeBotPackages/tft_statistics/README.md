@@ -20,7 +20,7 @@ https://<host>/tft_statistics/api/total_unlocked_tft
 ## Query params
 
 - network: (str ["test", "public"], optional): Defaults to "public".
-- tokencode: (str ["TFT", "TFTA", "FreeTFT"], optional): Defaults to "TFT".
+- tokencode: (str ["TFT", "TFTA"], optional): Defaults to "TFT".
 - detailed: (bool, optional): Defaults to False.
 
 ## Examples
