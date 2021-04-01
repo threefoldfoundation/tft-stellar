@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "tftstatistics.fullname" . }}
+  labels:
+    {{- include "tftstatistics.labels" . | nindent 4 }}
+data:
+    foundationaccounts: {{  toYaml .Values.foundationaccounts | indent 4 }}
+        

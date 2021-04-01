@@ -77,3 +77,11 @@ tolerations: []
 affinity: {}
 
 cachetime: '"600"'
+
+foundationaccounts: |-
+    [
+      {"address":"GDLVIB44LVONM5K67LUPSFZMSX7G2RLYVBM5MMHUJ4NAQJU7CH4HBJBO",
+       "description":"TF Promotion Wallet",
+       "free":true,
+       }
+    ]
