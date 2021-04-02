@@ -80,15 +80,14 @@ def get_vesting_accounts(network, tokencode: str):
                 and b["asset_issuer"] == issuer
             ]
             tokenbalance = tokenbalances[0] if tokenbalances else 0
-            if len(preauth_signers) > 0:
-                vesting_accounts.append(
-                    {
-                        "account": account_id,
-                        "amount": tokenbalance,
-                        "preauth_signers": preauth_signers,
-                        "scheme": vesting_scheme,
-                    }
-                )
+            vesting_accounts.append(
+                {
+                    "account": account_id,
+                    "amount": tokenbalance,
+                    "preauth_signers": preauth_signers,
+                    "scheme": vesting_scheme,
+                }
+            )
     return vesting_accounts
 
 
