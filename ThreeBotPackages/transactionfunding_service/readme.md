@@ -79,8 +79,16 @@ Test out the transfer tokens:
 
 ## Actors
 
-There is one actor with 1 method.
+There is one actor with 2 methods:
 
+- `conditions` : get the conditions for funding transactions with XLM
+
+  Example output:
+
+  ```json
+  [{"asset": "TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3", "fee_account_id": "GDREB646A2R7TLAF7WELQ6VAO7J5LBWTHYOBYIIPKX6PVYI7MSBFEKXZ", "fee_fixed": "0.01"}, {"asset": "TFTA:GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT", "fee_account_id": "GDREB646A2R7TLAF7WELQ6VAO7J5LBWTHYOBYIIPKX6PVYI7MSBFEKXZ", "fee_fixed": "0.01"}]
+  ```
+  
 - `fund_transaction`: Funds and signs a TFT transaction.
   - param `transaction`: Stellar transaction envelope in xdr
 
