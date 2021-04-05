@@ -23,6 +23,33 @@ def get_cache_time():
     return int(caching_time)
 
 
+def _get_foundation_wallets() -> list:
+    redis = j.clients.redis.get("redis_instance")
+    cached_data = redis.get(f"foundationaccounts")
+    if cached_data:
+        return j.data.serializers.json.loads(cached_data)
+
+    foundationwallets_path = os.environ.get("TFACCOUNTS", None)
+    if not foundationwallets_path:
+        return []
+    foundationaccounts = j.data.serializers.json.load_from_file(foundationwallets_path)
+    redis.set(f"foundationaccounts", j.data.serializers.json.dumps(foundationaccounts), ex=get_cache_time())
+    return foundationaccounts
+
+
+def _get_not_free_foundation_addesses() -> list:
+    return [account["address"] for account in _get_foundation_wallets() if not account["free"]]
+
+
+@app.route("/api/foundationaccounts")
+def get_foundation_wallets():
+    res = [
+        {"address": account["address"], "description": account["description"]} for account in _get_foundation_wallets()
+    ]
+    results = j.data.serializers.json.dumps(res)
+    return results
+
+
 @app.route("/api/stats")
 def get_stats():
     """Statistics about TFTand TFTA
@@ -45,12 +72,16 @@ def get_stats():
         return cached_data
 
     collector = StatisticsCollector(network)
-    stats = collector.getstatistics(tokencode, detailed)
+    stats = collector.getstatistics(tokencode, _get_not_free_foundation_addesses(), detailed)
     res["total_tokens"] = f"{stats['total']:,.7f}"
     res["total_accounts"] = f"{stats['num_accounts']}"
     res["total_locked_tokens"] = f"{stats['total_locked']:,.7f}"
     res["total_vested_tokens"] = f"{stats['total_vested']:,.7f}"
+    res["total_foundation_tokens"] = f"{stats['total_foundation']:,.7f}"
+    total_liquid_tokens = stats["total"] - stats["total_locked"] - stats["total_vested"] - stats["total_foundation"]
+    res["total_liquid_tokens"] = f"{total_liquid_tokens:,.7f}"
     if detailed:
+        res["foundation_tokens_info"] = stats["foundation"]
         res["locked_tokens_info"] = []
         for locked_amount in stats["locked"]:
             res["locked_tokens_info"].append(
@@ -75,7 +106,7 @@ def total_tft():
         return cached_data
 
     collector = StatisticsCollector(network)
-    stats = collector.getstatistics(tokencode, False)
+    stats = collector.getstatistics(tokencode, _get_not_free_foundation_addesses(), False)
 
     total = stats["total"]
     redis.set(f"{network}-{tokencode}-total_tft", total, ex=get_cache_time())
@@ -95,12 +126,13 @@ def total_unlocked_tft():
         return cached_data
 
     collector = StatisticsCollector(network)
-    stats = collector.getstatistics(tokencode, False)
+    stats = collector.getstatistics(tokencode, _get_not_free_foundation_addesses(), False)
 
     total_tft = stats["total"]
     total_locked_tft = stats["total_locked"]
     total_vested_tft = stats["total_vested"]
-    total_unlocked_tft = total_tft - total_locked_tft - total_vested_tft
+    total_foundation = stats["total_foundation"]
+    total_unlocked_tft = total_tft - total_locked_tft - total_vested_tft - total_foundation
 
     redis.set(f"{network}-{tokencode}-total_unlocked_tft", total_unlocked_tft, ex=get_cache_time())
     return f"{total_unlocked_tft}"

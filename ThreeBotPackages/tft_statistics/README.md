@@ -11,17 +11,19 @@ JS-NG> server.start()
 
 - On production add the domain in the `package.toml` currently is set to `statsdata.threefoldtoken.com`
 
-## Endpoint
+## Endpoints
 
-https://<host>/tft_statistics/api/stats
-https://<host>/tft_statistics/api/total_tft
-https://<host>/tft_statistics/api/total_unlocked_tft
+- `https://<host>/tft_statistics/api/stats`
 
-## Query params
+ Query params:
 
-- network: (str ["test", "public"], optional): Defaults to "public".
-- tokencode: (str ["TFT", "TFTA"], optional): Defaults to "TFT".
-- detailed: (bool, optional): Defaults to False.
+  - network: (str ["test", "public"], optional): Defaults to "public".
+  - tokencode: (str ["TFT", "TFTA"], optional): Defaults to "TFT".
+  - detailed: (bool, optional): Defaults to False.
+
+- `https://<host>/tft_statistics/api/total_tft`
+- `https://<host>/tft_statistics/api/total_unlocked_tft`
+- `https://<host>/tft_statistics/api/foundationaccounts`: Foundation addresses and their description
 
 ## Examples
 
@@ -30,5 +32,6 @@ https://<host>/tft_statistics/api/total_unlocked_tft
 - https://localhost/tft_statistics/api/stats?tokencode=TFTA
 - https://localhost/tft_statistics/api/stats?network=public&tokencode=TFTA
 - https://localhost/tft_statistics/api/stats?network=public&tokencode=TFTA&detailed=true
+- https://localhost/tft_statistics/api/foundationaccounts
 - https://localhost/tft_statistics/api/total_tft
 - https://localhost/tft_statistics/api/total_unlocked_tft

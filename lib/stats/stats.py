@@ -91,9 +91,10 @@ def get_vesting_accounts(network, tokencode: str):
     return vesting_accounts
 
 
-def get_locked_accounts(network, tokencode: str):
+def get_locked_accounts(network, tokencode: str, foundationaccounts: list):
     locked_accounts = []
     vesting_accounts = []
+    foundation_accounts = []
     issuer = _ASSET_ISUERS[network][tokencode]
     horizon_server = get_horizon_server(network)
     asset = stellar_sdk.Asset(tokencode, issuer)
@@ -120,6 +121,14 @@ def get_locked_accounts(network, tokencode: str):
             ]
             tokenbalance = tokenbalances[0] if tokenbalances else 0
 
+            if account_id in foundationaccounts:
+                foundation_accounts.append(
+                    {
+                        "account": account_id,
+                        "amount": tokenbalance,
+                    }
+                )
+                continue
             if VESTING_DATA_ENTRY_KEY in account["data"]:
                 vesting_scheme = base64.b64decode((account["data"][VESTING_DATA_ENTRY_KEY])).decode("utf-8")
                 vesting_accounts.append(
@@ -137,7 +146,7 @@ def get_locked_accounts(network, tokencode: str):
                     {"account": account_id, "amount": tokenbalance, "preauth_signers": preauth_signers}
                 )
 
-    return locked_accounts, vesting_accounts
+    return locked_accounts, vesting_accounts, foundation_accounts
 
 
 class StatisticsCollector(object):
@@ -164,7 +173,7 @@ class StatisticsCollector(object):
             return tx.time_bounds.min_time
         return None
 
-    def getstatistics(self, tokencode: str, detailed: bool):
+    def getstatistics(self, tokencode: str, foundationaccounts: list, detailed: bool):
         stats = {"asset": tokencode}
         horizon_server = get_horizon_server(self._network)
         asset_issuer = _ASSET_ISUERS[self._network][tokencode]
@@ -173,17 +182,26 @@ class StatisticsCollector(object):
         record = response["_embedded"]["records"][0]
         stats["total"] = float(record["amount"])
         stats["num_accounts"] = record["num_accounts"]
-        locked_accounts, vesting_accounts = get_locked_accounts(self._network, tokencode)
+        locked_accounts, vesting_accounts, foundation_accounts = get_locked_accounts(
+            self._network, tokencode, foundationaccounts
+        )
+        # Calculate total locked ammounts
         total_locked = 0.0
         for locked_account in locked_accounts:
             total_locked += locked_account["amount"]
         stats["total_locked"] = total_locked
 
-        # Calculate total vesting ammounts
+        # Calculate total vested ammounts
         total_vested = 0.0
         for vesting_account in vesting_accounts:
             total_vested += vesting_account["amount"]
         stats["total_vested"] = total_vested
+        # Calculate total locked foundation ammounts
+        total_foundation = 0.0
+        for foundation_account in foundation_accounts:
+            total_foundation += vesting_account["amount"]
+        stats["total_foundation"] = total_foundation
+
         if not detailed:
             return stats
         amounts_per_locktime = {}
@@ -210,6 +228,8 @@ class StatisticsCollector(object):
 
         stats["vesting"] = vesting_accounts
 
+        stats["foundation"] = foundation_accounts
+
         return stats
 
 
@@ -220,7 +240,7 @@ class StatisticsCollector(object):
 def show_stats(tokencode, network, detailed):
     print(f"Gathering statistics for {tokencode} on the {network} network")
     collector = StatisticsCollector(network)
-    stats = collector.getstatistics(tokencode, detailed)
+    stats = collector.getstatistics(tokencode, [], detailed)
     print(f"Total amount of tokens: {stats['total']:,.7f}")
     print(f"Number of accounts: {stats['num_accounts']}")
     print(f"Amount of locked tokens: {stats['total_locked']:,.7f}")
