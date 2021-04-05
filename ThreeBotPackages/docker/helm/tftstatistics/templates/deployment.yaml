@@ -36,6 +36,8 @@ spec:
           env:
             - name: TFTSTATISTICS_CACHETIME
               value:  {{ .Values.cachetime }}
+            - name: TFACCOUNTS
+              value: /etc/tftstatistics/foundationaccounts
           ports:
             - name: https
               containerPort: 443

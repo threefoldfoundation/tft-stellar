@@ -52,7 +52,7 @@ def get_foundation_wallets():
 
 @app.route("/api/stats")
 def get_stats():
-    """Statistics about TFTand TFTA
+    """Statistics about TFT and TFTA
 
     Args:
         network (str ["test", "public"], optional): Defaults to "public".

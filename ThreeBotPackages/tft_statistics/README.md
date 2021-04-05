@@ -35,3 +35,10 @@ JS-NG> server.start()
 - https://localhost/tft_statistics/api/foundationaccounts
 - https://localhost/tft_statistics/api/total_tft
 - https://localhost/tft_statistics/api/total_unlocked_tft
+
+## Deployed examples
+
+## Test envrironment
+
+- https://statsdata.testnet.threefold.io/stellar_stats/api/stats
+- https://statsdata.testnet.threefold.io/stellar_stats/api/foundationaccounts
