@@ -38,7 +38,7 @@ JS-NG> server.start()
 
 ## Deployed examples
 
-## Test envrironment
+## Test environment
 
 - https://statsdata.testnet.threefold.io/stellar_stats/api/stats
 - https://statsdata.testnet.threefold.io/stellar_stats/api/foundationaccounts
