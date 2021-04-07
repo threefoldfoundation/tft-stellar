@@ -98,13 +98,13 @@ func (w *stellarWallet) CreateAndSubmitPayment(target string, network string, am
 // mint handler
 type mint func(ERC20Address, *big.Int, string) error
 
-func (w *stellarWallet) MonitorBridgeAndMint(mintFn mint, persistency *BlockPersistency) error {
+func (w *stellarWallet) MonitorBridgeAndMint(mintFn mint, persistency *ChainPersistency) error {
 	transactionHandler := func(tx hProtocol.Transaction) {
 		// save cursor
 		cursor := tx.PagingToken()
 		err := persistency.saveStellarCursor(cursor)
 		if err != nil {
-			fmt.Println("error while saving cursor:", err)
+			log.Error("error while saving cursor:", err.Error())
 			return
 		}
 
@@ -114,7 +114,7 @@ func (w *stellarWallet) MonitorBridgeAndMint(mintFn mint, persistency *BlockPers
 
 		data, err := base64.StdEncoding.DecodeString(tx.Memo)
 		if err != nil {
-			fmt.Println("error:", err)
+			log.Error("error while decoding transaction memo:", err.Error())
 			return
 		}
 
@@ -126,6 +126,7 @@ func (w *stellarWallet) MonitorBridgeAndMint(mintFn mint, persistency *BlockPers
 
 		effects, err := w.getTransactionEffects(tx.Hash)
 		if err != nil {
+			log.Error("error while fetching transaction effects:", err.Error())
 			return
 		}
 
@@ -164,7 +165,7 @@ func (w *stellarWallet) MonitorBridgeAndMint(mintFn mint, persistency *BlockPers
 		return err
 	}
 
-	return w.StreamBridgeStellarTransactions(context.Background(), blockHeight, transactionHandler)
+	return w.StreamBridgeStellarTransactions(context.Background(), blockHeight.StellarCursor, transactionHandler)
 }
 
 // GetAccountDetails gets account details based an a Stellar address
@@ -181,7 +182,7 @@ func (w *stellarWallet) GetAccountDetails(address string) (account hProtocol.Acc
 	return account, nil
 }
 
-func (w *stellarWallet) StreamBridgeStellarTransactions(ctx context.Context, blockHeight *Blockheight, handler func(op hProtocol.Transaction)) error {
+func (w *stellarWallet) StreamBridgeStellarTransactions(ctx context.Context, cursor string, handler func(op hProtocol.Transaction)) error {
 	client, err := w.GetHorizonClient()
 	if err != nil {
 		return err
@@ -189,7 +190,7 @@ func (w *stellarWallet) StreamBridgeStellarTransactions(ctx context.Context, blo
 
 	opRequest := horizonclient.TransactionRequest{
 		ForAccount: w.keypair.Address(),
-		Cursor:     blockHeight.StellarCursor,
+		Cursor:     cursor,
 	}
 
 	return client.StreamTransactions(ctx, opRequest, handler)

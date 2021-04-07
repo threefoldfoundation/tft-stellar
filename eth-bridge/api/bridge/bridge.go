@@ -23,7 +23,7 @@ const (
 type Bridge struct {
 	bridgeContract   *BridgeContract
 	wallet           *stellarWallet
-	blockPersistency *BlockPersistency
+	blockPersistency *ChainPersistency
 	mut              sync.Mutex
 }
 
