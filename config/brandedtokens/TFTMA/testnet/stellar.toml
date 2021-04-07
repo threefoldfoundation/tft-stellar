@@ -1,8 +1,0 @@
-[[CURRENCIES]]
-code = "TFTMA"
-issuer = "GDL37OMXH4PUGSQOHL6SNHVNR7WPQKXAGI3GLRUYTURKVGUUDYWHCPMB"
-display_decimals = 2
-name = "Threefold 3bot Marketing / Prod mgmt Project"
-desc = "Bring the 3bot alive as a digital twin"
-image = "https://www.threefold.io/assets/3fold_icon.png"
-

@@ -1,8 +1,0 @@
-[[CURRENCIES]]
-code = "TFTCL"
-issuer = "GBTHGYJIC5IADXDKB6SVJDF7LCVY5NQTWAWM4G6JVQW2GA4CBY2YWYAT"
-display_decimals = 2
-name = "Threefold Crystal Language Project"
-desc = "Core language used to implement the 3bot and future SDK for ThreeFold"
-image = "https://www.threefold.io/assets/3fold_icon.png"
-

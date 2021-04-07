@@ -1,8 +1,0 @@
-[[CURRENCIES]]
-code = "TFTGE"
-issuer = "GDSZ7WIH3BAQ6L5ISYMUO57SDWRYZVILVYH2EBBZSOQLVBAHIIQ3TRQX"
-display_decimals = 2
-name = "Threefold TF Grid enhancements Project"
-desc = "Further improvements to the grid as sponsored by the TF Foundation"
-image = "https://www.threefold.io/assets/3fold_icon.png"
-
