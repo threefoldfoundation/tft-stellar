@@ -62,5 +62,7 @@ curl -k --header "Content-Type: application/json" --request POST --data '{"addre
 
 ## Threefoldfoundation deployed urls
 
-- Testnet: `https://testnet.threefold.io/threefoldfoundation/activation_service/activate_account`
+- Testnet:
+  - `https://testnet.threefold.io/threefoldfoundation/activation_service/activate_account`
+  - `https://testnet.threefold.io/threefoldfoundation/activation_service/fund_trustline`
 - Production: `https://tokenservices.threefold.io/threefoldfoundation/activation_service/activate_account`
