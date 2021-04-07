@@ -23,6 +23,7 @@ func main() {
 	var contractAddress string
 
 	var datadir string
+	var persistencyFile string
 
 	var accountJSON string
 	var accountPass string
@@ -37,6 +38,7 @@ func main() {
 	flag.StringVar(&contractAddress, "contract", "0x770b0AA8b5B4f140cdA2F4d77205ceBe5f3D3C7e", "smart contract address")
 
 	flag.StringVar(&datadir, "datadir", "./storage", "chain data directory")
+	flag.StringVar(&persistencyFile, "persistency", "./node.json", "file where last seen blockheight and stellar account cursor is stored")
 
 	flag.StringVar(&accountJSON, "account", "", "ethereum account json")
 	flag.StringVar(&accountPass, "passwork", "", "ethereum account password")
@@ -66,7 +68,7 @@ func main() {
 
 	cnl := make(chan struct{})
 
-	br, err := bridge.NewBridge(ethPort, accountJSON, accountPass, ethNetworkName, nil, contractAddress, datadir, cnl, stellarNetwork, stellarSecret, rescanBridgeAccount)
+	br, err := bridge.NewBridge(ethPort, accountJSON, accountPass, ethNetworkName, nil, contractAddress, datadir, cnl, stellarNetwork, stellarSecret, rescanBridgeAccount, persistencyFile)
 	if err != nil {
 		panic(err)
 	}

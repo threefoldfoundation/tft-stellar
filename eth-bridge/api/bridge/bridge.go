@@ -28,13 +28,13 @@ type Bridge struct {
 }
 
 // NewBridge creates a new Bridge.
-func NewBridge(ethPort uint16, accountJSON, accountPass string, ethNetworkName string, bootnodes []string, contractAddress string, datadir string, cancel <-chan struct{}, stellarNetwork string, stellarSeed string, rescanBridgeAccount bool) (*Bridge, error) {
+func NewBridge(ethPort uint16, accountJSON, accountPass string, ethNetworkName string, bootnodes []string, contractAddress string, datadir string, cancel <-chan struct{}, stellarNetwork string, stellarSeed string, rescanBridgeAccount bool, persistencyFile string) (*Bridge, error) {
 	contract, err := NewBridgeContract(ethNetworkName, bootnodes, contractAddress, int(ethPort), accountJSON, accountPass, filepath.Join(datadir, "eth"), cancel, stellarNetwork, stellarSeed)
 	if err != nil {
 		return nil, err
 	}
 
-	blockPersistency, err := initPersist("test.json")
+	blockPersistency, err := initPersist(persistencyFile)
 	if err != nil {
 		return nil, err
 	}

@@ -1,4 +1,7 @@
 eth-bridge
 test.abi
 storage/
+storage1/
+storage2/
 secret
+node.json
