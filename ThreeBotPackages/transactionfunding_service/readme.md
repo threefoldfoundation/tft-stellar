@@ -66,7 +66,7 @@ The following kwargs can also be given to configure the package:
 - `wallet`: the wallet used to fund the transactions, default: `txfundingwallet`
 - `slaves`: the number of wallets to use to distribute the load, default: 30
 - `secret`: Activation secret of wallet to import ( if you are not using an already existing wallet)
-- `network`: "STD" or "TEST" to indicate the type of the stellar network (required when importing a wallet through the secret argument). Defaults to `None`. When set to "TEST" and no secret is given, a wallet on the Stellar testnet will be created and funded through friendbot. 
+- `network`: "STD" or "TEST" to indicate the type of the stellar network (required when importing a wallet through the secret argument). Defaults to `None`. When set to "TEST" and no secret is given, a wallet on the Stellar testnet will be created and funded through friendbot.
 
 If the wallet name does not exist and the secret or network are not set through the install arguments, environment variables can be used to set the secret and network:
 
@@ -88,7 +88,7 @@ There is one actor with 2 methods:
   ```json
   [{"asset": "TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3", "fee_account_id": "GDREB646A2R7TLAF7WELQ6VAO7J5LBWTHYOBYIIPKX6PVYI7MSBFEKXZ", "fee_fixed": "0.01"}, {"asset": "TFTA:GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT", "fee_account_id": "GDREB646A2R7TLAF7WELQ6VAO7J5LBWTHYOBYIIPKX6PVYI7MSBFEKXZ", "fee_fixed": "0.01"}]
   ```
-  
+
 - `fund_transaction`: Funds and signs a TFT transaction.
   - param `transaction`: Stellar transaction envelope in xdr
 
@@ -102,8 +102,8 @@ curl -v -k --insecure --header "Content-Type: application/json" --request POST -
 
 ## Threefoldfoundation deployed urls
 
-- Testnet: `https://testnet.threefold.io/threefoldfoundation/transactionfunding_service/fund_transaction'
-- Production: `https://tokenservices.threefold.io/threefoldfoundation/transactionfunding_service/fund_transaction'
+- Testnet: `https://testnet.threefold.io/threefoldfoundation/transactionfunding_service/fund_transaction`
+- Production: `https://tokenservices.threefold.io/threefoldfoundation/transactionfunding_service/fund_transaction`
 
 ## Load distribution
 
