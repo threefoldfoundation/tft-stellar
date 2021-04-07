@@ -13,6 +13,21 @@ current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/../sals/")
 from activation_sal import activate_account as activate_account_sal, get_wallet
 
+SUPPORTED_ASSETS = {
+    "TEST": [
+        "TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3",
+        "TFTA:GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT",
+        "FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R",
+        "BTC:GBMDRYGRFNPCGNRYVTHOPFE7F7L566ZLZM7XFQ2UWWIE3NVSO7FA5MFY",
+    ],
+    "STD": [
+        "TFT:GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47",
+        "TFTA:GBUT4GP5GJ6B3XW5PXENHQA7TXJI5GOPW3NF4W3ZIW6OOO4ISY6WNLN2",
+        "FreeTFT:GCBGS5TFE2BPPUVY55ZPEMWWGR6CLQ7T6P46SOFGHXEBJ34MSP6HVEUT",
+        "BTC:GCNSGHUCG5VMGLT5RIYYZSO7VQULQKAJ62QA33DBC5PPBSO57LFWVV6P",
+    ],
+}
+
 
 class ActivationService(BaseActor):
     def _stellar_address_used_before(self, stellar_address):
@@ -27,16 +42,20 @@ class ActivationService(BaseActor):
             return stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
         return stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
 
-    def _activate_account(self, address):
-        # TODO: serialize with a gevent pool
+    def _get_wallet(self):
         wallet = get_wallet()
         if not wallet:
             raise j.exceptions.Value("Service unavailable")
+        # TODO: serialize with a gevent pool
         tftasset = wallet._get_asset()
         a = get_wallet().load_account()
         if not a.last_created_sequence_is_used:
             if (wallet.sequencedate + 60) > int(time.time()):
                 raise j.exceptions.Value(f"Busy, try again later")
+        return wallet
+
+    def _activate_account(self, address):
+        wallet = self._get_wallet()
 
         server = wallet._get_horizon_server()
 
@@ -68,6 +87,36 @@ class ActivationService(BaseActor):
         tx = self._activate_account(address)
         response = j.data.serializers.json.dumps({"activation_transaction": tx, "address": address})
         return response
+
+    @actor_method
+    def fund_trustline(self, address: str, asset: str)->dict:
+
+        wallet = self._get_wallet()
+        if asset not in SUPPORTED_ASSETS[str(wallet.network.value)]:
+            raise j.exceptions.NotFound("Unsupported asset")
+
+        asset_code, asset_issuer = asset.split(":")
+
+        server = wallet._get_horizon_server()
+
+        source_account = wallet.load_account()
+
+        base_fee = server.fetch_base_fee()
+        transaction = (
+            stellar_sdk.TransactionBuilder(
+                source_account=source_account,
+                network_passphrase=self._get_network_passphrase(wallet.network.value),
+                base_fee=base_fee,
+            )
+            .append_begin_sponsoring_future_reserves_op(address)
+            .append_change_trust_op(asset_code=asset_code, asset_issuer=asset_issuer, source=address)
+            .append_end_sponsoring_future_reserves_op(address)
+            .set_timeout(60)
+            .build()
+        )
+        source_keypair = stellar_sdk.Keypair.from_secret(wallet.secret)
+        transaction.sign(source_keypair)
+        return {"addtrustline_transaction":transaction.to_xdr()}
 
 
 Actor = ActivationService
