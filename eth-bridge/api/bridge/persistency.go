@@ -11,17 +11,17 @@ type Blockheight struct {
 	StellarCursor string `json:"stellarCursor"`
 }
 
-type BlockPersistency struct {
+type ChainPersistency struct {
 	location string
 }
 
-func initPersist(location string) (*BlockPersistency, error) {
-	return &BlockPersistency{
+func initPersist(location string) (*ChainPersistency, error) {
+	return &ChainPersistency{
 		location: location,
 	}, nil
 }
 
-func (b *BlockPersistency) saveHeight(height uint64) error {
+func (b *ChainPersistency) saveHeight(height uint64) error {
 	blockheight, err := b.GetHeight()
 	if err != nil {
 		return err
@@ -31,7 +31,7 @@ func (b *BlockPersistency) saveHeight(height uint64) error {
 	return b.Save(blockheight)
 }
 
-func (b *BlockPersistency) saveStellarCursor(cursor string) error {
+func (b *ChainPersistency) saveStellarCursor(cursor string) error {
 	blockheight, err := b.GetHeight()
 	if err != nil {
 		return err
@@ -41,7 +41,7 @@ func (b *BlockPersistency) saveStellarCursor(cursor string) error {
 	return b.Save(blockheight)
 }
 
-func (b *BlockPersistency) GetHeight() (*Blockheight, error) {
+func (b *ChainPersistency) GetHeight() (*Blockheight, error) {
 	var blockheight Blockheight
 	file, err := ioutil.ReadFile(b.location)
 	if os.IsNotExist(err) {
@@ -58,7 +58,7 @@ func (b *BlockPersistency) GetHeight() (*Blockheight, error) {
 	return &blockheight, nil
 }
 
-func (b *BlockPersistency) Save(blockheight *Blockheight) error {
+func (b *ChainPersistency) Save(blockheight *Blockheight) error {
 	updatedPersistency, err := json.Marshal(blockheight)
 	if err != nil {
 		return err

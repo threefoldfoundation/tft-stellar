@@ -27,10 +27,6 @@ const ERC20AddressLength = 20
 
 type ERC20Address [ERC20AddressLength]byte
 
-var (
-	ether = new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil)
-)
-
 const (
 	// retryDelay is the delay to retry calls when there are no peers
 	retryDelay = time.Second * 15

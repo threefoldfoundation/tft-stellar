@@ -41,7 +41,7 @@ func main() {
 	flag.StringVar(&persistencyFile, "persistency", "./node.json", "file where last seen blockheight and stellar account cursor is stored")
 
 	flag.StringVar(&accountJSON, "account", "", "ethereum account json")
-	flag.StringVar(&accountPass, "passwork", "", "ethereum account password")
+	flag.StringVar(&accountPass, "password", "", "ethereum account password")
 
 	flag.StringVar(&stellarSecret, "secret", "", "stellar secret")
 	flag.StringVar(&stellarNetwork, "network", "testnet", "stellar network url")
