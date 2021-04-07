@@ -37,17 +37,13 @@ def _get_foundation_wallets() -> list:
     return foundationaccounts
 
 
-def _get_not_free_foundation_addesses() -> list:
-    return [account["address"] for account in _get_foundation_wallets() if not account["free"]]
+def _get_not_liquid_foundation_addesses() -> list:
+    return [account["address"] for account in _get_foundation_wallets() if not account["liquid"]]
 
 
 @app.route("/api/foundationaccounts")
 def get_foundation_wallets():
-    res = [
-        {"address": account["address"], "description": account["description"]} for account in _get_foundation_wallets()
-    ]
-    results = j.data.serializers.json.dumps(res)
-    return results
+    return j.data.serializers.json.dumps(_get_foundation_wallets())
 
 
 @app.route("/api/stats")
@@ -72,16 +68,40 @@ def get_stats():
         return cached_data
 
     collector = StatisticsCollector(network)
-    stats = collector.getstatistics(tokencode, _get_not_free_foundation_addesses(), detailed)
+    if detailed:
+        foundation_wallets = _get_foundation_wallets()
+        foundation_addresses = [account["address"] for account in _get_foundation_wallets()]
+    else:
+        foundation_addresses = _get_not_liquid_foundation_addesses()
+
+    stats = collector.getstatistics(tokencode, foundation_addresses, detailed)
     res["total_tokens"] = f"{stats['total']:,.7f}"
     res["total_accounts"] = f"{stats['num_accounts']}"
     res["total_locked_tokens"] = f"{stats['total_locked']:,.7f}"
     res["total_vested_tokens"] = f"{stats['total_vested']:,.7f}"
-    res["total_foundation_tokens"] = f"{stats['total_foundation']:,.7f}"
-    total_liquid_tokens = stats["total"] - stats["total_locked"] - stats["total_vested"] - stats["total_foundation"]
-    res["total_liquid_tokens"] = f"{total_liquid_tokens:,.7f}"
-    if detailed:
-        res["foundation_tokens_info"] = stats["foundation"]
+    if not detailed:
+        res["total_illiquid_foundation_tokens"] = f"{stats['total_foundation']:,.7f}"
+        total_liquid_tokens = stats["total"] - stats["total_locked"] - stats["total_vested"] - stats["total_foundation"]
+        res["total_liquid_tokens"] = f"{total_liquid_tokens:,.7f}"
+    else:
+        foundation_amounts = {account["account"]: account["amount"] for account in stats["foundation"]}
+        foundation_liquid_amount = 0.0
+        foundation_illiquid_amount = 0.0
+        for foundation_wallet in foundation_wallets:
+            amount = foundation_amounts.get(foundation_wallet["address"], 0)
+            foundation_wallet["amount"] = f"{amount:,.7f}"
+            if foundation_wallet["liquid"]:
+                foundation_liquid_amount += amount
+            else:
+                foundation_illiquid_amount += amount
+
+        res["total_liquid_foundation_tokens"] = f"{foundation_liquid_amount:,.7f}"
+        res["total_illiquid_foundation_tokens"] = f"{foundation_illiquid_amount:,.7f}"
+        total_liquid_tokens = (
+            stats["total"] - stats["total_locked"] - stats["total_vested"] - foundation_illiquid_amount
+        )
+        res["total_liquid_tokens"] = f"{total_liquid_tokens:,.7f}"
+        res["foundation_accounts_info"] = foundation_wallets
         res["locked_tokens_info"] = []
         for locked_amount in stats["locked"]:
             res["locked_tokens_info"].append(
@@ -106,7 +126,7 @@ def total_tft():
         return cached_data
 
     collector = StatisticsCollector(network)
-    stats = collector.getstatistics(tokencode, _get_not_free_foundation_addesses(), False)
+    stats = collector.getstatistics(tokencode, [], False)
 
     total = stats["total"]
     redis.set(f"{network}-{tokencode}-total_tft", total, ex=get_cache_time())
@@ -126,7 +146,7 @@ def total_unlocked_tft():
         return cached_data
 
     collector = StatisticsCollector(network)
-    stats = collector.getstatistics(tokencode, _get_not_free_foundation_addesses(), False)
+    stats = collector.getstatistics(tokencode, _get_not_liquid_foundation_addesses(), False)
 
     total_tft = stats["total"]
     total_locked_tft = stats["total_locked"]
