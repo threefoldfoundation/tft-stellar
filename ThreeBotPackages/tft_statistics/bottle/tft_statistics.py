@@ -5,7 +5,7 @@ import os
 import stellar_sdk
 
 from beaker.middleware import SessionMiddleware
-from bottle import Bottle, request, HTTPError
+from bottle import Bottle, request, HTTPError, response
 
 from jumpscale.loader import j
 from jumpscale.packages.auth.bottle.auth import SESSION_OPTS
@@ -15,6 +15,8 @@ current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/../../../lib/stats/")
 
 from stats import StatisticsCollector
+
+TFT_ISSUER = "GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47"
 
 app = Bottle()
 
@@ -26,7 +28,7 @@ def get_cache_time():
 
 def _get_foundation_wallets() -> list:
     redis = j.clients.redis.get("redis_instance")
-    cached_data = redis.get(f"foundationaccounts")
+    cached_data = redis.get(f"foundationaccounts-raw")
     if cached_data:
         return j.data.serializers.json.loads(cached_data)
 
@@ -34,7 +36,7 @@ def _get_foundation_wallets() -> list:
     if not foundationwallets_path:
         return []
     foundationaccounts = j.data.serializers.json.load_from_file(foundationwallets_path)
-    redis.set(f"foundationaccounts", j.data.serializers.json.dumps(foundationaccounts), ex=get_cache_time())
+    redis.set(f"foundationaccounts-raw", j.data.serializers.json.dumps(foundationaccounts), ex=get_cache_time())
     return foundationaccounts
 
 
@@ -44,7 +46,32 @@ def _get_not_liquid_foundation_addesses() -> list:
 
 @app.route("/api/foundationaccounts")
 def get_foundation_wallets():
-    return j.data.serializers.json.dumps(_get_foundation_wallets())
+    redis = j.clients.redis.get("redis_instance")
+    cached_data = redis.get(f"foundationaccounts-detailed")
+    if cached_data:
+        print(f"cached response: {cached_data}")
+        return j.data.serializers.json.loads(cached_data)
+    foundation_wallets = _get_foundation_wallets()
+
+    horizon_server = stellar_sdk.Server("https://horizon.stellar.org")
+    for foundation_wallet in foundation_wallets:
+        print(f"fetching data for {foundation_wallet['address']}")
+        endpoint = horizon_server.accounts().account_id(foundation_wallet["address"])
+        account_data = endpoint.call()
+        tftbalances = [
+            balance["balance"]
+            for balance in account_data["balances"]
+            if account_data.get("asset_code") == "TFT" and account_data.get("asset_issuer") == TFT_ISSUER
+        ]
+        foundation_wallet["TFT"] = tftbalances[0] if tftbalances else "0.0"
+        foundation_wallet["signers"] = [signer["key"] for signer in account_data["signers"]]
+        required_signatures=account_data["thresholds"]["med_threshold"]
+        foundation_wallet["required_signatures"] = required_signatures if required_signatures!=0 else 1 
+    print(foundation_wallets)
+    res=j.data.serializers.json.dumps(foundation_wallets)
+    redis.set(f"foundationaccounts-detailed", res, ex=get_cache_time())
+    response.content_type = 'application/json'
+    return res
 
 
 @app.route("/api/stats")
