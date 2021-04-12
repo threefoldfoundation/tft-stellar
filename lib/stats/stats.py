@@ -199,7 +199,7 @@ class StatisticsCollector(object):
         # Calculate total locked foundation ammounts
         total_foundation = 0.0
         for foundation_account in foundation_accounts:
-            total_foundation += vesting_account["amount"]
+            total_foundation += foundation_account["amount"]
         stats["total_foundation"] = total_foundation
 
         if not detailed:

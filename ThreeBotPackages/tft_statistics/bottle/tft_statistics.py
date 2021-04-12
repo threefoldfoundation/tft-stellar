@@ -97,9 +97,12 @@ def get_stats():
         return cached_data
 
     collector = StatisticsCollector(network)
+
     if detailed:
         foundation_wallets = _get_foundation_wallets()
-        foundation_addresses = [account["address"] for account in _get_foundation_wallets()]
+        foundation_addresses = []
+        for category in foundation_wallets:
+            foundation_addresses += [account["address"] for account in category["wallets"] if not account["liquid"]]
     else:
         foundation_addresses = _get_not_liquid_foundation_addesses()
 
@@ -116,13 +119,15 @@ def get_stats():
         foundation_amounts = {account["account"]: account["amount"] for account in stats["foundation"]}
         foundation_liquid_amount = 0.0
         foundation_illiquid_amount = 0.0
-        for foundation_wallet in foundation_wallets:
-            amount = foundation_amounts.get(foundation_wallet["address"], 0)
-            foundation_wallet["amount"] = f"{amount:,.7f}"
-            if foundation_wallet["liquid"]:
-                foundation_liquid_amount += amount
-            else:
-                foundation_illiquid_amount += amount
+
+        for category in foundation_wallets:
+            for foundation_wallet in category["wallets"]:
+                amount = foundation_amounts.get(foundation_wallet["address"], 0)
+                foundation_wallet["amount"] = f"{amount:,.7f}"
+                if foundation_wallet["liquid"]:
+                    foundation_liquid_amount += amount
+                else:
+                    foundation_illiquid_amount += amount
 
         res["total_liquid_foundation_tokens"] = f"{foundation_liquid_amount:,.7f}"
         res["total_illiquid_foundation_tokens"] = f"{foundation_illiquid_amount:,.7f}"
