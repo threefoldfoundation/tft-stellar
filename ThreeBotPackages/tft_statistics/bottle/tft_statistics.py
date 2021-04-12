@@ -102,7 +102,7 @@ def get_stats():
         foundation_wallets = _get_foundation_wallets()
         foundation_addresses = []
         for category in foundation_wallets:
-            foundation_addresses += [account["address"] for account in category["wallets"] if not account["liquid"]]
+            foundation_addresses += [account["address"] for account in category["wallets"]]
     else:
         foundation_addresses = _get_not_liquid_foundation_addesses()
 
