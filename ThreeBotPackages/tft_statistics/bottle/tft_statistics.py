@@ -167,7 +167,7 @@ def get_address_info(address):
         return [
             {
                 "amount": balance.balance,
-                "asset": f"{balance.asset_code}{balance.asset_issuer if balance.asset_issuer else ''}",
+                "asset": f"{balance.asset_code}{(':'+balance.asset_issuer) if balance.asset_issuer else ''}",
             }
             for balance in balances
         ]
