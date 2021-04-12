@@ -41,36 +41,37 @@ def _get_foundation_wallets() -> list:
 
 
 def _get_not_liquid_foundation_addesses() -> list:
-    return [account["address"] for account in _get_foundation_wallets() if not account["liquid"]]
+    result = []
+    for category in _get_foundation_wallets():
+        result += [account["address"] for account in category["wallets"] if not account["liquid"]]
+    return result
 
 
 @app.route("/api/foundationaccounts")
 def get_foundation_wallets():
+    response.content_type = "application/json"
     redis = j.clients.redis.get("redis_instance")
     cached_data = redis.get(f"foundationaccounts-detailed")
     if cached_data:
-        print(f"cached response: {cached_data}")
-        return j.data.serializers.json.loads(cached_data)
+        return cached_data
     foundation_wallets = _get_foundation_wallets()
 
     horizon_server = stellar_sdk.Server("https://horizon.stellar.org")
-    for foundation_wallet in foundation_wallets:
-        print(f"fetching data for {foundation_wallet['address']}")
-        endpoint = horizon_server.accounts().account_id(foundation_wallet["address"])
-        account_data = endpoint.call()
-        tftbalances = [
-            balance["balance"]
-            for balance in account_data["balances"]
-            if balance.get("asset_code") == "TFT" and balance.get("asset_issuer") == TFT_ISSUER
-        ]
-        foundation_wallet["TFT"] = tftbalances[0] if tftbalances else "0.0"
-        foundation_wallet["signers"] = [signer["key"] for signer in account_data["signers"]]
-        required_signatures = account_data["thresholds"]["med_threshold"]
-        foundation_wallet["required_signatures"] = required_signatures if required_signatures != 0 else 1
-    print(foundation_wallets)
+    for category in foundation_wallets:
+        for foundation_wallet in category["wallets"]:
+            endpoint = horizon_server.accounts().account_id(foundation_wallet["address"])
+            account_data = endpoint.call()
+            tftbalances = [
+                balance["balance"]
+                for balance in account_data["balances"]
+                if balance.get("asset_code") == "TFT" and balance.get("asset_issuer") == TFT_ISSUER
+            ]
+            foundation_wallet["TFT"] = tftbalances[0] if tftbalances else "0.0"
+            foundation_wallet["signers"] = [signer["key"] for signer in account_data["signers"]]
+            required_signatures = account_data["thresholds"]["med_threshold"]
+            foundation_wallet["required_signatures"] = required_signatures if required_signatures != 0 else 1
     res = j.data.serializers.json.dumps(foundation_wallets)
     redis.set(f"foundationaccounts-detailed", res, ex=get_cache_time())
-    response.content_type = "application/json"
     return res
 
 
