@@ -2,9 +2,10 @@ import datetime
 import os
 import sys
 import os
+import stellar_sdk
 
 from beaker.middleware import SessionMiddleware
-from bottle import Bottle, request
+from bottle import Bottle, request, HTTPError
 
 from jumpscale.loader import j
 from jumpscale.packages.auth.bottle.auth import SESSION_OPTS
@@ -156,6 +157,59 @@ def total_unlocked_tft():
 
     redis.set(f"{network}-{tokencode}-total_unlocked_tft", total_unlocked_tft, ex=get_cache_time())
     return f"{total_unlocked_tft}"
+
+
+@app.route("/api/account/<address>")
+def get_address_info(address):
+    global get_address_info_wallet
+
+    def balances_to_reponse(balances):
+        return [
+            {
+                "amount": balance.balance,
+                "asset": f"{balance.asset_code}{balance.asset_issuer if balance.asset_issuer else ''}",
+            }
+            for balance in balances
+        ]
+
+    if not "get_address_info_wallet" in globals():
+        get_address_info_wallet = j.clients.stellar.new(j.data.random_names.random_name(), network="STD")
+    try:
+        data = get_address_info_wallet.get_balance(address)
+    except stellar_sdk.exceptions.BadRequestError as e:
+        if e.extras:
+            if e.extras.get("invalid_field") == "account_id":
+                return HTTPError(status=j.tools.http.status_codes.codes.BAD_REQUEST)
+    except stellar_sdk.exceptions.NotFoundError:
+        return HTTPError(status=j.tools.http.status_codes.codes.NOT_FOUND)
+
+    response = {}
+    response["address"] = address
+    response["balances"] = balances_to_reponse(data.balances)
+
+    if data.vesting_accounts:
+        vesting_accounts = []
+        for vesting_account in data.vesting_accounts:
+            vesting_accounts.append(
+                {"address": vesting_account.address, "balances": balances_to_reponse(vesting_account.balances)}
+            )
+
+        response["vesting_accounts"] = vesting_accounts
+
+    if data.escrow_accounts:
+        locked_amounts = []
+        for locked_amount in data.escrow_accounts:
+            locked_amounts.append(
+                {
+                    "address": locked_amount.address,
+                    "locked_until": datetime.datetime.fromtimestamp(locked_amount.unlock_time).isoformat(),
+                    "balances": balances_to_reponse(locked_amount.balances),
+                }
+            )
+
+        response["locked_amounts"] = locked_amounts
+
+    return response
 
 
 app = SessionMiddleware(app, SESSION_OPTS)

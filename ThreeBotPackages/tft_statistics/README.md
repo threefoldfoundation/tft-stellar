@@ -24,6 +24,7 @@ JS-NG> server.start()
 - `https://<host>/tft_statistics/api/total_tft`
 - `https://<host>/tft_statistics/api/total_unlocked_tft`
 - `https://<host>/tft_statistics/api/foundationaccounts`: Foundation addresses and their description
+- `https://<host>/tft_statistics/api/account/<address>` : get the details of an account
 
 ## Examples
 
@@ -40,5 +41,6 @@ JS-NG> server.start()
 
 ## Test environment
 
-- https://statsdata.testnet.threefold.io/stellar_stats/api/stats
-- https://statsdata.testnet.threefold.io/stellar_stats/api/foundationaccounts
+- `https://statsdata.testnet.threefold.io/stellar_stats/api/stats`
+- `https://statsdata.testnet.threefold.io/stellar_stats/api/foundationaccounts`
+- `https://statsdata.testnet.threefold.iostellar_stats//api/account/<address>`
