@@ -68,7 +68,7 @@ func main() {
 
 	cnl := make(chan struct{})
 
-	br, err := bridge.NewBridge(ethPort, accountJSON, accountPass, ethNetworkName, nil, contractAddress, datadir, cnl, stellarNetwork, stellarSecret, rescanBridgeAccount, persistencyFile)
+	br, err := bridge.NewBridge(ethPort, accountJSON, accountPass, ethNetworkName, nil, contractAddress, datadir, stellarNetwork, stellarSecret, rescanBridgeAccount, persistencyFile)
 	if err != nil {
 		panic(err)
 	}
