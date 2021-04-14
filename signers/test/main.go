@@ -62,9 +62,10 @@ func app(target string) error {
 	if err != nil {
 		return err
 	}
-
 	fmt.Printf("%+v\n", result)
-	return nil
+
+	tx, err = tx.AddSignatureBase64("network", result.Address, result.Signature)
+	return err
 }
 
 func main() {
