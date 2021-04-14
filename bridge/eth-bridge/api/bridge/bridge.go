@@ -30,11 +30,23 @@ type Bridge struct {
 	bridgeContract   *BridgeContract
 	wallet           *stellarWallet
 	blockPersistency *ChainPersistency
+	signers          []string
 	mut              sync.Mutex
 }
 
 // NewBridge creates a new Bridge.
-func NewBridge(ethPort uint16, accountJSON, accountPass string, ethNetworkName string, bootnodes []string, contractAddress string, datadir string, stellarNetwork string, stellarSeed string, rescanBridgeAccount bool, persistencyFile string) (*Bridge, error) {
+func NewBridge(ethPort uint16,
+	accountJSON,
+	accountPass string,
+	ethNetworkName string,
+	bootnodes []string,
+	contractAddress string,
+	datadir string,
+	stellarNetwork string,
+	stellarSeed string,
+	rescanBridgeAccount bool,
+	persistencyFile string,
+	signers []string) (*Bridge, error) {
 	contract, err := NewBridgeContract(ethNetworkName, bootnodes, contractAddress, int(ethPort), accountJSON, accountPass, filepath.Join(datadir, "eth"), stellarNetwork, stellarSeed)
 	if err != nil {
 		return nil, err
@@ -72,6 +84,7 @@ func NewBridge(ethPort uint16, accountJSON, accountPass string, ethNetworkName s
 		bridgeContract:   contract,
 		blockPersistency: blockPersistency,
 		wallet:           w,
+		signers:          signers,
 	}
 
 	return bridge, nil
@@ -135,11 +148,20 @@ func (bridge *Bridge) getSignerClient() (*signers.Signer, error) {
 		libp2p.DisableRelay(),
 	)
 
+	if err != nil {
+		return nil, err
+	}
+
 	return signers.NewSigner(host), nil
 }
 
 // Start the main processing loop of the bridge
 func (bridge *Bridge) Start(cancel <-chan struct{}) error {
+	_, err := bridge.getSignerClient()
+	if err != nil {
+		return err
+	}
+
 	heads := make(chan *ethtypes.Header)
 
 	go bridge.bridgeContract.Loop(heads)
