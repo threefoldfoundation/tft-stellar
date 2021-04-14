@@ -8,6 +8,7 @@ import (
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/stellar/go/txnbuild"
 	"github.com/threefoldfoundation/tft-stellar/signers"
 )
 
@@ -41,17 +42,33 @@ func app(target string) error {
 	fmt.Println("Identity: ", host.ID())
 	signer := signers.NewSigner(host)
 
-	result, err := signer.Sign(ctx, target, []byte("hello world"))
+	txnBuild := txnbuild.TransactionParams{
+		//Operations:           []txnbuild.Operation{&paymentOP},
+		Timebounds: txnbuild.NewTimeout(300),
+		//SourceAccount:        &sourceAccount,
+		BaseFee:              txnbuild.MinBaseFee,
+		IncrementSequenceNum: true,
+	}
+
+	tx, err := txnbuild.NewTransaction(txnBuild)
+	if err != nil {
+		return err
+	}
+	msg, err := tx.Base64()
+	if err != nil {
+		return err
+	}
+	result, err := signer.Sign(ctx, target, msg)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("len(%d): %x\n", len(result), result)
+	fmt.Printf("%+v\n", result)
 	return nil
 }
 
 func main() {
-	if err := app("/ip4/192.168.0.143/tcp/14000/p2p/12D3KooWKBZs5Q3ScmTcwr5ADxptKEraVLZ3bsL5atR6qZZUFhww"); err != nil {
+	if err := app("/ip4/192.168.0.143/tcp/14000/p2p/12D3KooWAmsMPqyQX7EpHBTWk728akfGzTeqhAeGMyL35fSxdg3y"); err != nil {
 		panic(err)
 	}
 }

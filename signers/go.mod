@@ -9,5 +9,6 @@ require (
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.21.0
+	github.com/stellar/go v0.0.0-20210412175112-1eb8f04750d6 // indirect
 	github.com/whyrusleeping/go-notifier v0.0.0-20170827234753-097c5d47330f // indirect
 )
