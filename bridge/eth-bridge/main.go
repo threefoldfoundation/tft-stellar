@@ -32,6 +32,7 @@ func main() {
 	var stellarNetwork string
 	var rescanBridgeAccount bool
 
+	var signers []string
 	flag.StringVar(&ethClientUrl, "eth", "https://data-seed-prebsc-1-s1.binance.org:8545", "eth client url")
 	flag.Uint16Var(&ethPort, "port", 23111, "eth port")
 	flag.StringVar(&ethNetworkName, "ethnetwork", "smart-chain-testnet", "eth network name (defines storage directory name)")
@@ -46,6 +47,7 @@ func main() {
 	flag.StringVar(&stellarSecret, "secret", "", "stellar secret")
 	flag.StringVar(&stellarNetwork, "network", "testnet", "stellar network url")
 
+	flag.StringArrayVar(&signers, "signer", nil, "list of signers service addresses")
 	flag.BoolVar(&rescanBridgeAccount, "rescan", false, "if true is provided, we rescan the bridge stellar account and mint all transactions again")
 
 	flag.Parse()
@@ -68,7 +70,7 @@ func main() {
 
 	cnl := make(chan struct{})
 
-	br, err := bridge.NewBridge(ethPort, accountJSON, accountPass, ethNetworkName, nil, contractAddress, datadir, stellarNetwork, stellarSecret, rescanBridgeAccount, persistencyFile)
+	br, err := bridge.NewBridge(ethPort, accountJSON, accountPass, ethNetworkName, nil, contractAddress, datadir, stellarNetwork, stellarSecret, rescanBridgeAccount, persistencyFile, signers)
 	if err != nil {
 		panic(err)
 	}
