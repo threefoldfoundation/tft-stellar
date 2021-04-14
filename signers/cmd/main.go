@@ -82,7 +82,7 @@ func app(cfg *Config) error {
 
 	for _, addr := range host.Addrs() {
 		full := addr.Encapsulate(ipfs)
-		log.Info().Str("address", full.String()).Msg("address")
+		log.Info().Str("address", full.String()).Msg("p2p node address")
 	}
 
 	_, err = signers.NewServer(host, cfg.Network, cfg.Secret)
@@ -101,6 +101,7 @@ func main() {
 
 	var debug bool
 	var cfg Config
+	flag.StringVar(&cfg.Network, "network", "mainnet", "stellar network")
 	flag.StringVar(&cfg.Secret, "secret", "", "wallet secret used for signing")
 	flag.StringVar(&cfg.BridgeID, "bridge", "", "bridge p2p identity as provided by the bridge. Only connections with that ID will be accepted")
 	flag.BoolVar(&debug, "debug", false, "print debug messages")
