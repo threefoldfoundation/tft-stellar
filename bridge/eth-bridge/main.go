@@ -8,10 +8,10 @@ import (
 	"time"
 
 	flag "github.com/spf13/pflag"
+	"github.com/threefoldfoundation/tft-stellar/bridge/eth-bridge/api/bridge"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/log"
-	"github.com/threefoldtech/eth-bridge/api/bridge"
 )
 
 func main() {
