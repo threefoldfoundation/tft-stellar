@@ -8,6 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
+	"github.com/rs/zerolog/log"
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/txnbuild"
 )
@@ -63,6 +64,7 @@ func NewServer(host host.Host, network, secret string) (*gorpc.Server, error) {
 	if err != nil {
 		return nil, err
 	}
+	log.Debug().Str("address", full.Address()).Msg("wallet address")
 	server := gorpc.NewServer(host, Protocol)
 
 	signer := SignerService{
