@@ -74,7 +74,6 @@ func (w *stellarWallet) CreateAndSubmitPayment(target string, network string, am
 	if err != nil {
 		return errors.Wrap(err, "failed to build transaction")
 	}
-
 	client, err := w.GetHorizonClient()
 	if err != nil {
 		return errors.Wrap(err, "failed to get horizon client")

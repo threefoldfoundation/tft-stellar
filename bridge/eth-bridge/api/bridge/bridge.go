@@ -1,6 +1,8 @@
 package bridge
 
 import (
+	"context"
+	"crypto/ed25519"
 	"encoding/hex"
 	"fmt"
 	"math/big"
@@ -9,7 +11,11 @@ import (
 
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stellar/go/keypair"
+	"github.com/stellar/go/strkey"
+	"github.com/threefoldfoundation/tft-stellar/bridge/signers"
 )
 
 const (
@@ -45,6 +51,7 @@ func NewBridge(ethPort uint16, accountJSON, accountPass string, ethNetworkName s
 
 	if stellarSeed != "" {
 		w.keypair, err = keypair.ParseFull(stellarSeed)
+
 		if err != nil {
 			return nil, err
 		}
@@ -101,6 +108,34 @@ func (bridge *Bridge) GetClient() *LightClient {
 // GetBridgeContract returns this bridge's contract.
 func (bridge *Bridge) GetBridgeContract() *BridgeContract {
 	return bridge.bridgeContract
+}
+
+func (bridge *Bridge) getSignerClient() (*signers.Signer, error) {
+	seed, err := strkey.Decode(strkey.VersionByteSeed, bridge.wallet.keypair.Seed())
+	if err != nil {
+		return nil, err
+	}
+
+	if len(seed) != ed25519.SeedSize {
+		return nil, fmt.Errorf("invalid seed size '%d' expecting '%d'", len(seed), ed25519.SeedSize)
+	}
+
+	sk := ed25519.NewKeyFromSeed(seed)
+
+	privK, err := crypto.UnmarshalEd25519PrivateKey(sk)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := context.Background()
+	host, err := libp2p.New(ctx,
+		libp2p.Identity(privK),
+		libp2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
+		libp2p.Ping(false),
+		libp2p.DisableRelay(),
+	)
+
+	return signers.NewSigner(host), nil
 }
 
 // Start the main processing loop of the bridge
