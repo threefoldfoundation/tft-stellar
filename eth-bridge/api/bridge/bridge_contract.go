@@ -62,7 +62,7 @@ func (bridge *BridgeContract) GetContractAdress() common.Address {
 }
 
 // NewBridgeContract creates a new wrapper for an allready deployed contract
-func NewBridgeContract(networkName string, bootnodes []string, contractAddress string, port int, accountJSON, accountPass string, datadir string, cancel <-chan struct{}, stellarNetwork string, stellarSeed string) (*BridgeContract, error) {
+func NewBridgeContract(networkName string, bootnodes []string, contractAddress string, port int, accountJSON, accountPass string, datadir string, stellarNetwork string, stellarSeed string) (*BridgeContract, error) {
 	// load correct network config
 	networkConfig, err := tfeth.GetEthNetworkConfiguration(networkName)
 	if err != nil {
