@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"crypto/ed25519"
-	"encoding/hex"
 	"flag"
 	"fmt"
 	"os"
@@ -15,17 +14,22 @@ import (
 	"github.com/multiformats/go-multiaddr"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/stellar/go/strkey"
 	"github.com/threefoldfoundation/tft-stellar/signers"
 )
 
 type Config struct {
-	Seed     string
+	Secret   string
 	BridgeID string
+	Network  string
 }
 
 func (c *Config) Valid() error {
-	if c.Seed == "" {
-		return fmt.Errorf("seed is required")
+	if c.Network == "" {
+		return fmt.Errorf("network is requires")
+	}
+	if c.Secret == "" {
+		return fmt.Errorf("secret is required")
 	}
 
 	if c.BridgeID == "" {
@@ -35,10 +39,13 @@ func (c *Config) Valid() error {
 	return nil
 }
 func app(cfg *Config) error {
-
-	seed, err := hex.DecodeString(cfg.Seed)
+	seed, err := strkey.Decode(strkey.VersionByteSeed, cfg.Secret)
 	if err != nil {
 		return err
+	}
+
+	if len(seed) != ed25519.SeedSize {
+		return fmt.Errorf("invalid seed size '%d' expecting '%d'", len(seed), ed25519.SeedSize)
 	}
 
 	sk := ed25519.NewKeyFromSeed(seed)
@@ -78,7 +85,7 @@ func app(cfg *Config) error {
 		log.Info().Str("address", full.String()).Msg("address")
 	}
 
-	_, err = signers.NewServer(host, sk)
+	_, err = signers.NewServer(host, cfg.Network, cfg.Secret)
 	if err != nil {
 		return err
 	}
@@ -94,7 +101,7 @@ func main() {
 
 	var debug bool
 	var cfg Config
-	flag.StringVar(&cfg.Seed, "seed", "", "seed used for signing and p2p identity")
+	flag.StringVar(&cfg.Secret, "secret", "", "wallet secret used for signing")
 	flag.StringVar(&cfg.BridgeID, "bridge", "", "bridge p2p identity as provided by the bridge. Only connections with that ID will be accepted")
 	flag.BoolVar(&debug, "debug", false, "print debug messages")
 	flag.Parse()

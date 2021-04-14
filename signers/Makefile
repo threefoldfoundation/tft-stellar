@@ -1,2 +1,2 @@
 default:
-	go build -o signer cmds/*
+	cd cmd && go build -o ../signer
