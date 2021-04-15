@@ -224,7 +224,11 @@ def get_address_info(address):
         vesting_accounts = []
         for vesting_account in data.vesting_accounts:
             vesting_accounts.append(
-                {"address": vesting_account.address, "balances": balances_to_reponse(vesting_account.balances)}
+                {
+                    "address": vesting_account.address,
+                    "balances": balances_to_reponse(vesting_account.balances),
+                    "vestingscheme": vesting_account.scheme,
+                }
             )
 
         response["vesting_accounts"] = vesting_accounts
