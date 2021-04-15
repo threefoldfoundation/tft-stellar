@@ -15,11 +15,12 @@ import (
 
 //NetworkConfiguration defines the Ethereum network specific configuration needed by the bridge
 type NetworkConfiguration struct {
-	NetworkID       uint64
-	NetworkName     string
-	GenesisBlock    *core.Genesis
-	ContractAddress common.Address
-	bootnodes       []string
+	NetworkID               uint64
+	NetworkName             string
+	GenesisBlock            *core.Genesis
+	ContractAddress         common.Address
+	MultisigContractAddress common.Address
+	bootnodes               []string
 }
 
 //GetBootnodes returns the bootnodes for the specific network as  slice of *discv5.Node
@@ -56,6 +57,7 @@ var ethNetworkConfigurations = map[string]NetworkConfiguration{
 		core.DefaultGenesisBlock(),
 		//Todo: replace with actual address
 		common.HexToAddress("0x21826CC49B92029553af86F4e7A62C427E61e53a"),
+		common.HexToAddress("0x8a511F1C6C94B051A6CFCF0FdC83e7FA37CF687F"),
 		params.MainnetBootnodes,
 	},
 	"smart-chain-testnet": {
@@ -63,12 +65,14 @@ var ethNetworkConfigurations = map[string]NetworkConfiguration{
 		"bsc-testnet",
 		GetTestnetGenesisBlock(),
 		common.HexToAddress("0xDAD7A460EA562e28fB90cF524B62ea4cBc1685af"),
+		common.HexToAddress("0x8a511F1C6C94B051A6CFCF0FdC83e7FA37CF687F"),
 		BootstrapNodes,
 	},
 }
 
 //GetEthNetworkConfiguration returns the EthNetworkConAfiguration for a specific network
 func GetEthNetworkConfiguration(networkname string) (networkconfig NetworkConfiguration, err error) {
+	fmt.Println(networkname)
 	networkconfig, found := ethNetworkConfigurations[networkname]
 	if !found {
 		err = fmt.Errorf("Ethereum network %s not supported", networkname)

@@ -21,6 +21,7 @@ func main() {
 	var ethPort uint16
 	var ethNetworkName string
 	var contractAddress string
+	var multisigContractAddress string
 
 	var datadir string
 	var persistencyFile string
@@ -31,12 +32,14 @@ func main() {
 	var stellarSecret string
 	var stellarNetwork string
 	var rescanBridgeAccount bool
+	var follower bool
 
 	var signers []string
 	flag.StringVar(&ethClientUrl, "eth", "https://data-seed-prebsc-1-s1.binance.org:8545", "eth client url")
 	flag.Uint16Var(&ethPort, "port", 23111, "eth port")
 	flag.StringVar(&ethNetworkName, "ethnetwork", "smart-chain-testnet", "eth network name (defines storage directory name)")
 	flag.StringVar(&contractAddress, "contract", "0x770b0AA8b5B4f140cdA2F4d77205ceBe5f3D3C7e", "smart contract address")
+	flag.StringVar(&multisigContractAddress, "mscontract", "0x8a511F1C6C94B051A6CFCF0FdC83e7FA37CF687F", "multisig smart contract address")
 
 	flag.StringVar(&datadir, "datadir", "./storage", "chain data directory")
 	flag.StringVar(&persistencyFile, "persistency", "./node.json", "file where last seen blockheight and stellar account cursor is stored")
@@ -49,6 +52,8 @@ func main() {
 
 	flag.StringArrayVar(&signers, "signer", nil, "list of signers service addresses")
 	flag.BoolVar(&rescanBridgeAccount, "rescan", false, "if true is provided, we rescan the bridge stellar account and mint all transactions again")
+
+	flag.BoolVar(&follower, "follower", false, "if true then the bridge will run in master mode meaning that it will submit mint transactions to the multisig contract, if false the bridge will only confirm transactions")
 
 	flag.Parse()
 
@@ -66,11 +71,29 @@ func main() {
 		panic(err)
 	}
 
-	log.Debug("Chain ID %+v", id)
+	log.Debug("Chain ID %+v \n", id)
+	log.Info("follower", "value", follower)
+	log.Info("Rescan", "value", rescanBridgeAccount)
 
 	cnl := make(chan struct{})
 
-	br, err := bridge.NewBridge(ethPort, accountJSON, accountPass, ethNetworkName, nil, contractAddress, datadir, stellarNetwork, stellarSecret, rescanBridgeAccount, persistencyFile, signers)
+	config := &bridge.BridgeConfig{
+		Port:                    int(ethPort),
+		AccountJSON:             accountJSON,
+		AccountPass:             accountPass,
+		EthNetworkName:          ethNetworkName,
+		ContractAddress:         contractAddress,
+		MultisigContractAddress: multisigContractAddress,
+		Datadir:                 datadir,
+		StellarNetwork:          stellarNetwork,
+		StellarSeed:             stellarSecret,
+		RescanBridgeAccount:     rescanBridgeAccount,
+		PersistencyFile:         persistencyFile,
+		Signers:                 signers,
+		Follower:                follower,
+	}
+
+	br, err := bridge.NewBridge(config)
 	if err != nil {
 		panic(err)
 	}

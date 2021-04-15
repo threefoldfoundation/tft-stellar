@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"math/big"
-	"path/filepath"
 	"sync"
 
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
@@ -32,45 +31,52 @@ type Bridge struct {
 	blockPersistency *ChainPersistency
 	signers          []string
 	mut              sync.Mutex
+	config           *BridgeConfig
+}
+
+type BridgeConfig struct {
+	EthNetworkName          string
+	Bootnodes               []string
+	ContractAddress         string
+	MultisigContractAddress string
+	Port                    int
+	AccountJSON             string
+	AccountPass             string
+	Datadir                 string
+	StellarNetwork          string
+	StellarSeed             string
+	RescanBridgeAccount     bool
+	PersistencyFile         string
+	Signers                 []string
+	Follower                bool
 }
 
 // NewBridge creates a new Bridge.
-func NewBridge(ethPort uint16,
-	accountJSON,
-	accountPass string,
-	ethNetworkName string,
-	bootnodes []string,
-	contractAddress string,
-	datadir string,
-	stellarNetwork string,
-	stellarSeed string,
-	rescanBridgeAccount bool,
-	persistencyFile string,
-	signers []string) (*Bridge, error) {
-	contract, err := NewBridgeContract(ethNetworkName, bootnodes, contractAddress, int(ethPort), accountJSON, accountPass, filepath.Join(datadir, "eth"), stellarNetwork, stellarSeed)
+func NewBridge(config *BridgeConfig) (*Bridge, error) {
+	contract, err := NewBridgeContract(config)
 	if err != nil {
 		return nil, err
 	}
 
-	blockPersistency, err := initPersist(persistencyFile)
+	blockPersistency, err := initPersist(config.PersistencyFile)
 	if err != nil {
 		return nil, err
 	}
 
 	w := &stellarWallet{
-		network: stellarNetwork,
+		network: config.StellarNetwork,
 	}
 
-	if stellarSeed != "" {
-		w.keypair, err = keypair.ParseFull(stellarSeed)
+	if config.StellarSeed != "" {
+		w.keypair, err = keypair.ParseFull(config.StellarSeed)
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	log.Info(fmt.Sprintf("Stellar bridge account %s loaded on Stellar network %s", w.keypair.Address(), stellarNetwork))
+	log.Info(fmt.Sprintf("Stellar bridge account %s loaded on Stellar network %s", w.keypair.Address(), config.StellarNetwork))
 
-	if rescanBridgeAccount {
+	if config.RescanBridgeAccount {
 		// saving the cursor to 1 will trigger the bridge stellar account
 		// to scan for every transaction ever made on the bridge account
 		// and mint accordingly
@@ -84,7 +90,8 @@ func NewBridge(ethPort uint16,
 		bridgeContract:   contract,
 		blockPersistency: blockPersistency,
 		wallet:           w,
-		signers:          signers,
+		signers:          config.Signers,
+		config:           config,
 	}
 
 	return bridge, nil
@@ -170,9 +177,13 @@ func (bridge *Bridge) Start(cancel <-chan struct{}) error {
 	go bridge.bridgeContract.SubscribeTransfers()
 	go bridge.bridgeContract.SubscribeMint()
 
-	// Monitor the bridge wallet for incoming transactions
-	// mint transactions on ERC20 if possible
-	go bridge.wallet.MonitorBridgeAndMint(bridge.mint, bridge.blockPersistency)
+	// Only bridge running as master should monitor the stellar address and submit
+	// transactions to the multisig contract
+	if !bridge.config.Follower {
+		// Monitor the bridge wallet for incoming transactions
+		// mint transactions on ERC20 if possible
+		go bridge.wallet.MonitorBridgeAndMint(bridge.mint, bridge.blockPersistency)
+	}
 
 	withdrawChan := make(chan WithdrawEvent)
 
@@ -188,6 +199,9 @@ func (bridge *Bridge) Start(cancel <-chan struct{}) error {
 
 	go bridge.bridgeContract.SubscribeWithdraw(withdrawChan, lastHeight)
 
+	confirmChan := make(chan ConfirmEvent)
+	go bridge.bridgeContract.SubscribeConfirm(confirmChan)
+
 	go func() {
 		txMap := make(map[string]WithdrawEvent)
 		for {
@@ -197,6 +211,14 @@ func (bridge *Bridge) Start(cancel <-chan struct{}) error {
 				log.Info("Remembering withdraw event", "txHash", we.TxHash(), "height", we.BlockHeight())
 				txMap[we.txHash.String()] = we
 			// If we get a new head, check every withdraw we have to see if it has matured
+			case confirm := <-confirmChan:
+				if bridge.config.Follower {
+					log.Info("Confirmation Event seen", "txid", confirm.TransactionId())
+					err := bridge.bridgeContract.ConfirmTransaction(confirm.TransactionId())
+					if err != nil {
+						log.Error("error occured during confirming transaction")
+					}
+				}
 			case head := <-heads:
 				bridge.mut.Lock()
 				for id := range txMap {

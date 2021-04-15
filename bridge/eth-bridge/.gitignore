@@ -3,5 +3,8 @@ test.abi
 storage/
 storage1/
 storage2/
+storage3/
 secret
 node.json
+node2.json
+node3.json
