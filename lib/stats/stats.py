@@ -203,7 +203,7 @@ class StatisticsCollector(object):
         if not detailed:
             # Calculate total locked ammounts
             total_locked = 0.0
-            for locked_account in all_locked_accounts:
+            for locked_account in locked_accounts:
                 total_locked += locked_account["amount"]
             stats["total_locked"] = total_locked
             return stats
