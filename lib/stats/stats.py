@@ -120,7 +120,7 @@ def get_locked_accounts(network, tokencode: str, foundationaccounts: list):
                 and b["asset_code"] == tokencode
                 and b["asset_issuer"] == issuer
             ]
-            tokenbalance = tokenbalances[0] if tokenbalances else 0
+            tokenbalance = tokenbalances[0] if tokenbalances else 0.0
 
             if account_id in foundationaccounts:
                 foundation_accounts.append(
@@ -129,6 +129,8 @@ def get_locked_accounts(network, tokencode: str, foundationaccounts: list):
                         "amount": tokenbalance,
                     }
                 )
+                continue
+            if tokenbalance == 0.0:
                 continue
             if VESTING_DATA_ENTRY_KEY in account["data"]:
                 vesting_scheme = base64.b64decode((account["data"][VESTING_DATA_ENTRY_KEY])).decode("utf-8")
@@ -216,8 +218,8 @@ class StatisticsCollector(object):
             amount = amounts_per_locktime.get(locked_account["until"], 0.0)
             amount += locked_account["amount"]
             amounts_per_locktime[locked_account["until"]] = amount
-        locked_amounts = []
 
+        locked_amounts = []
         total_locked = 0.0
         now = int(time.time())
         for until, amount in amounts_per_locktime.items():
