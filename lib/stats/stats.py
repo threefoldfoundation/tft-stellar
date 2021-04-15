@@ -6,6 +6,7 @@ import stellar_sdk
 import datetime
 import requests
 import base64
+import time
 
 from urllib import parse
 
@@ -185,11 +186,6 @@ class StatisticsCollector(object):
         locked_accounts, vesting_accounts, foundation_accounts = get_locked_accounts(
             self._network, tokencode, foundationaccounts
         )
-        # Calculate total locked ammounts
-        total_locked = 0.0
-        for locked_account in locked_accounts:
-            total_locked += locked_account["amount"]
-        stats["total_locked"] = total_locked
 
         # Calculate total vested ammounts
         total_vested = 0.0
@@ -203,6 +199,11 @@ class StatisticsCollector(object):
         stats["total_foundation"] = total_foundation
 
         if not detailed:
+            # Calculate total locked ammounts
+            total_locked = 0.0
+            for locked_account in all_locked_accounts:
+                total_locked += locked_account["amount"]
+            stats["total_locked"] = total_locked
             return stats
         amounts_per_locktime = {}
         for locked_account in locked_accounts:
@@ -216,9 +217,15 @@ class StatisticsCollector(object):
             amount += locked_account["amount"]
             amounts_per_locktime[locked_account["until"]] = amount
         locked_amounts = []
+
+        total_locked = 0.0
+        now = int(time.time())
         for until, amount in amounts_per_locktime.items():
-            if until:
+            if until and until > now:
+                total_locked += amount
                 locked_amounts.append({"until": until, "amount": amount})
+
+        stats["total_locked"] = total_locked
 
         def sort_key(a):
             return a["until"]
