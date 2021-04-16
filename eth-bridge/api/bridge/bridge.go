@@ -188,7 +188,12 @@ func (bridge *Bridge) Start(ctx context.Context) error {
 				}
 			case head := <-heads:
 				bridge.mut.Lock()
+				ids := make([]string, 0, len(txMap))
 				for id := range txMap {
+					ids = append(ids, id)
+				}
+
+				for _, id := range ids {
 					we := txMap[id]
 					if head.Number.Uint64() >= we.blockHeight+EthBlockDelay {
 						log.Info("Attempting to create an ERC20 withdraw tx", "ethTx", we.TxHash())
@@ -196,8 +201,6 @@ func (bridge *Bridge) Start(ctx context.Context) error {
 						err := bridge.wallet.CreateAndSubmitPayment(ctx, we.blockchain_address, we.network, we.amount.Uint64())
 						if err != nil {
 							log.Error(fmt.Sprintf("failed to create payment for withdrawal to %s, %s", we.blockchain_address, err.Error()))
-							delete(txMap, id)
-							continue
 						}
 						// forget about our tx
 						delete(txMap, id)
@@ -206,7 +209,7 @@ func (bridge *Bridge) Start(ctx context.Context) error {
 
 				err := bridge.blockPersistency.saveHeight(head.Number.Uint64())
 				if err != nil {
-					fmt.Println("error occured saving blockheight")
+					log.Error("error occured saving blockheight", "error", err)
 				}
 
 				bridge.mut.Unlock()
