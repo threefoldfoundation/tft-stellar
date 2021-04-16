@@ -335,7 +335,7 @@ func (c SubmissionEvent) TransactionId() *big.Int {
 }
 
 // SubscribeSubmission subscribes to new submission event on the given multisig contract.
-func (bridge *BridgeContract) SubscribeSubmission(confirmChan chan<- SubmissionEvent) error {
+func (bridge *BridgeContract) SubscribeSubmission(submitChan chan<- SubmissionEvent) error {
 	sink := make(chan *mscontract.TokenSubmission)
 	opts := &bind.WatchOpts{Context: context.Background(), Start: nil}
 	sub, err := bridge.multisigContract.filter.WatchSubmission(opts, sink, nil)
@@ -349,7 +349,7 @@ func (bridge *BridgeContract) SubscribeSubmission(confirmChan chan<- SubmissionE
 			return err
 		case submission := <-sink:
 			log.Info("Noticed submissions event", "txid", submission.TransactionId)
-			confirmChan <- SubmissionEvent{
+			submitChan <- SubmissionEvent{
 				transactionId: submission.TransactionId,
 			}
 		}
