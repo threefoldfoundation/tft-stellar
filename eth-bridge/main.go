@@ -18,42 +18,33 @@ func main() {
 	log.Root().SetHandler(log.LvlFilterHandler(log.LvlInfo, log.StreamHandler(os.Stdout, log.TerminalFormat(true))))
 
 	var ethClientUrl string
-	var ethPort uint16
-	var ethNetworkName string
-	var contractAddress string
-	var multisigContractAddress string
+	var port uint16
 
-	var datadir string
-	var persistencyFile string
-
-	var accountJSON string
-	var accountPass string
-
-	var stellarSecret string
-	var stellarNetwork string
-	var rescanBridgeAccount bool
-	var follower bool
-
-	var signers []string
+	var bridgeCfg bridge.BridgeConfig
 	flag.StringVar(&ethClientUrl, "eth", "https://data-seed-prebsc-1-s1.binance.org:8545", "eth client url")
-	flag.Uint16Var(&ethPort, "port", 23111, "eth port")
-	flag.StringVar(&ethNetworkName, "ethnetwork", "smart-chain-testnet", "eth network name (defines storage directory name)")
-	flag.StringVar(&contractAddress, "contract", "0x770b0AA8b5B4f140cdA2F4d77205ceBe5f3D3C7e", "smart contract address")
-	flag.StringVar(&multisigContractAddress, "mscontract", "0x8a511F1C6C94B051A6CFCF0FdC83e7FA37CF687F", "multisig smart contract address")
+	flag.Uint16Var(&port, "port", 23111, "eth port")
+	flag.StringVar(&bridgeCfg.EthNetworkName, "ethnetwork", "smart-chain-testnet", "eth network name (defines storage directory name)")
+	flag.StringVar(&bridgeCfg.ContractAddress, "contract", "0x770b0AA8b5B4f140cdA2F4d77205ceBe5f3D3C7e", "smart contract address")
+	flag.StringVar(&bridgeCfg.MultisigContractAddress, "mscontract", "0x8a511F1C6C94B051A6CFCF0FdC83e7FA37CF687F", "multisig smart contract address")
 
-	flag.StringVar(&datadir, "datadir", "./storage", "chain data directory")
-	flag.StringVar(&persistencyFile, "persistency", "./node.json", "file where last seen blockheight and stellar account cursor is stored")
+	flag.StringVar(&bridgeCfg.Datadir, "datadir", "./storage", "chain data directory")
+	flag.StringVar(&bridgeCfg.PersistencyFile, "persistency", "./node.json", "file where last seen blockheight and stellar account cursor is stored")
 
-	flag.StringVar(&accountJSON, "account", "", "ethereum account json")
-	flag.StringVar(&accountPass, "password", "", "ethereum account password")
+	flag.StringVar(&bridgeCfg.AccountJSON, "account", "", "ethereum account json")
+	flag.StringVar(&bridgeCfg.AccountPass, "password", "", "ethereum account password")
 
-	flag.StringVar(&stellarSecret, "secret", "", "stellar secret")
-	flag.StringVar(&stellarNetwork, "network", "testnet", "stellar network url")
+	flag.StringVar(&bridgeCfg.StellarSeed, "secret", "", "stellar secret")
+	flag.StringVar(&bridgeCfg.StellarNetwork, "network", "testnet", "stellar network url")
 
-	flag.StringArrayVar(&signers, "signer", nil, "list of signers service addresses")
-	flag.BoolVar(&rescanBridgeAccount, "rescan", false, "if true is provided, we rescan the bridge stellar account and mint all transactions again")
+	flag.StringArrayVar(&bridgeCfg.Signers, "signer", nil, "list of signers service addresses")
+	flag.BoolVar(&bridgeCfg.RescanBridgeAccount, "rescan", false, "if true is provided, we rescan the bridge stellar account and mint all transactions again")
 
-	flag.BoolVar(&follower, "follower", false, "if true then the bridge will run in follower mode meaning that it will not submit mint transactions to the multisig contract, if false the bridge will also submit transactions")
+	flag.BoolVar(&bridgeCfg.Follower, "follower", false, "if true then the bridge will run in follower mode meaning that it will not submit mint transactions to the multisig contract, if false the bridge will also submit transactions")
+
+	var cfg bridge.SignerConfig
+	flag.StringVar(&cfg.BridgeID, "bridge", "", "bridge p2p identity as provided by the bridge. Only connections with that ID will be accepted")
+	cfg.Secret = bridgeCfg.StellarSeed
+	cfg.Network = bridgeCfg.StellarNetwork
 
 	flag.Parse()
 
@@ -72,33 +63,21 @@ func main() {
 	}
 
 	log.Debug("Chain ID %+v \n", id)
-	log.Info("follower", "value", follower)
-	log.Info("Rescan", "value", rescanBridgeAccount)
 
 	cnl := make(chan struct{})
 
-	config := &bridge.BridgeConfig{
-		Port:                    int(ethPort),
-		AccountJSON:             accountJSON,
-		AccountPass:             accountPass,
-		EthNetworkName:          ethNetworkName,
-		ContractAddress:         contractAddress,
-		MultisigContractAddress: multisigContractAddress,
-		Datadir:                 datadir,
-		StellarNetwork:          stellarNetwork,
-		StellarSeed:             stellarSecret,
-		RescanBridgeAccount:     rescanBridgeAccount,
-		PersistencyFile:         persistencyFile,
-		Signers:                 signers,
-		Follower:                follower,
-	}
-
-	br, err := bridge.NewBridge(config)
+	bridgeCfg.Port = int(port)
+	br, err := bridge.NewBridge(&bridgeCfg)
 	if err != nil {
 		panic(err)
 	}
 
 	err = br.Start(cnl)
+	if err != nil {
+		panic(err)
+	}
+
+	err = bridge.NewSigner(&cfg)
 	if err != nil {
 		panic(err)
 	}

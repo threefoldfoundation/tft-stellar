@@ -235,6 +235,7 @@ func (bridge *BridgeContract) Refresh(head *types.Header) error {
 	if price, err = bridge.lc.SuggestGasPrice(ctx); err != nil {
 		return err
 	}
+	log.Info("Suggested gas price is now", "price", price)
 	if balance, err = bridge.lc.AccountBalanceAt(ctx, head.Number); err != nil {
 		return err
 	}
@@ -260,22 +261,22 @@ func (bridge *BridgeContract) Loop(ch chan<- *types.Header) {
 	}
 	defer sub.Unsubscribe()
 	// channel so we can update the internal state from the heads
-	update := make(chan *types.Header)
-	go func() {
-		for head := range update {
-			// old heads should be ignored during a chain sync after some downtime
-			if err := bridge.Refresh(head); err != nil {
-				log.Warn("Failed to update state", "block", head.Number, "err", err)
-			}
-			log.Debug("Internal stats updated", "block", head.Number, "account balance", bridge.balance, "gas price", bridge.price, "nonce", bridge.nonce)
-		}
-	}()
+	// update := make(chan *types.Header)
+	// go func() {
+	// 	for head := range update {
+	// 		// old heads should be ignored during a chain sync after some downtime
+	// 		if err := bridge.Refresh(head); err != nil {
+	// 			log.Warn("Failed to update state", "block", head.Number, "err", err)
+	// 		}
+	// 		log.Debug("Internal stats updated", "block", head.Number, "account balance", bridge.balance, "gas price", bridge.price, "nonce", bridge.nonce)
+	// 	}
+	// }()
 	for head := range heads {
 		ch <- head
 		select {
 		// only process new head if another isn't being processed yet
-		case update <- head:
-			log.Debug("Processing new head")
+		// case update <- head:
+		// 	log.Debug("Processing new head")
 		default:
 			log.Debug("Ignoring current head, update already in progress")
 		}
