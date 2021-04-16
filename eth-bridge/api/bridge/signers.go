@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/ethereum/go-ethereum/log"
-	"github.com/threefoldfoundation/tft-stellar/bridge/signers"
+	"github.com/threefoldfoundation/tft-stellar/eth-bridge/signers"
 )
 
 type Signers struct {

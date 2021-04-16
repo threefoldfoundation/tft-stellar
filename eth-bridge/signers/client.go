@@ -40,7 +40,7 @@ func (s *Signer) Sign(ctx context.Context, target string, message string) (*Sign
 	}
 
 	var response SignResponse
-	err = s.client.CallContext(ctx, pi.ID, "SignerService", "Sign", SignRequest{message}, &response)
+	err = s.client.CallContext(ctx, pi.ID, "SignerService", "Sign", SignRequest{message, 0}, &response)
 	if err != nil {
 		return nil, err
 	}
