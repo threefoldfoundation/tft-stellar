@@ -1,8 +1,6 @@
 package bridge
 
 import (
-	"context"
-	"crypto/ed25519"
 	"encoding/hex"
 	"fmt"
 	"math/big"
@@ -10,11 +8,8 @@ import (
 
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/log"
-	"github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/stellar/go/keypair"
-	"github.com/stellar/go/strkey"
-	"github.com/threefoldfoundation/tft-stellar/eth-bridge/signers"
 )
 
 const (
@@ -32,6 +27,7 @@ type Bridge struct {
 	signers          []string
 	mut              sync.Mutex
 	config           *BridgeConfig
+	host             host.Host
 }
 
 type BridgeConfig struct {
@@ -39,7 +35,7 @@ type BridgeConfig struct {
 	Bootnodes               []string
 	ContractAddress         string
 	MultisigContractAddress string
-	Port                    int
+	EthPort                 uint16
 	AccountJSON             string
 	AccountPass             string
 	Datadir                 string
@@ -49,10 +45,12 @@ type BridgeConfig struct {
 	PersistencyFile         string
 	Signers                 []string
 	Follower                bool
+	BridgeID                string // needed for followers only
+	SignerPort              uint16 // also only needed for followers
 }
 
 // NewBridge creates a new Bridge.
-func NewBridge(config *BridgeConfig) (*Bridge, error) {
+func NewBridge(config *BridgeConfig, host host.Host) (*Bridge, error) {
 	contract, err := NewBridgeContract(config)
 	if err != nil {
 		return nil, err
@@ -63,8 +61,11 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 		return nil, err
 	}
 
+	client := NewSignersClient(host, config.Signers)
+
 	w := &stellarWallet{
 		network: config.StellarNetwork,
+		client:  client,
 	}
 
 	if config.StellarSeed != "" {
@@ -92,6 +93,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 		wallet:           w,
 		signers:          config.Signers,
 		config:           config,
+		host:             host,
 	}
 
 	return bridge, nil
@@ -130,45 +132,10 @@ func (bridge *Bridge) GetBridgeContract() *BridgeContract {
 	return bridge.bridgeContract
 }
 
-func (bridge *Bridge) getSignerClient() (*signers.Signer, error) {
-	seed, err := strkey.Decode(strkey.VersionByteSeed, bridge.wallet.keypair.Seed())
-	if err != nil {
-		return nil, err
-	}
-
-	if len(seed) != ed25519.SeedSize {
-		return nil, fmt.Errorf("invalid seed size '%d' expecting '%d'", len(seed), ed25519.SeedSize)
-	}
-
-	sk := ed25519.NewKeyFromSeed(seed)
-
-	privK, err := crypto.UnmarshalEd25519PrivateKey(sk)
-	if err != nil {
-		return nil, err
-	}
-
-	ctx := context.Background()
-	host, err := libp2p.New(ctx,
-		libp2p.Identity(privK),
-		libp2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
-		libp2p.Ping(false),
-		libp2p.DisableRelay(),
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return signers.NewSigner(host), nil
-}
-
 // Start the main processing loop of the bridge
 func (bridge *Bridge) Start(cancel <-chan struct{}) error {
-	_, err := bridge.getSignerClient()
-	if err != nil {
-		return err
-	}
 
+	//signers.Sign(message string, require int)
 	heads := make(chan *ethtypes.Header)
 
 	go bridge.bridgeContract.Loop(heads)
