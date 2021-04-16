@@ -172,7 +172,6 @@ func (bridge *Bridge) Start(ctx context.Context) error {
 	go func() {
 		txMap := make(map[string]WithdrawEvent)
 		for {
-			log.Info("Waiting for events")
 			select {
 			// Remember new withdraws
 			case we := <-withdrawChan:
