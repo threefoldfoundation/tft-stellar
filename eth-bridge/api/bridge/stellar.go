@@ -35,7 +35,7 @@ type stellarWallet struct {
 	client  *SignersClient
 }
 
-func (w *stellarWallet) CreateAndSubmitPayment(target string, network string, amount uint64) error {
+func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target string, network string, amount uint64) error {
 	// if amount is zero, do nothing
 	if amount == 0 {
 		return nil
@@ -85,7 +85,7 @@ func (w *stellarWallet) CreateAndSubmitPayment(target string, network string, am
 	}
 
 	log.Info("required signature count", "signatures", int(sourceAccount.Thresholds.MedThreshold))
-	signatures, err := w.client.Sign(xdr, int(sourceAccount.Thresholds.MedThreshold)-1)
+	signatures, err := w.client.Sign(ctx, xdr, int(sourceAccount.Thresholds.MedThreshold)-1)
 	if err != nil {
 		return err
 	}

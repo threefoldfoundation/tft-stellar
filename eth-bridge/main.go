@@ -111,6 +111,7 @@ func main() {
 		panic(err)
 	}
 
+	host.Close()
 	log.Debug("exiting")
 	time.Sleep(time.Second * 5)
 }
