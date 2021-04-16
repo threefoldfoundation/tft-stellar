@@ -48,23 +48,23 @@ func main() {
 
 	//TODO cfg.Validate()
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	client, err := ethclient.Dial(ethClientUrl)
 	if err != nil {
 		panic(err)
 	}
 
-	t, cancel := context.WithTimeout(ctx, time.Second*15)
-	defer cancel()
+	timeout, timeoutCancel := context.WithTimeout(ctx, time.Second*15)
+	defer timeoutCancel()
 
-	id, err := client.ChainID(t)
+	id, err := client.ChainID(timeout)
 	if err != nil {
 		panic(err)
 	}
 
 	log.Debug("Chain ID %+v \n", id)
-
-	cnl := make(chan struct{})
 
 	host, err := bridge.NewHost(bridgeCfg.StellarSeed, bridgeCfg.BridgeID, int(bridgeCfg.SignerPort))
 	if err != nil {
@@ -86,7 +86,7 @@ func main() {
 		panic(err)
 	}
 
-	err = br.Start(cnl)
+	err = br.Start(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -99,23 +99,18 @@ func main() {
 	}
 
 	sigs := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
 
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
-	go func() {
-		sig := <-sigs
-		log.Debug("signal %+v", sig)
-		done <- true
-	}()
-
 	log.Debug("awaiting signal")
-	<-done
+	sig := <-sigs
+	log.Debug("signal %+v", sig)
+	cancel()
 	err = br.Close()
 	if err != nil {
 		panic(err)
 	}
 
-	time.Sleep(time.Second * 5)
 	log.Debug("exiting")
+	time.Sleep(time.Second * 5)
 }
