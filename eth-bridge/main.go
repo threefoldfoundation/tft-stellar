@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"github.com/multiformats/go-multiaddr"
 	flag "github.com/spf13/pflag"
 	"github.com/threefoldfoundation/tft-stellar/eth-bridge/api/bridge"
 
@@ -67,6 +69,16 @@ func main() {
 	host, err := bridge.NewHost(bridgeCfg.StellarSeed, bridgeCfg.BridgeID, int(bridgeCfg.SignerPort))
 	if err != nil {
 		panic(err)
+	}
+
+	ipfs, err := multiaddr.NewMultiaddr(fmt.Sprintf("/ipfs/%s", host.ID().Pretty()))
+	if err != nil {
+		panic(err)
+	}
+
+	for _, addr := range host.Addrs() {
+		full := addr.Encapsulate(ipfs)
+		log.Info("p2p node address", "address", full.String())
 	}
 
 	br, err := bridge.NewBridge(&bridgeCfg, host)
