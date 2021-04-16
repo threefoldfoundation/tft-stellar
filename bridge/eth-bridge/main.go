@@ -53,7 +53,7 @@ func main() {
 	flag.StringArrayVar(&signers, "signer", nil, "list of signers service addresses")
 	flag.BoolVar(&rescanBridgeAccount, "rescan", false, "if true is provided, we rescan the bridge stellar account and mint all transactions again")
 
-	flag.BoolVar(&follower, "follower", false, "if true then the bridge will run in master mode meaning that it will submit mint transactions to the multisig contract, if false the bridge will only confirm transactions")
+	flag.BoolVar(&follower, "follower", false, "if true then the bridge will run in follower mode meaning that it will not submit mint transactions to the multisig contract, if false the bridge will also submit transactions")
 
 	flag.Parse()
 
