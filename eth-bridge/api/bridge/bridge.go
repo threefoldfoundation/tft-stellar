@@ -14,7 +14,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/strkey"
-	"github.com/threefoldfoundation/tft-stellar/bridge/signers"
+	"github.com/threefoldfoundation/tft-stellar/eth-bridge/signers"
 )
 
 const (

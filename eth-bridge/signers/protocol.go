@@ -19,6 +19,7 @@ const (
 
 type SignRequest struct {
 	TxnXDR string
+	Block  int
 }
 
 type SignResponse struct {

@@ -15,7 +15,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stellar/go/strkey"
-	"github.com/threefoldfoundation/tft-stellar/bridge/signers"
+	"github.com/threefoldfoundation/tft-stellar/signers"
 )
 
 type Config struct {
