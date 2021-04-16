@@ -66,7 +66,7 @@ func (w *stellarWallet) CreateAndSubmitPayment(target string, network string, am
 		Operations:           []txnbuild.Operation{&paymentOP},
 		Timebounds:           txnbuild.NewTimeout(300),
 		SourceAccount:        &sourceAccount,
-		BaseFee:              txnbuild.MinBaseFee,
+		BaseFee:              txnbuild.MinBaseFee * 3,
 		IncrementSequenceNum: true,
 	}
 
@@ -91,17 +91,32 @@ func (w *stellarWallet) CreateAndSubmitPayment(target string, network string, am
 	}
 
 	for _, signature := range signatures {
-		tx.AddSignatureBase64(w.network, signature.Address, signature.Signature)
+		tx, err = tx.AddSignatureBase64(w.GetNetworkPassPhrase(), signature.Address, signature.Signature)
+		if err != nil {
+			log.Error("Failed to add signature", "err", err.Error())
+			return err
+		}
 	}
+
+	log.Info("Signatures length", "length", len(signatures))
 
 	tx, err = tx.Sign(w.GetNetworkPassPhrase(), w.keypair)
 	if err != nil {
+		if hError, ok := err.(*horizonclient.Error); ok {
+			log.Error("Error submitting tx", "extras", hError.Problem.Extras)
+		}
 		return errors.Wrap(err, "failed to sign transaction with keypair")
 	}
+
+	log.Info("Trying to submit", "tx", tx.ToXDR().GoString())
+	log.Info("Signatures length after master signed", "length", len(tx.Signatures()))
 
 	// Submit the transaction
 	txResult, err := client.SubmitTransaction(tx)
 	if err != nil {
+		if hError, ok := err.(*horizonclient.Error); ok {
+			log.Error("Error submitting tx", "extras", hError.Problem.Extras)
+		}
 		return errors.Wrap(err, "error submitting transaction")
 	}
 	log.Info(fmt.Sprintf("transaction: %s submitted to the stellar network..", txResult.Hash))

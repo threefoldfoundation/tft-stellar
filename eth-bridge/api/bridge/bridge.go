@@ -15,7 +15,7 @@ import (
 const (
 	// EthBlockDelay is the amount of blocks to wait before
 	// pushing eth transaction to the tfchain network
-	EthBlockDelay = 15
+	EthBlockDelay = 3
 )
 
 // Bridge is a high lvl structure which listens on contract events and bridge-related
@@ -134,7 +134,6 @@ func (bridge *Bridge) GetBridgeContract() *BridgeContract {
 
 // Start the main processing loop of the bridge
 func (bridge *Bridge) Start(cancel <-chan struct{}) error {
-
 	//signers.Sign(message string, require int)
 	heads := make(chan *ethtypes.Header)
 

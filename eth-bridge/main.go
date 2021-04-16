@@ -92,7 +92,7 @@ func main() {
 	}
 
 	if bridgeCfg.Follower {
-		err = bridge.NewSigner(host, bridgeCfg.EthNetworkName, bridgeCfg.StellarSeed)
+		err = bridge.NewSigner(host, bridgeCfg.StellarNetwork, bridgeCfg.StellarSeed)
 		if err != nil {
 			panic(err)
 		}
