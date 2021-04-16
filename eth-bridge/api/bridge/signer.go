@@ -110,11 +110,7 @@ func NewSignersClient(host host.Host, peers []string) *SignersClient {
 	}
 }
 
-func (s *SignersClient) Sign(message string, require int) ([]signers.SignResponse, error) {
-	ctx, cancel := context.WithCancel(context.Background())
-
-	defer cancel()
-
+func (s *SignersClient) Sign(ctx context.Context, message string, require int) ([]signers.SignResponse, error) {
 	ch := make(chan response)
 	defer close(ch)
 
