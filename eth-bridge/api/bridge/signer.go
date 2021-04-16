@@ -132,7 +132,7 @@ func (s *SignersClient) Sign(message string, require int) ([]signers.SignRespons
 	var results []signers.SignResponse
 	for reply := range ch {
 		if reply.err != nil {
-			log.Error("failed to get signature from ''")
+			log.Error("failed to get signature from", "err", reply.err.Error())
 			continue
 		}
 

@@ -10,6 +10,7 @@ import (
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	"github.com/rs/zerolog/log"
 	"github.com/stellar/go/keypair"
+	"github.com/stellar/go/network"
 	"github.com/stellar/go/txnbuild"
 )
 
@@ -45,7 +46,7 @@ func (s *SignerService) Sign(ctx context.Context, request SignRequest, response 
 		return fmt.Errorf("provided transaction is of wrong type")
 	}
 
-	txn, err = txn.Sign(s.network, s.kp)
+	txn, err = txn.Sign(s.getNetworkPassPhrase(), s.kp)
 	if err != nil {
 		return err
 	}
@@ -75,4 +76,16 @@ func NewServer(host host.Host, network, secret string) (*gorpc.Server, error) {
 
 	err = server.Register(&signer)
 	return server, err
+}
+
+// getNetworkPassPhrase gets the Stellar network passphrase based on the wallet's network
+func (s *SignerService) getNetworkPassPhrase() string {
+	switch s.network {
+	case "testnet":
+		return network.TestNetworkPassphrase
+	case "production":
+		return network.PublicNetworkPassphrase
+	default:
+		return network.TestNetworkPassphrase
+	}
 }
