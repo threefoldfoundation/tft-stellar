@@ -1,6 +1,7 @@
 package bridge
 
 import (
+	"context"
 	"encoding/hex"
 	"fmt"
 	"math/big"
@@ -133,7 +134,7 @@ func (bridge *Bridge) GetBridgeContract() *BridgeContract {
 }
 
 // Start the main processing loop of the bridge
-func (bridge *Bridge) Start(cancel <-chan struct{}) error {
+func (bridge *Bridge) Start(ctx context.Context) error {
 	//signers.Sign(message string, require int)
 	heads := make(chan *ethtypes.Header)
 
@@ -209,7 +210,7 @@ func (bridge *Bridge) Start(cancel <-chan struct{}) error {
 				}
 
 				bridge.mut.Unlock()
-			case <-cancel:
+			case <-ctx.Done():
 				return
 			}
 		}
