@@ -199,8 +199,8 @@ func (bridge *Bridge) Start(cancel <-chan struct{}) error {
 
 	go bridge.bridgeContract.SubscribeWithdraw(withdrawChan, lastHeight)
 
-	confirmChan := make(chan ConfirmEvent)
-	go bridge.bridgeContract.SubscribeConfirm(confirmChan)
+	submissionChan := make(chan SubmissionEvent)
+	go bridge.bridgeContract.SubscribeSubmission(submissionChan)
 
 	go func() {
 		txMap := make(map[string]WithdrawEvent)
@@ -211,10 +211,10 @@ func (bridge *Bridge) Start(cancel <-chan struct{}) error {
 				log.Info("Remembering withdraw event", "txHash", we.TxHash(), "height", we.BlockHeight())
 				txMap[we.txHash.String()] = we
 			// If we get a new head, check every withdraw we have to see if it has matured
-			case confirm := <-confirmChan:
+			case submission := <-submissionChan:
 				if bridge.config.Follower {
-					log.Info("Confirmation Event seen", "txid", confirm.TransactionId())
-					err := bridge.bridgeContract.ConfirmTransaction(confirm.TransactionId())
+					log.Info("Submission Event seen", "txid", submission.TransactionId())
+					err := bridge.bridgeContract.ConfirmTransaction(submission.TransactionId())
 					if err != nil {
 						log.Error("error occured during confirming transaction")
 					}

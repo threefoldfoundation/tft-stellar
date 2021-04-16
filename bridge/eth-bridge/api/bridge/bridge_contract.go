@@ -323,28 +323,21 @@ func (bridge *BridgeContract) SubscribeMint() error {
 	}
 }
 
-// ConfirmEvent holds relevant information about a confirmation event
-type ConfirmEvent struct {
-	sender        common.Address
+// SubmissionEvent holds relevant information about a submission event
+type SubmissionEvent struct {
 	transactionId *big.Int
 }
 
 // Receiver of the withdraw
-func (c ConfirmEvent) Sender() common.Address {
-	return c.sender
-}
-
-// Receiver of the withdraw
-func (c ConfirmEvent) TransactionId() *big.Int {
+func (c SubmissionEvent) TransactionId() *big.Int {
 	return c.transactionId
 }
 
-// SubscribeConfirm subscribes to new Confirm events on the given multisig contract. This call blocks
-// and prints out info about any mint as it happened
-func (bridge *BridgeContract) SubscribeConfirm(confirmChan chan<- ConfirmEvent) error {
-	sink := make(chan *mscontract.TokenConfirmation)
+// SubscribeSubmission subscribes to new submission event on the given multisig contract.
+func (bridge *BridgeContract) SubscribeSubmission(confirmChan chan<- SubmissionEvent) error {
+	sink := make(chan *mscontract.TokenSubmission)
 	opts := &bind.WatchOpts{Context: context.Background(), Start: nil}
-	sub, err := bridge.multisigContract.filter.WatchConfirmation(opts, sink, nil, nil)
+	sub, err := bridge.multisigContract.filter.WatchSubmission(opts, sink, nil)
 	if err != nil {
 		return err
 	}
@@ -353,11 +346,10 @@ func (bridge *BridgeContract) SubscribeConfirm(confirmChan chan<- ConfirmEvent) 
 		select {
 		case err = <-sub.Err():
 			return err
-		case confirmation := <-sink:
-			log.Info("Noticed confirmation event", "txid", confirmation.TransactionId, "sender", confirmation.Sender)
-			confirmChan <- ConfirmEvent{
-				transactionId: confirmation.TransactionId,
-				sender:        confirmation.Sender,
+		case submission := <-sink:
+			log.Info("Noticed submissions event", "txid", submission.TransactionId)
+			confirmChan <- SubmissionEvent{
+				transactionId: submission.TransactionId,
 			}
 		}
 	}
@@ -544,18 +536,7 @@ func (bridge *BridgeContract) mint(receiver ERC20Address, amount *big.Int, txID 
 	if err != nil {
 		return err
 	}
-	// tx, err := bridge.tftContract.transactor.MintTokens(opts, common.Address(receiver), amount, txID)
-	// if err != nil {
-	// 	return err
-	// }
 
-	// log.Info("Marshalling mint function to JSON")
-	// bytes, err := tx.MarshalJSON()
-	// if err != nil {
-	// 	return err
-	// }
-
-	// TODO estimate gas more correctly ..
 	gas, err := bridge.lc.SuggestGasPrice(context.Background())
 	if err != nil {
 		return err
@@ -567,7 +548,7 @@ func (bridge *BridgeContract) mint(receiver ERC20Address, amount *big.Int, txID 
 	opts := &bind.TransactOpts{
 		Context: ctx, From: accountAddress,
 		Signer: bridge.getSignerFunc(),
-		Value:  nil, Nonce: nil, GasLimit: 10000000, GasPrice: newGas,
+		Value:  nil, Nonce: nil, GasLimit: 1000000, GasPrice: newGas,
 	}
 
 	log.Info("Sumbitting transaction to multisig contract")
@@ -607,7 +588,7 @@ func (bridge *BridgeContract) ConfirmTransaction(txid *big.Int) error {
 	opts := &bind.TransactOpts{
 		Context: ctx, From: accountAddress,
 		Signer: bridge.getSignerFunc(),
-		Value:  nil, Nonce: nil, GasLimit: 10000000, GasPrice: newGas,
+		Value:  nil, Nonce: nil, GasLimit: 1000000, GasPrice: newGas,
 	}
 
 	log.Info("Confirming transaction on multisig contract")
