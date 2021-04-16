@@ -1,30 +1,26 @@
-package main
+package bridge
 
 import (
 	"context"
 	"crypto/ed25519"
-	"flag"
 	"fmt"
-	"os"
-	"time"
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stellar/go/strkey"
 	"github.com/threefoldfoundation/tft-stellar/eth-bridge/signers"
 )
 
-type Config struct {
+type SignerConfig struct {
 	Secret   string
 	BridgeID string
 	Network  string
 }
 
-func (c *Config) Valid() error {
+func (c *SignerConfig) Valid() error {
 	if c.Network == "" {
 		return fmt.Errorf("network is requires")
 	}
@@ -38,7 +34,12 @@ func (c *Config) Valid() error {
 
 	return nil
 }
-func app(cfg *Config) error {
+
+func NewSigner(cfg *SignerConfig) error {
+	if err := cfg.Valid(); err != nil {
+		return err
+	}
+
 	seed, err := strkey.Decode(strkey.VersionByteSeed, cfg.Secret)
 	if err != nil {
 		return err
@@ -93,34 +94,29 @@ func app(cfg *Config) error {
 	select {}
 }
 
-func main() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{
-		TimeFormat: time.RFC3339,
-		Out:        os.Stdout,
-	})
+// func NewSigner(config SignerConfig) error {
+// 	// var debug bool
+// 	var cfg SignerConfig
 
-	var debug bool
-	var cfg Config
-	flag.StringVar(&cfg.Network, "network", "mainnet", "stellar network")
-	flag.StringVar(&cfg.Secret, "secret", "", "wallet secret used for signing")
-	flag.StringVar(&cfg.BridgeID, "bridge", "", "bridge p2p identity as provided by the bridge. Only connections with that ID will be accepted")
-	flag.BoolVar(&debug, "debug", false, "print debug messages")
-	flag.Parse()
+// 	// flag.BoolVar(&debug, "debug", false, "print debug messages")
+// 	// flag.Parse()
 
-	if debug {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	} else {
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	}
+// 	// if debug {
+// 	// 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
+// 	// } else {
+// 	// 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+// 	// }
 
-	if err := cfg.Valid(); err != nil {
-		fmt.Println(err)
-		flag.Usage()
-		os.Exit(1)
-	}
+// 	if err := cfg.Valid(); err != nil {
+// 		fmt.Println(err)
+// 		flag.Usage()
+// 		os.Exit(1)
+// 	}
 
-	if err := app(&cfg); err != nil {
-		log.Fatal().Err(err).Msg("server exits")
-		os.Exit(1)
-	}
-}
+// 	if err := app(&cfg); err != nil {
+// 		log.Fatal().Err(err).Msg("server exits")
+// 		os.Exit(1)
+// 	}
+
+// 	return nil
+// }
