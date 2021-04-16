@@ -172,6 +172,7 @@ func (bridge *Bridge) Start(ctx context.Context) error {
 	go func() {
 		txMap := make(map[string]WithdrawEvent)
 		for {
+			log.Info("Waiting for events")
 			select {
 			// Remember new withdraws
 			case we := <-withdrawChan:
@@ -179,6 +180,7 @@ func (bridge *Bridge) Start(ctx context.Context) error {
 				txMap[we.txHash.String()] = we
 			// If we get a new head, check every withdraw we have to see if it has matured
 			case submission := <-submissionChan:
+				log.Info("Read a submission fromt the channel", "sub", submission.TransactionId(), "is follower", bridge.config.Follower)
 				if bridge.config.Follower {
 					log.Info("Submission Event seen", "txid", submission.TransactionId())
 					err := bridge.bridgeContract.ConfirmTransaction(submission.TransactionId())

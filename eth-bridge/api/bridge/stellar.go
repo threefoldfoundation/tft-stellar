@@ -98,8 +98,6 @@ func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target strin
 		}
 	}
 
-	log.Info("Signatures length", "length", len(signatures))
-
 	tx, err = tx.Sign(w.GetNetworkPassPhrase(), w.keypair)
 	if err != nil {
 		if hError, ok := err.(*horizonclient.Error); ok {
@@ -107,9 +105,6 @@ func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target strin
 		}
 		return errors.Wrap(err, "failed to sign transaction with keypair")
 	}
-
-	log.Info("Trying to submit", "tx", tx.ToXDR().GoString())
-	log.Info("Signatures length after master signed", "length", len(tx.Signatures()))
 
 	// Submit the transaction
 	txResult, err := client.SubmitTransaction(tx)

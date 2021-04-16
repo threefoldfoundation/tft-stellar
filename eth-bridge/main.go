@@ -102,9 +102,9 @@ func main() {
 
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
-	log.Debug("awaiting signal")
+	log.Info("awaiting signal")
 	sig := <-sigs
-	log.Debug("signal %+v", sig)
+	log.Info("signal", "signal", sig)
 	cancel()
 	err = br.Close()
 	if err != nil {
@@ -112,6 +112,6 @@ func main() {
 	}
 
 	host.Close()
-	log.Debug("exiting")
+	log.Info("exiting")
 	time.Sleep(time.Second * 5)
 }
