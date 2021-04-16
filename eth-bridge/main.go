@@ -18,11 +18,9 @@ func main() {
 	log.Root().SetHandler(log.LvlFilterHandler(log.LvlInfo, log.StreamHandler(os.Stdout, log.TerminalFormat(true))))
 
 	var ethClientUrl string
-	var port uint16
-
 	var bridgeCfg bridge.BridgeConfig
 	flag.StringVar(&ethClientUrl, "eth", "https://data-seed-prebsc-1-s1.binance.org:8545", "eth client url")
-	flag.Uint16Var(&port, "port", 23111, "eth port")
+	flag.Uint16Var(&bridgeCfg.EthPort, "port", 23111, "eth port")
 	flag.StringVar(&bridgeCfg.EthNetworkName, "ethnetwork", "smart-chain-testnet", "eth network name (defines storage directory name)")
 	flag.StringVar(&bridgeCfg.ContractAddress, "contract", "0x770b0AA8b5B4f140cdA2F4d77205ceBe5f3D3C7e", "smart contract address")
 	flag.StringVar(&bridgeCfg.MultisigContractAddress, "mscontract", "0x8a511F1C6C94B051A6CFCF0FdC83e7FA37CF687F", "multisig smart contract address")
@@ -41,12 +39,12 @@ func main() {
 
 	flag.BoolVar(&bridgeCfg.Follower, "follower", false, "if true then the bridge will run in follower mode meaning that it will not submit mint transactions to the multisig contract, if false the bridge will also submit transactions")
 
-	var cfg bridge.SignerConfig
-	flag.StringVar(&cfg.BridgeID, "bridge", "", "bridge p2p identity as provided by the bridge. Only connections with that ID will be accepted")
-	cfg.Secret = bridgeCfg.StellarSeed
-	cfg.Network = bridgeCfg.StellarNetwork
+	flag.StringVar(&bridgeCfg.BridgeID, "bridge", "", "bridge p2p identity as provided by the bridge. Only connections with that ID will be accepted")
+	flag.Uint16Var(&bridgeCfg.SignerPort, "signer-port", 14000, "signer p2p port")
 
 	flag.Parse()
+
+	//TODO cfg.Validate()
 
 	ctx := context.Background()
 	client, err := ethclient.Dial(ethClientUrl)
@@ -66,8 +64,12 @@ func main() {
 
 	cnl := make(chan struct{})
 
-	bridgeCfg.Port = int(port)
-	br, err := bridge.NewBridge(&bridgeCfg)
+	host, err := bridge.NewHost(bridgeCfg.StellarSeed, bridgeCfg.BridgeID, int(bridgeCfg.SignerPort))
+	if err != nil {
+		panic(err)
+	}
+
+	br, err := bridge.NewBridge(&bridgeCfg, host)
 	if err != nil {
 		panic(err)
 	}
@@ -77,9 +79,11 @@ func main() {
 		panic(err)
 	}
 
-	err = bridge.NewSigner(&cfg)
-	if err != nil {
-		panic(err)
+	if bridgeCfg.Follower {
+		err = bridge.NewSigner(host, bridgeCfg.EthNetworkName, bridgeCfg.StellarSeed)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	sigs := make(chan os.Signal, 1)

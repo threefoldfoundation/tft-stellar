@@ -104,7 +104,7 @@ func NewBridgeContract(bridgeConfig *BridgeConfig) (*BridgeContract, error) {
 		return nil, err
 	}
 	lc, err := NewLightClient(LightClientConfig{
-		Port:           bridgeConfig.Port,
+		Port:           bridgeConfig.EthPort,
 		DataDir:        bridgeConfig.Datadir,
 		BootstrapNodes: bootstrapNodes,
 		NetworkName:    networkConfig.NetworkName,

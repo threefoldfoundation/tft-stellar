@@ -54,7 +54,7 @@ type clientAccountInfo struct {
 // LightClientConfig combines all configuration required for
 // creating and configuring a LightClient.
 type LightClientConfig struct {
-	Port    int
+	Port    uint16
 	DataDir string
 
 	BootstrapNodes []*enode.Node

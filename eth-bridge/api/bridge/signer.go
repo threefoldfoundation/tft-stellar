@@ -5,11 +5,12 @@ import (
 	"crypto/ed25519"
 	"fmt"
 
+	"github.com/ethereum/go-ethereum/log"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
-	"github.com/rs/zerolog/log"
 	"github.com/stellar/go/strkey"
 	"github.com/threefoldfoundation/tft-stellar/eth-bridge/signers"
 )
@@ -35,47 +36,49 @@ func (c *SignerConfig) Valid() error {
 	return nil
 }
 
-func NewSigner(cfg *SignerConfig) error {
-	if err := cfg.Valid(); err != nil {
-		return err
-	}
-
-	seed, err := strkey.Decode(strkey.VersionByteSeed, cfg.Secret)
+func NewHost(secret string, allowId string, port int) (host.Host, error) {
+	seed, err := strkey.Decode(strkey.VersionByteSeed, secret)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(seed) != ed25519.SeedSize {
-		return fmt.Errorf("invalid seed size '%d' expecting '%d'", len(seed), ed25519.SeedSize)
+		return nil, fmt.Errorf("invalid seed size '%d' expecting '%d'", len(seed), ed25519.SeedSize)
 	}
 
 	sk := ed25519.NewKeyFromSeed(seed)
 
 	privK, err := crypto.UnmarshalEd25519PrivateKey(sk)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	id, err := peer.Decode(cfg.BridgeID)
-	if err != nil {
-		return err
-	}
-
-	filter := NewGater(id)
-	ctx := context.Background()
-	host, err := libp2p.New(ctx,
+	options := []libp2p.Option{
 		libp2p.Identity(privK),
-		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/14000"),
+		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", port)),
 		libp2p.Ping(false),
 		libp2p.DisableRelay(),
-		libp2p.ConnectionGater(filter),
-	)
-
-	log.Info().Str("Identity", host.ID().Pretty()).Msg("server started")
-	if err != nil {
-		return err
 	}
 
+	if allowId != "" {
+		id, err := peer.Decode(allowId)
+		if err != nil {
+			return nil, err
+		}
+		filter := NewGater(id)
+		options = append(options,
+			libp2p.ConnectionGater(filter),
+		)
+
+	}
+
+	ctx := context.Background()
+
+	return libp2p.New(ctx, options...)
+}
+
+func NewSigner(host host.Host, network, secret string) error {
+	log.Info("server started", "identity", host.ID().Pretty())
 	ipfs, err := multiaddr.NewMultiaddr(fmt.Sprintf("/ipfs/%s", host.ID().Pretty()))
 	if err != nil {
 		return err
@@ -83,40 +86,65 @@ func NewSigner(cfg *SignerConfig) error {
 
 	for _, addr := range host.Addrs() {
 		full := addr.Encapsulate(ipfs)
-		log.Info().Str("address", full.String()).Msg("p2p node address")
+		log.Info("p2p node address", "address", full.String())
 	}
 
-	_, err = signers.NewServer(host, cfg.Network, cfg.Secret)
-	if err != nil {
-		return err
-	}
-
-	select {}
+	_, err = signers.NewServer(host, network, secret)
+	return err
 }
 
-// func NewSigner(config SignerConfig) error {
-// 	// var debug bool
-// 	var cfg SignerConfig
+type SignersClient struct {
+	client *signers.Signer
+	peers  []string
+}
 
-// 	// flag.BoolVar(&debug, "debug", false, "print debug messages")
-// 	// flag.Parse()
+type response struct {
+	answer *signers.SignResponse
+	err    error
+}
 
-// 	// if debug {
-// 	// 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
-// 	// } else {
-// 	// 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-// 	// }
+func NewSignersClient(host host.Host, peers []string) *SignersClient {
+	return &SignersClient{
+		client: signers.NewSigner(host),
+		peers:  peers,
+	}
+}
 
-// 	if err := cfg.Valid(); err != nil {
-// 		fmt.Println(err)
-// 		flag.Usage()
-// 		os.Exit(1)
-// 	}
+func (s *SignersClient) Sign(message string, require int) ([]signers.SignResponse, error) {
+	ctx, cancel := context.WithCancel(context.Background())
 
-// 	if err := app(&cfg); err != nil {
-// 		log.Fatal().Err(err).Msg("server exits")
-// 		os.Exit(1)
-// 	}
+	defer cancel()
 
-// 	return nil
-// }
+	ch := make(chan response)
+	defer close(ch)
+
+	for _, addr := range s.peers {
+		go func(peerAddress string) {
+			answer, err := s.client.Sign(ctx, peerAddress, message)
+
+			select {
+			case <-ctx.Done():
+			case ch <- response{answer: answer, err: err}:
+			}
+		}(addr)
+	}
+
+	var results []signers.SignResponse
+	for reply := range ch {
+		if reply.err != nil {
+			log.Error("failed to get signature from ''")
+			continue
+		}
+
+		results = append(results, *reply.answer)
+		if len(results) == require {
+			break
+		}
+	}
+
+	if len(results) != require {
+		return nil, fmt.Errorf("required number of signatures is not met")
+	}
+
+	return results, nil
+}

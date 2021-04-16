@@ -32,7 +32,7 @@ const (
 type stellarWallet struct {
 	keypair *keypair.Full
 	network string
-	assets  map[string]struct{}
+	client  *SignersClient
 }
 
 func (w *stellarWallet) CreateAndSubmitPayment(target string, network string, amount uint64) error {
@@ -77,6 +77,21 @@ func (w *stellarWallet) CreateAndSubmitPayment(target string, network string, am
 	client, err := w.GetHorizonClient()
 	if err != nil {
 		return errors.Wrap(err, "failed to get horizon client")
+	}
+
+	xdr, err := tx.Base64()
+	if err != nil {
+		return errors.Wrap(err, "failed to serialize transaction")
+	}
+
+	log.Info("required signature count", "signatures", int(sourceAccount.Thresholds.MedThreshold))
+	signatures, err := w.client.Sign(xdr, int(sourceAccount.Thresholds.MedThreshold)-1)
+	if err != nil {
+		return err
+	}
+
+	for _, signature := range signatures {
+		tx.AddSignatureBase64(w.network, signature.Address, signature.Signature)
 	}
 
 	tx, err = tx.Sign(w.GetNetworkPassPhrase(), w.keypair)
