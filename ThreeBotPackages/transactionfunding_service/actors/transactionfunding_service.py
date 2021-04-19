@@ -99,7 +99,14 @@ class Transactionfunding_service(BaseActor):
             network_passphrase=self._get_network_passphrase(),
         )
         fb_txe.sign(source_signing_kp)
-        response = horizon_server.submit_transaction(fb_txe)
+        try:
+            response = horizon_server.submit_transaction(fb_txe)
+        except stellar_sdk.exceptions.BadRequestError as ex:
+            result_codes = ex.extras["result_codes"]
+            if result_codes.get("transaction") == "tx_fee_bump_inner_failed":
+                error_data = j.data.serializers.json.dumps({"operations": result_codes.get("operations", [])})
+                raise j.exceptions.Value(error_data)
+            raise ex
 
         fund_if_needed(funding_wallet.instance_name)
 
