@@ -135,7 +135,6 @@ func (bridge *Bridge) GetBridgeContract() *BridgeContract {
 
 // Start the main processing loop of the bridge
 func (bridge *Bridge) Start(ctx context.Context) error {
-	//signers.Sign(message string, require int)
 	heads := make(chan *ethtypes.Header)
 
 	go bridge.bridgeContract.Loop(heads)
@@ -144,30 +143,35 @@ func (bridge *Bridge) Start(ctx context.Context) error {
 	go bridge.bridgeContract.SubscribeTransfers()
 	go bridge.bridgeContract.SubscribeMint()
 
-	// Only bridge running as master should monitor the stellar address and submit
-	// transactions to the multisig contract
+	// Channel where withdrawal events are stored
+	// Should only be read from by the master bridge
+	withdrawChan := make(chan WithdrawEvent)
+
+	// Channel where sumbission events from the multisig contract are stored
+	// Should only be read from by the follower bridges, this event channel
+	// will indicate when they need to confirm the withdrawal transaction that is submitted
+	submissionChan := make(chan SubmissionEvent)
+
+	// Only the bridge running as the master bridge should do the following things:
+	// - Monitor the Bridge Stellar account and initiate Minting transactions accordingly
+	// - Monitor the Contract for Withdrawal events and initiate a Withdrawal transaction accordingly
 	if !bridge.config.Follower {
 		// Monitor the bridge wallet for incoming transactions
 		// mint transactions on ERC20 if possible
 		go bridge.wallet.MonitorBridgeAndMint(bridge.mint, bridge.blockPersistency)
+
+		height, err := bridge.blockPersistency.GetHeight()
+		if err != nil {
+			return err
+		}
+		var lastHeight uint64
+		if height.LastHeight > EthBlockDelay {
+			lastHeight = height.LastHeight - EthBlockDelay
+		}
+		go bridge.bridgeContract.SubscribeWithdraw(withdrawChan, lastHeight)
+	} else {
+		go bridge.bridgeContract.SubscribeSubmission(submissionChan)
 	}
-
-	withdrawChan := make(chan WithdrawEvent)
-
-	height, err := bridge.blockPersistency.GetHeight()
-	if err != nil {
-		return err
-	}
-
-	var lastHeight uint64
-	if height.LastHeight > EthBlockDelay {
-		lastHeight = height.LastHeight - EthBlockDelay
-	}
-
-	go bridge.bridgeContract.SubscribeWithdraw(withdrawChan, lastHeight)
-
-	submissionChan := make(chan SubmissionEvent)
-	go bridge.bridgeContract.SubscribeSubmission(submissionChan)
 
 	go func() {
 		txMap := make(map[string]WithdrawEvent)
@@ -179,13 +183,10 @@ func (bridge *Bridge) Start(ctx context.Context) error {
 				txMap[we.txHash.String()] = we
 			// If we get a new head, check every withdraw we have to see if it has matured
 			case submission := <-submissionChan:
-				log.Info("Read a submission fromt the channel", "sub", submission.TransactionId(), "is follower", bridge.config.Follower)
-				if bridge.config.Follower {
-					log.Info("Submission Event seen", "txid", submission.TransactionId())
-					err := bridge.bridgeContract.ConfirmTransaction(submission.TransactionId())
-					if err != nil {
-						log.Error("error occured during confirming transaction")
-					}
+				log.Info("Submission Event seen", "txid", submission.TransactionId())
+				err := bridge.bridgeContract.ConfirmTransaction(submission.TransactionId())
+				if err != nil {
+					log.Error("error occured during confirming transaction")
 				}
 			case head := <-heads:
 				bridge.mut.Lock()
