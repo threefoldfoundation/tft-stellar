@@ -51,8 +51,8 @@ var BootstrapNodes = []string{
 }
 
 var ethNetworkConfigurations = map[string]NetworkConfiguration{
-	"main": {
-		1,
+	"smart-chain-mainnet": {
+		56,
 		"main",
 		core.DefaultGenesisBlock(),
 		//Todo: replace with actual address

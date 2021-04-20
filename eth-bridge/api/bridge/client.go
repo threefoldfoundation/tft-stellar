@@ -116,9 +116,10 @@ func NewLightClient(lccfg LightClientConfig) (*LightClient, error) {
 			NoDiscovery:    false,
 			DiscoveryV5:    true,
 			ListenAddr:     fmt.Sprintf(":%d", lccfg.Port),
-			MaxPeers:       25,
+			MaxPeers:       50,
 			BootstrapNodes: lccfg.BootstrapNodes,
 		},
+		NoUSB: true,
 	})
 	if err != nil {
 		return nil, err
