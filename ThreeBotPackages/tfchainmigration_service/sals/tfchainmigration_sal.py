@@ -1,17 +1,19 @@
 import gevent
 
-from jumpscale.core.base import StoredFactory
+from jumpscale.core.base import StoredFactory,Base, fields
 from jumpscale.loader import j
 
-from models import ConvertedAddress
+
+class ConvertedAddress(Base):
+    stellaraddress = fields.String()
 
 # pool = None
 activation_pool = None
 tft_issuing_pool = None
 tfta_issuing_pool = None
 db_pool = None
-WALLET_NAME = "converter_wallet"
 
+WALLET = None
 
 CONVERTED_ADDRESS_MODEL = StoredFactory(ConvertedAddress)
 CONVERTED_ADDRESS_MODEL.always_reload = True
@@ -26,13 +28,17 @@ def create_gevent_pools():
 
 
 def _activate_account(address):
-    j.clients.stellar.get(WALLET_NAME).activate_account(address, starting_balance="3.6")
+    get_wallet().activate_account(address, starting_balance="3.6")
 
 
 def activate_account(address):
     activation_pool.apply(_activate_account, args=(address,))
 
 
-def set_wallet_name(wallet_name):
-    global WALLET_NAME
-    WALLET_NAME = wallet_name
+def set_wallet(wallet):
+    global WALLET
+    WALLET = wallet
+
+
+def get_wallet():
+    return WALLET

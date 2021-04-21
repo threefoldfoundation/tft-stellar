@@ -20,14 +20,14 @@ from jumpscale.servers.gedis.baseactor import BaseActor, actor_method
 
 CURRENT_FULL_PATH = os.path.dirname(os.path.abspath(__file__))
 sals_path = CURRENT_FULL_PATH + "/../sals/"
-tfchain_path = CURRENT_FULL_PATH + "/../../../scripts/conversion/"
-sys.path.extend([sals_path, tfchain_path])
+lib_path = CURRENT_FULL_PATH + "/../../../lib/"
+sys.path.extend([sals_path, lib_path])
 
-from tfchainmigration_sal import activate_account as activate_account_sal, WALLET_NAME, CONVERTED_ADDRESS_MODEL, db_pool
+from tfchainmigration_sal import activate_account as activate_account_sal, get_wallet, CONVERTED_ADDRESS_MODEL, db_pool
 from tfchaintypes.CryptoTypes import PublicKey, PublicKeySpecifier
-from tfchainaddresses import unlockhash_get, ExplorerUnlockhashResult
+from tfchainexplorer import unlockhash_get, ExplorerUnlockhashResult
 
-conversion_wallet = j.clients.stellar.get(WALLET_NAME)
+conversion_wallet = get_wallet()
 TFCHAIN_EXPLORER = "https://explorer2.threefoldtoken.com"
 
 _TFT_FULL_ASSETCODES = {

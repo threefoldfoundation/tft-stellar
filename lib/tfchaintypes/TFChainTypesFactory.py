@@ -1,5 +1,5 @@
 from .crypto.MerkleTree import Tree
-from pyblake2 import blake2b
+from hashlib import blake2b
 
 
 class TFChainTypesFactory(object):
