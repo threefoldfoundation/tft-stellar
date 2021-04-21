@@ -13,8 +13,8 @@ import (
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/network"
 	hProtocol "github.com/stellar/go/protocols/horizon"
-	"github.com/stellar/go/protocols/horizon/effects"
 	horizoneffects "github.com/stellar/go/protocols/horizon/effects"
+	"github.com/stellar/go/protocols/horizon/operations"
 	"github.com/stellar/go/support/errors"
 	"github.com/stellar/go/txnbuild"
 )
@@ -25,6 +25,10 @@ const (
 
 	stellarPrecision       = 1e7
 	stellarPrecisionDigits = 7
+
+	// Fee amount is the amount of fee that is required
+	// to process a Stellar to Binance transaction
+	feeAmount = 47 * stellarPrecision
 )
 
 // stellarWallet is the bridge wallet
@@ -33,6 +37,9 @@ type stellarWallet struct {
 	keypair *keypair.Full
 	network string
 	client  *SignersClient
+	// fee wallet is a stellar address that we will use
+	// to send all the fees to collected by the mint transactions
+	feeWallet string
 }
 
 func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target string, network string, amount uint64) error {
@@ -170,14 +177,46 @@ func (w *stellarWallet) MonitorBridgeAndMint(mintFn mint, persistency *ChainPers
 					continue
 				}
 
-				eth_amount := big.NewInt(int64(parsedAmount))
+				if parsedAmount <= feeAmount {
+					log.Warn("User is trying to swap less than the fee amount, reverting now", "amount", parsedAmount)
+					ops, err := w.getOperationEffect(tx.Hash)
+					if err != nil {
+						continue
+					}
+					for _, op := range ops.Embedded.Records {
+						log.Info("operation type", "type", op.GetType())
+						if op.GetType() == "payment" {
+							paymentOpation := op.(operations.Payment)
+
+							err := w.CreateAndSubmitPayment(context.Background(), paymentOpation.From, w.network, uint64(parsedAmount))
+							if err != nil {
+								log.Error("error while trying to refund user", "err", err.Error())
+							}
+						}
+					}
+
+					continue
+				}
+
+				// Calculate amount minus the fee for allowing this mint
+				amount_minus_fee := parsedAmount - feeAmount
+
+				// Parse amount
+				eth_amount := big.NewInt(int64(amount_minus_fee))
 
 				err = mintFn(ethAddress, eth_amount, tx.Hash)
 				if err != nil {
 					log.Error(fmt.Sprintf("Error occured while minting: %s", err.Error()))
 					continue
 				}
-				log.Info("Mint succesfull")
+
+				if w.feeWallet != "" {
+					log.Info("Trying to transfer the fees generated to the fee wallet", "address", w.feeWallet)
+					err = w.CreateAndSubmitPayment(context.Background(), w.feeWallet, w.network, uint64(feeAmount))
+					if err != nil {
+						log.Error("error while trying to refund user", "err", err.Error())
+					}
+				}
 			}
 		}
 
@@ -220,7 +259,7 @@ func (w *stellarWallet) StreamBridgeStellarTransactions(ctx context.Context, cur
 	return client.StreamTransactions(ctx, opRequest, handler)
 }
 
-func (w *stellarWallet) getTransactionEffects(txHash string) (effects effects.EffectsPage, err error) {
+func (w *stellarWallet) getTransactionEffects(txHash string) (effects horizoneffects.EffectsPage, err error) {
 	client, err := w.GetHorizonClient()
 	if err != nil {
 		return effects, err
@@ -235,6 +274,23 @@ func (w *stellarWallet) getTransactionEffects(txHash string) (effects effects.Ef
 	}
 
 	return effects, nil
+}
+
+func (w *stellarWallet) getOperationEffect(txHash string) (ops operations.OperationsPage, err error) {
+	client, err := w.GetHorizonClient()
+	if err != nil {
+		return ops, err
+	}
+
+	opsRequest := horizonclient.OperationRequest{
+		ForTransaction: txHash,
+	}
+	ops, err = client.Operations(opsRequest)
+	if err != nil {
+		return ops, err
+	}
+
+	return ops, nil
 }
 
 // GetHorizonClient gets the horizon client based on the wallet's network

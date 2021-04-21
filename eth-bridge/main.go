@@ -35,6 +35,7 @@ func main() {
 
 	flag.StringVar(&bridgeCfg.StellarSeed, "secret", "", "stellar secret")
 	flag.StringVar(&bridgeCfg.StellarNetwork, "network", "testnet", "stellar network url")
+	flag.StringVar(&bridgeCfg.StellarFeeWallet, "feewallet", "", "stellar fee wallet where the fees for each mint transaction will be kept")
 
 	flag.StringArrayVar(&bridgeCfg.Signers, "signer", nil, "list of signers service addresses")
 	flag.BoolVar(&bridgeCfg.RescanBridgeAccount, "rescan", false, "if true is provided, we rescan the bridge stellar account and mint all transactions again")

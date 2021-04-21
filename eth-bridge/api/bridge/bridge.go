@@ -42,6 +42,7 @@ type BridgeConfig struct {
 	Datadir                 string
 	StellarNetwork          string
 	StellarSeed             string
+	StellarFeeWallet        string
 	RescanBridgeAccount     bool
 	PersistencyFile         string
 	Signers                 []string
@@ -65,8 +66,9 @@ func NewBridge(config *BridgeConfig, host host.Host) (*Bridge, error) {
 	client := NewSignersClient(host, config.Signers)
 
 	w := &stellarWallet{
-		network: config.StellarNetwork,
-		client:  client,
+		network:   config.StellarNetwork,
+		client:    client,
+		feeWallet: config.StellarFeeWallet,
 	}
 
 	if config.StellarSeed != "" {

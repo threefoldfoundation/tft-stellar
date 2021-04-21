@@ -69,7 +69,6 @@ func NewHost(secret string, allowId string, port int) (host.Host, error) {
 		options = append(options,
 			libp2p.ConnectionGater(filter),
 		)
-
 	}
 
 	ctx := context.Background()

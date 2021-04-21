@@ -533,7 +533,6 @@ func (bridge *BridgeContract) mint(receiver ERC20Address, amount *big.Int, txID 
 	}
 
 	bytes, err := bridge.tftContract.abi.Pack("mintTokens", common.Address(receiver), amount, txID)
-	log.Info("Calling mint function")
 	if err != nil {
 		return err
 	}
