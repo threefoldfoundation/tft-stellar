@@ -1,15 +1,16 @@
-package signers
+package bridge
 
 import (
 	"context"
 	"encoding/base64"
 	"fmt"
 
+	"github.com/ethereum/go-ethereum/log"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
+	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/network"
@@ -101,12 +102,12 @@ func (s *SignerService) Sign(ctx context.Context, request SignRequest, response 
 	return nil
 }
 
-func NewServer(host host.Host, network, secret string) (*gorpc.Server, error) {
+func newSignerServer(host host.Host, network, secret string) (*gorpc.Server, error) {
 	full, err := keypair.ParseFull(secret)
 	if err != nil {
 		return nil, err
 	}
-	log.Debug().Str("address", full.Address()).Msg("wallet address")
+	log.Debug("wallet address", "address", full.Address())
 	server := gorpc.NewServer(host, Protocol)
 
 	signer := SignerService{
@@ -157,4 +158,20 @@ func (s *SignerService) getTransactionEffects(txHash string) (effects effects.Ef
 	}
 
 	return effects, nil
+}
+
+func NewSignerServer(host host.Host, network, secret string) error {
+	log.Info("server started", "identity", host.ID().Pretty())
+	ipfs, err := multiaddr.NewMultiaddr(fmt.Sprintf("/ipfs/%s", host.ID().Pretty()))
+	if err != nil {
+		return err
+	}
+
+	for _, addr := range host.Addrs() {
+		full := addr.Encapsulate(ipfs)
+		log.Info("p2p node address", "address", full.String())
+	}
+
+	_, err = newSignerServer(host, network, secret)
+	return err
 }

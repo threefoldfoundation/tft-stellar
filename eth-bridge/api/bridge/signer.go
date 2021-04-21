@@ -10,9 +10,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
+	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/stellar/go/strkey"
-	"github.com/threefoldfoundation/tft-stellar/eth-bridge/signers"
+	"github.com/stellar/go/support/errors"
 )
 
 type SignerConfig struct {
@@ -77,46 +78,32 @@ func NewHost(secret string, allowId string, port int) (host.Host, error) {
 	return libp2p.New(ctx, options...)
 }
 
-func NewSigner(host host.Host, network, secret string) error {
-	log.Info("server started", "identity", host.ID().Pretty())
-	ipfs, err := multiaddr.NewMultiaddr(fmt.Sprintf("/ipfs/%s", host.ID().Pretty()))
-	if err != nil {
-		return err
-	}
-
-	for _, addr := range host.Addrs() {
-		full := addr.Encapsulate(ipfs)
-		log.Info("p2p node address", "address", full.String())
-	}
-
-	_, err = signers.NewServer(host, network, secret)
-	return err
-}
-
 type SignersClient struct {
-	client *signers.Signer
 	peers  []string
+	host   host.Host
+	client *gorpc.Client
 }
 
 type response struct {
-	answer *signers.SignResponse
+	answer *SignResponse
 	err    error
 }
 
 func NewSignersClient(host host.Host, peers []string) *SignersClient {
 	return &SignersClient{
-		client: signers.NewSigner(host),
+		client: gorpc.NewClient(host, Protocol),
+		host:   host,
 		peers:  peers,
 	}
 }
 
-func (s *SignersClient) Sign(ctx context.Context, signRequest signers.SignRequest) ([]signers.SignResponse, error) {
+func (s *SignersClient) Sign(ctx context.Context, signRequest SignRequest) ([]SignResponse, error) {
 	ch := make(chan response)
 	defer close(ch)
 
 	for _, addr := range s.peers {
 		go func(peerAddress string) {
-			answer, err := s.client.Sign(ctx, peerAddress, signRequest)
+			answer, err := s.sign(ctx, peerAddress, signRequest)
 
 			select {
 			case <-ctx.Done():
@@ -125,7 +112,7 @@ func (s *SignersClient) Sign(ctx context.Context, signRequest signers.SignReques
 		}(addr)
 	}
 
-	var results []signers.SignResponse
+	var results []SignResponse
 	for reply := range ch {
 		if reply.err != nil {
 			log.Error("failed to get signature from", "err", reply.err.Error())
@@ -143,4 +130,30 @@ func (s *SignersClient) Sign(ctx context.Context, signRequest signers.SignReques
 	}
 
 	return results, nil
+}
+
+func (s *SignersClient) sign(ctx context.Context, target string, signRequest SignRequest) (*SignResponse, error) {
+	ma, err := multiaddr.NewMultiaddr(target)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to parse target address")
+	}
+
+	pi, err := peer.AddrInfoFromP2pAddr(ma)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to extract peer info from address")
+	}
+
+	// it's okay to call Connect multiple times it will not
+	// re create a connection with the peer if one already exists
+	if err := s.host.Connect(ctx, *pi); err != nil {
+		return nil, errors.Wrap(err, "failed to establish connection to peer")
+	}
+
+	var response SignResponse
+	err = s.client.CallContext(ctx, pi.ID, "SignerService", "Sign", &signRequest, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	return &response, nil
 }
