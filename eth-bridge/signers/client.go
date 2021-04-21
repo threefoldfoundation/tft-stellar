@@ -22,7 +22,7 @@ func NewSigner(host host.Host) *Signer {
 	}
 }
 
-func (s *Signer) Sign(ctx context.Context, target string, message string) (*SignResponse, error) {
+func (s *Signer) Sign(ctx context.Context, target string, signRequest SignRequest) (*SignResponse, error) {
 	ma, err := multiaddr.NewMultiaddr(target)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse target address")
@@ -40,7 +40,7 @@ func (s *Signer) Sign(ctx context.Context, target string, message string) (*Sign
 	}
 
 	var response SignResponse
-	err = s.client.CallContext(ctx, pi.ID, "SignerService", "Sign", SignRequest{message, 0}, &response)
+	err = s.client.CallContext(ctx, pi.ID, "SignerService", "Sign", &signRequest, &response)
 	if err != nil {
 		return nil, err
 	}

@@ -58,7 +58,12 @@ func app(target string) error {
 	if err != nil {
 		return err
 	}
-	result, err := signer.Sign(ctx, target, msg)
+
+	req := signers.SignRequest{
+		TxnXDR: msg,
+	}
+
+	result, err := signer.Sign(ctx, target, req)
 	if err != nil {
 		return err
 	}

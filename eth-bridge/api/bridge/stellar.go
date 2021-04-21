@@ -17,6 +17,7 @@ import (
 	horizoneffects "github.com/stellar/go/protocols/horizon/effects"
 	"github.com/stellar/go/support/errors"
 	"github.com/stellar/go/txnbuild"
+	"github.com/threefoldfoundation/tft-stellar/eth-bridge/signers"
 )
 
 const (
@@ -84,8 +85,19 @@ func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target strin
 		return errors.Wrap(err, "failed to serialize transaction")
 	}
 
+	signReq := signers.SignRequest{
+		TxnXDR:             xdr,
+		RequiredSignatures: int(sourceAccount.Thresholds.MedThreshold) - 1,
+		TxInfo: signers.TransactionInfo{
+			From:    sourceAccount.AccountID,
+			To:      target,
+			Amount:  amount,
+			Network: network,
+		},
+	}
+
 	log.Info("required signature count", "signatures", int(sourceAccount.Thresholds.MedThreshold))
-	signatures, err := w.client.Sign(ctx, xdr, int(sourceAccount.Thresholds.MedThreshold)-1)
+	signatures, err := w.client.Sign(ctx, signReq)
 	if err != nil {
 		return err
 	}

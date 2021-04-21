@@ -110,13 +110,13 @@ func NewSignersClient(host host.Host, peers []string) *SignersClient {
 	}
 }
 
-func (s *SignersClient) Sign(ctx context.Context, message string, require int) ([]signers.SignResponse, error) {
+func (s *SignersClient) Sign(ctx context.Context, signRequest signers.SignRequest) ([]signers.SignResponse, error) {
 	ch := make(chan response)
 	defer close(ch)
 
 	for _, addr := range s.peers {
 		go func(peerAddress string) {
-			answer, err := s.client.Sign(ctx, peerAddress, message)
+			answer, err := s.client.Sign(ctx, peerAddress, signRequest)
 
 			select {
 			case <-ctx.Done():
@@ -133,12 +133,12 @@ func (s *SignersClient) Sign(ctx context.Context, message string, require int) (
 		}
 
 		results = append(results, *reply.answer)
-		if len(results) == require {
+		if len(results) == signRequest.RequiredSignatures {
 			break
 		}
 	}
 
-	if len(results) != require {
+	if len(results) != signRequest.RequiredSignatures {
 		return nil, fmt.Errorf("required number of signatures is not met")
 	}
 

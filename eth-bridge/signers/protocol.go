@@ -8,10 +8,14 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/network"
+	"github.com/stellar/go/protocols/horizon/effects"
 	"github.com/stellar/go/txnbuild"
+	"github.com/stellar/go/xdr"
 )
 
 const (
@@ -19,8 +23,18 @@ const (
 )
 
 type SignRequest struct {
-	TxnXDR string
-	Block  int
+	TxnXDR             string
+	RequiredSignatures int
+	Block              int
+	TxInfo             TransactionInfo
+}
+
+type TransactionInfo struct {
+	TxHash  string
+	Amount  uint64
+	From    string
+	To      string
+	Network string
 }
 
 type SignResponse struct {
@@ -44,6 +58,32 @@ func (s *SignerService) Sign(ctx context.Context, request SignRequest, response 
 	txn, ok := loaded.Transaction()
 	if !ok {
 		return fmt.Errorf("provided transaction is of wrong type")
+	}
+
+	// todo validate
+	for _, op := range txn.Operations() {
+		opXDR, err := op.BuildXDR()
+		if err != nil {
+			return fmt.Errorf("failed to build operation xdr")
+		}
+
+		if opXDR.Body.Type != xdr.OperationTypePayment {
+			continue
+		}
+
+		paymentOperation := opXDR.Body.PaymentOp
+
+		if paymentOperation.Destination.GoString() != request.TxInfo.From {
+			return fmt.Errorf("wrong source")
+		}
+
+		if paymentOperation.Destination.GoString() != request.TxInfo.To {
+			return fmt.Errorf("wrong destination")
+		}
+
+		if paymentOperation.Amount != xdr.Int64(request.TxInfo.Amount) {
+			return fmt.Errorf("wrong amount")
+		}
 	}
 
 	txn, err = txn.Sign(s.getNetworkPassPhrase(), s.kp)
@@ -88,4 +128,33 @@ func (s *SignerService) getNetworkPassPhrase() string {
 	default:
 		return network.TestNetworkPassphrase
 	}
+}
+
+// GetHorizonClient gets the horizon client based on the wallet's network
+func (s *SignerService) getHorizonClient() (*horizonclient.Client, error) {
+	switch s.network {
+	case "testnet":
+		return horizonclient.DefaultTestNetClient, nil
+	case "production":
+		return horizonclient.DefaultPublicNetClient, nil
+	default:
+		return nil, errors.New("network is not supported")
+	}
+}
+
+func (s *SignerService) getTransactionEffects(txHash string) (effects effects.EffectsPage, err error) {
+	client, err := s.getHorizonClient()
+	if err != nil {
+		return effects, err
+	}
+
+	effectsReq := horizonclient.EffectRequest{
+		ForTransaction: txHash,
+	}
+	effects, err = client.Effects(effectsReq)
+	if err != nil {
+		return effects, err
+	}
+
+	return effects, nil
 }
