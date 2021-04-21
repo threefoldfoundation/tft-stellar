@@ -200,7 +200,7 @@ func (bridge *Bridge) Start(ctx context.Context) error {
 					if head.Number.Uint64() >= we.blockHeight+EthBlockDelay {
 						log.Info("Attempting to create an ERC20 withdraw tx", "ethTx", we.TxHash())
 
-						err := bridge.wallet.CreateAndSubmitPayment(ctx, we.blockchain_address, we.network, we.amount.Uint64())
+						err := bridge.wallet.CreateAndSubmitPayment(ctx, we.blockchain_address, we.network, we.amount.Uint64(), we.receiver, we.blockHeight)
 						if err != nil {
 							log.Error(fmt.Sprintf("failed to create payment for withdrawal to %s, %s", we.blockchain_address, err.Error()))
 						}

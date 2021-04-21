@@ -5,6 +5,8 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -26,16 +28,8 @@ const (
 type SignRequest struct {
 	TxnXDR             string
 	RequiredSignatures int
-	Block              int
-	TxInfo             TransactionInfo
-}
-
-type TransactionInfo struct {
-	TxHash  string
-	Amount  uint64
-	From    string
-	To      string
-	Network string
+	Receiver           common.Address
+	Block              uint64
 }
 
 type SignResponse struct {
@@ -46,8 +40,25 @@ type SignResponse struct {
 }
 
 type SignerService struct {
-	network string
-	kp      *keypair.Full
+	network        string
+	kp             *keypair.Full
+	bridgeContract *BridgeContract
+}
+
+func NewSignerServer(host host.Host, network, secret string, bridgeContract *BridgeContract) error {
+	log.Info("server started", "identity", host.ID().Pretty())
+	ipfs, err := multiaddr.NewMultiaddr(fmt.Sprintf("/ipfs/%s", host.ID().Pretty()))
+	if err != nil {
+		return err
+	}
+
+	for _, addr := range host.Addrs() {
+		full := addr.Encapsulate(ipfs)
+		log.Info("p2p node address", "address", full.String())
+	}
+
+	_, err = newSignerServer(host, network, secret, bridgeContract)
+	return err
 }
 
 func (s *SignerService) Sign(ctx context.Context, request SignRequest, response *SignResponse) error {
@@ -61,7 +72,22 @@ func (s *SignerService) Sign(ctx context.Context, request SignRequest, response 
 		return fmt.Errorf("provided transaction is of wrong type")
 	}
 
-	// todo validate
+	log.Info("address to check", "address", request.Receiver)
+	withdraw, err := s.bridgeContract.tftContract.filter.FilterWithdraw(&bind.FilterOpts{Start: request.Block}, []common.Address{request.Receiver})
+	if err != nil {
+		return err
+	}
+
+	if !withdraw.Next() {
+		return fmt.Errorf("no withdraw event found")
+	}
+
+	log.Info("Withdraw event found", "event", withdraw)
+
+	log.Info("got amount", "amount", withdraw.Event.Tokens.Uint64())
+	log.Info("got receiver", "receiver", withdraw.Event.BlockchainAddress)
+	log.Info("got network", "network", withdraw.Event.Network)
+
 	for _, op := range txn.Operations() {
 		opXDR, err := op.BuildXDR()
 		if err != nil {
@@ -72,18 +98,18 @@ func (s *SignerService) Sign(ctx context.Context, request SignRequest, response 
 			continue
 		}
 
-		paymentOperation := opXDR.Body.PaymentOp
-
-		if paymentOperation.Destination.GoString() != request.TxInfo.From {
-			return fmt.Errorf("wrong source")
+		paymentOperation, ok := opXDR.Body.GetPaymentOp()
+		if !ok {
+			return fmt.Errorf("blabla")
 		}
 
-		if paymentOperation.Destination.GoString() != request.TxInfo.To {
-			return fmt.Errorf("wrong destination")
+		acc := paymentOperation.Destination.ToAccountId()
+		if acc.Address() != withdraw.Event.BlockchainAddress {
+			return fmt.Errorf("destination is not correct, got %s, need %s", acc.Address(), withdraw.Event.BlockchainAddress)
 		}
 
-		if paymentOperation.Amount != xdr.Int64(request.TxInfo.Amount) {
-			return fmt.Errorf("wrong amount")
+		if paymentOperation.Amount != xdr.Int64(withdraw.Event.Tokens.Int64()) {
+			return fmt.Errorf("amount is not correct, received %d, need %d", paymentOperation.Amount, xdr.Int64(withdraw.Event.Tokens.Int64()))
 		}
 	}
 
@@ -102,7 +128,7 @@ func (s *SignerService) Sign(ctx context.Context, request SignRequest, response 
 	return nil
 }
 
-func newSignerServer(host host.Host, network, secret string) (*gorpc.Server, error) {
+func newSignerServer(host host.Host, network, secret string, bridgeContract *BridgeContract) (*gorpc.Server, error) {
 	full, err := keypair.ParseFull(secret)
 	if err != nil {
 		return nil, err
@@ -111,8 +137,9 @@ func newSignerServer(host host.Host, network, secret string) (*gorpc.Server, err
 	server := gorpc.NewServer(host, Protocol)
 
 	signer := SignerService{
-		network: network,
-		kp:      full,
+		network:        network,
+		kp:             full,
+		bridgeContract: bridgeContract,
 	}
 
 	err = server.Register(&signer)
@@ -158,20 +185,4 @@ func (s *SignerService) getTransactionEffects(txHash string) (effects effects.Ef
 	}
 
 	return effects, nil
-}
-
-func NewSignerServer(host host.Host, network, secret string) error {
-	log.Info("server started", "identity", host.ID().Pretty())
-	ipfs, err := multiaddr.NewMultiaddr(fmt.Sprintf("/ipfs/%s", host.ID().Pretty()))
-	if err != nil {
-		return err
-	}
-
-	for _, addr := range host.Addrs() {
-		full := addr.Encapsulate(ipfs)
-		log.Info("p2p node address", "address", full.String())
-	}
-
-	_, err = newSignerServer(host, network, secret)
-	return err
 }

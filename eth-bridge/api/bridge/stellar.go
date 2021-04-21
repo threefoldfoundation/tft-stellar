@@ -7,6 +7,7 @@ import (
 	"math/big"
 	"strings"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/stellar/go/amount"
 	"github.com/stellar/go/clients/horizonclient"
@@ -35,7 +36,7 @@ type stellarWallet struct {
 	client  *SignersClient
 }
 
-func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target string, network string, amount uint64) error {
+func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target string, network string, amount uint64, receiver common.Address, blockheight uint64) error {
 	// if amount is zero, do nothing
 	if amount == 0 {
 		return nil
@@ -87,12 +88,8 @@ func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target strin
 	signReq := SignRequest{
 		TxnXDR:             xdr,
 		RequiredSignatures: int(sourceAccount.Thresholds.MedThreshold) - 1,
-		TxInfo: TransactionInfo{
-			From:    sourceAccount.AccountID,
-			To:      target,
-			Amount:  amount,
-			Network: network,
-		},
+		Receiver:           receiver,
+		Block:              blockheight,
 	}
 
 	log.Info("required signature count", "signatures", int(sourceAccount.Thresholds.MedThreshold))

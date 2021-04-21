@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ed25519"
 	"fmt"
+	"time"
 
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/libp2p/go-libp2p"
@@ -103,7 +104,11 @@ func (s *SignersClient) Sign(ctx context.Context, signRequest SignRequest) ([]Si
 
 	for _, addr := range s.peers {
 		go func(peerAddress string) {
-			answer, err := s.sign(ctx, peerAddress, signRequest)
+			// cancel context after 30 seconds
+			signCtx, cancel := context.WithTimeout(ctx, time.Second*30)
+			defer cancel()
+
+			answer, err := s.sign(signCtx, peerAddress, signRequest)
 
 			select {
 			case <-ctx.Done():
