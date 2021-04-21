@@ -113,14 +113,16 @@ func (s *SignersClient) Sign(ctx context.Context, signRequest SignRequest) ([]Si
 	}
 
 	var results []SignResponse
+	replies := 0
 	for reply := range ch {
+		replies++
 		if reply.err != nil {
 			log.Error("failed to get signature from", "err", reply.err.Error())
 			continue
 		}
 
 		results = append(results, *reply.answer)
-		if len(results) == signRequest.RequiredSignatures {
+		if len(results) == signRequest.RequiredSignatures || replies == len(s.peers) {
 			break
 		}
 	}
