@@ -149,16 +149,15 @@ func (s *SignersClient) Sign(ctx context.Context, signRequest SignRequest) ([]Si
 	ch := make(chan response)
 	defer close(ch)
 
+	// cancel context after 30 seconds
+	ctxWithTimeout, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
 	for _, addr := range s.peers {
 		go func(peerID peer.ID) {
-			// cancel context after 30 seconds
-			signCtx, cancel := context.WithTimeout(ctx, time.Second*30)
-			defer cancel()
-
-			answer, err := s.sign(signCtx, peerID, signRequest)
+			answer, err := s.sign(ctxWithTimeout, peerID, signRequest)
 
 			select {
-			case <-signCtx.Done():
+			case <-ctxWithTimeout.Done():
 			case ch <- response{answer: answer, err: err}:
 			}
 		}(addr)
@@ -166,16 +165,22 @@ func (s *SignersClient) Sign(ctx context.Context, signRequest SignRequest) ([]Si
 
 	var results []SignResponse
 	replies := 0
-	for reply := range ch {
-		replies++
-		if reply.err != nil {
-			log.Error("failed to get signature from", "err", reply.err.Error())
-			continue
-		}
+loop:
+	for {
+		select {
+		case <-ctxWithTimeout.Done():
+			break loop
+		case reply := <-ch:
+			replies++
+			if reply.err != nil {
+				log.Error("failed to get signature from", "err", reply.err.Error())
+				continue
+			}
 
-		results = append(results, *reply.answer)
-		if len(results) == signRequest.RequiredSignatures || replies == len(s.peers) {
-			break
+			results = append(results, *reply.answer)
+			if len(results) == signRequest.RequiredSignatures || replies == len(s.peers) {
+				break loop
+			}
 		}
 	}
 
