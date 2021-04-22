@@ -186,9 +186,10 @@ func (bridge *Bridge) Start(ctx context.Context) error {
 				for _, id := range ids {
 					we := txMap[id]
 					if head.Number.Uint64() >= we.blockHeight+EthBlockDelay {
-						log.Info("Attempting to create an ERC20 withdraw tx", "ethTx", we.TxHash())
+						hash := we.TxHash()
+						log.Info("Attempting to create an ERC20 withdraw tx", "ethTx", hash)
 
-						err := bridge.wallet.CreateAndSubmitPayment(ctx, we.blockchain_address, we.network, we.amount.Uint64(), we.receiver, we.blockHeight)
+						err := bridge.wallet.CreateAndSubmitPayment(ctx, we.blockchain_address, we.network, we.amount.Uint64(), we.receiver, we.blockHeight, hash)
 						if err != nil {
 							log.Error(fmt.Sprintf("failed to create payment for withdrawal to %s, %s", we.blockchain_address, err.Error()))
 						}

@@ -70,7 +70,7 @@ func newStellarWallet(ctx context.Context, network, seed string, host host.Host,
 	return w, nil
 }
 
-func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target string, network string, amount uint64, receiver common.Address, blockheight uint64) error {
+func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target string, network string, amount uint64, receiver common.Address, blockheight uint64, txHash common.Hash) error {
 	// if amount is zero, do nothing
 	if amount == 0 {
 		return nil
@@ -103,6 +103,7 @@ func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target strin
 		SourceAccount:        &sourceAccount,
 		BaseFee:              txnbuild.MinBaseFee * 3,
 		IncrementSequenceNum: true,
+		Memo:                 txnbuild.MemoHash(txHash),
 	}
 
 	tx, err := txnbuild.NewTransaction(txnBuild)
