@@ -125,7 +125,7 @@ class TFchainmigration_service(BaseActor):
         return preauth_tx.to_xdr()
 
     @actor_method
-    def activate_account(self, address, tfchain_address, args: dict = None):
+    def activate_account(self, address=None, tfchain_address=None, args: dict = None):
         # Backward compatibility with jsx service for request body {'args': {'address': <address>}}
         if not tfchain_address and not address and not args:
             raise j.exceptions.Value(f"missing a required argument: 'tfchain_address' and 'address' ")
