@@ -41,9 +41,6 @@ func main() {
 
 	flag.BoolVar(&bridgeCfg.Follower, "follower", false, "if true then the bridge will run in follower mode meaning that it will not submit mint transactions to the multisig contract, if false the bridge will also submit transactions")
 
-	flag.StringVar(&bridgeCfg.BridgeID, "bridge", "", "bridge p2p identity as provided by the bridge. Only connections with that ID will be accepted")
-	flag.Uint16Var(&bridgeCfg.SignerPort, "signer-port", 14000, "signer p2p port")
-
 	flag.Parse()
 
 	//TODO cfg.Validate()
@@ -66,7 +63,7 @@ func main() {
 
 	log.Debug("Chain ID %+v \n", id)
 
-	host, err := bridge.NewHost(bridgeCfg.StellarSeed, bridgeCfg.BridgeID, int(bridgeCfg.SignerPort))
+	host, router, err := bridge.NewHost(ctx, bridgeCfg.StellarSeed)
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +78,7 @@ func main() {
 		log.Info("p2p node address", "address", full.String())
 	}
 
-	br, err := bridge.NewBridge(&bridgeCfg, host)
+	br, err := bridge.NewBridge(ctx, &bridgeCfg, host, router)
 	if err != nil {
 		panic(err)
 	}

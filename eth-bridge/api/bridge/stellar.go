@@ -9,6 +9,8 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/routing"
 	"github.com/stellar/go/amount"
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/keypair"
@@ -34,6 +36,35 @@ type stellarWallet struct {
 	keypair *keypair.Full
 	network string
 	client  *SignersClient
+}
+
+func newStellarWallet(ctx context.Context, network, seed string, host host.Host, router routing.PeerRouting) (*stellarWallet, error) {
+	kp, err := keypair.ParseFull(seed)
+
+	if err != nil {
+		return nil, err
+	}
+
+	w := &stellarWallet{
+		keypair: kp,
+		network: network,
+		//client:  client,
+	}
+
+	account, err := w.GetAccountDetails(kp.Address())
+	if err != nil {
+		return nil, err
+	}
+	var keys []string
+	for _, signer := range account.Signers {
+		keys = append(keys, signer.Key)
+	}
+
+	w.client, err = NewSignersClient(ctx, host, router, keys)
+	if err != nil {
+		return nil, err
+	}
+	return w, nil
 }
 
 func (w *stellarWallet) CreateAndSubmitPayment(ctx context.Context, target string, network string, amount uint64, receiver common.Address, blockheight uint64) error {

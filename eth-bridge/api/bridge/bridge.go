@@ -10,7 +10,7 @@ import (
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/stellar/go/keypair"
+	"github.com/libp2p/go-libp2p-core/routing"
 )
 
 const (
@@ -28,7 +28,6 @@ type Bridge struct {
 	signers          []string
 	mut              sync.Mutex
 	config           *BridgeConfig
-	host             host.Host
 }
 
 type BridgeConfig struct {
@@ -46,12 +45,10 @@ type BridgeConfig struct {
 	PersistencyFile         string
 	Signers                 []string
 	Follower                bool
-	BridgeID                string // needed for followers only
-	SignerPort              uint16 // also only needed for followers
 }
 
 // NewBridge creates a new Bridge.
-func NewBridge(config *BridgeConfig, host host.Host) (*Bridge, error) {
+func NewBridge(ctx context.Context, config *BridgeConfig, host host.Host, router routing.PeerRouting) (*Bridge, error) {
 	contract, err := NewBridgeContract(config)
 	if err != nil {
 		return nil, err
@@ -62,20 +59,11 @@ func NewBridge(config *BridgeConfig, host host.Host) (*Bridge, error) {
 		return nil, err
 	}
 
-	client := NewSignersClient(host, config.Signers)
-
-	w := &stellarWallet{
-		network: config.StellarNetwork,
-		client:  client,
+	w, err := newStellarWallet(ctx, config.StellarNetwork, config.StellarSeed, host, router)
+	if err != nil {
+		return nil, err
 	}
 
-	if config.StellarSeed != "" {
-		w.keypair, err = keypair.ParseFull(config.StellarSeed)
-
-		if err != nil {
-			return nil, err
-		}
-	}
 	log.Info(fmt.Sprintf("Stellar bridge account %s loaded on Stellar network %s", w.keypair.Address(), config.StellarNetwork))
 
 	if config.RescanBridgeAccount {
@@ -94,7 +82,6 @@ func NewBridge(config *BridgeConfig, host host.Host) (*Bridge, error) {
 		wallet:           w,
 		signers:          config.Signers,
 		config:           config,
-		host:             host,
 	}
 
 	return bridge, nil
