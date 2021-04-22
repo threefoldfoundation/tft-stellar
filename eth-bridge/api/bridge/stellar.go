@@ -57,6 +57,9 @@ func newStellarWallet(ctx context.Context, network, seed string, host host.Host,
 	}
 	var keys []string
 	for _, signer := range account.Signers {
+		if signer.Key == kp.Address() {
+			continue
+		}
 		keys = append(keys, signer.Key)
 	}
 

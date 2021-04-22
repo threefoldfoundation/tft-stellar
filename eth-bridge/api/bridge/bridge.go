@@ -57,12 +57,16 @@ func NewBridge(ctx context.Context, config *BridgeConfig, host host.Host, router
 		return nil, err
 	}
 
-	w, err := newStellarWallet(ctx, config.StellarNetwork, config.StellarSeed, host, router)
-	if err != nil {
-		return nil, err
-	}
+	var wallet *stellarWallet
+	// Only create the stellar wallet if the bridge is a master bridge
+	if !config.Follower {
+		wallet, err = newStellarWallet(ctx, config.StellarNetwork, config.StellarSeed, host, router)
+		if err != nil {
+			return nil, err
+		}
 
-	log.Info(fmt.Sprintf("Stellar bridge account %s loaded on Stellar network %s", w.keypair.Address(), config.StellarNetwork))
+		log.Info(fmt.Sprintf("Stellar bridge account %s loaded on Stellar network %s", wallet.keypair.Address(), config.StellarNetwork))
+	}
 
 	if config.RescanBridgeAccount {
 		// saving the cursor to 1 will trigger the bridge stellar account
@@ -77,7 +81,7 @@ func NewBridge(ctx context.Context, config *BridgeConfig, host host.Host, router
 	bridge := &Bridge{
 		bridgeContract:   contract,
 		blockPersistency: blockPersistency,
-		wallet:           w,
+		wallet:           wallet,
 		config:           config,
 	}
 

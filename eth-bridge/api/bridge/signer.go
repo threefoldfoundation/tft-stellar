@@ -158,7 +158,7 @@ func (s *SignersClient) Sign(ctx context.Context, signRequest SignRequest) ([]Si
 			answer, err := s.sign(signCtx, peerID, signRequest)
 
 			select {
-			case <-ctx.Done():
+			case <-signCtx.Done():
 			case ch <- response{answer: answer, err: err}:
 			}
 		}(addr)
