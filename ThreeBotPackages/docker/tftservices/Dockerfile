@@ -17,5 +17,8 @@ RUN poetry run jsng "j.servers.threebot.default.packages.add(giturl='https://git
 # Install the unlock service
 RUN poetry run jsng "j.servers.threebot.default.packages.add(giturl='https://github.com/threefoldfoundation/tft-stellar/tree/${version}/ThreeBotPackages/unlock_service')"
 
+# Install the migration service
+RUN poetry run jsng "j.servers.threebot.default.packages.add(giturl='https://github.com/threefoldfoundation/tft-stellar/tree/${version}/ThreeBotPackages/tfchainmigration_service')"
+
 # Start it with the development flag to prevent the threebot from checking the identity
 CMD poetry run threebot start --development
