@@ -1,0 +1,96 @@
+# Default values for bridge.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: dylanverstraete/eth-bridge
+  pullPolicy: Always
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+global:
+  ingress:
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths: []
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+# should be provided on startup
+stellar_secret: ''
+account_json: |-
+
+  account_password: ''
+# mainnet bsc: https://bsc-dataseed.binance.org/
+# testnet bsc: https://data-seed-prebsc-1-s1.binance.org:8545/
+eth_client_url: "https://data-seed-prebsc-1-s1.binance.org:8545/"
+# smart-chain-testnet or smart-chain-mainnet
+eth_network: "smart-chain-testnet"
+contract_address: "0x770b0AA8b5B4f140cdA2F4d77205ceBe5f3D3C7e"
+ms_contract_address: "0x8a511F1C6C94B051A6CFCF0FdC83e7FA37CF687F"
+is_follower: true
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+volume:
+  size: 10 # GB
+  hostPath: /storage/
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+threefoldVdc:
+  backup: ''

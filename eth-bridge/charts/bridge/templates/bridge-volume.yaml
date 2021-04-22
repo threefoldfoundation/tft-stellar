@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: bridge-volume-{{ .Release.Name }}
+  labels:
+    backupType: {{ .Values.threefoldVdc.backup | quote }}
+    type: local
+spec:
+  storageClassName: local-path
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/app/node"

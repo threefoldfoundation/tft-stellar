@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bridge.fullname" . }}
+  labels:
+    {{- include "bridge.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "bridge.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "bridge.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "bridge.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # ports:
+          #   - name: http
+          #     containerPort: 80
+          #     protocol: TCP
+          env:
+          - name: STELLAR_SECRET
+            value: {{ .Values.stellar_secret }}
+          - name: ACCOUNT_JSON
+            value: /etc/eth-bridge/account_json
+          - name: ACCOUNT_PASSWORD
+            value: {{ .Values.account_password }}
+          - name: CONTRACT_ADDRESS
+            value: {{ .Values.contract_address }}
+          - name: MS_CONTRACT_ADDRESS
+            value: {{ .Values.ms_contract_address }}
+          - name: ETH_NETWORK
+            value: {{ .Values.eth_network }}
+          - name: ETH_CLIENT_URL
+            value: {{ .Values.eth_client_url }}
+          args: [
+            "--secret", "$(STELLAR_SECRET)",
+            "--account", "$(ACCOUNT_JSON)",
+            "--password", "$(ACCOUNT_PASSWORD)",
+            "--eth", "$(ETH_CLIENT_URL)",
+            "--ethnetwork", "$(ETH_NETWORK)",
+            "--contract", "$(CONTRACT_ADDRESS)",
+            "--mscontract", "$(MS_CONTRACT_ADDRESS)",
+            {{ if .Values.is_follower }}
+            "--follower",
+            {{ end }}
+          ]
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/eth-bridge
+            - name: bridge-storage-{{ .Release.Name }}
+              mountPath: /app/node
+      volumes:
+        - name: bridge-storage-{{ .Release.Name }}
+          persistentVolumeClaim:
+            claimName: bridge-volume-claim-{{ .Release.Name }}
+        - name: config-volume
+          configMap:
+            name: {{ template "bridge.fullname" . }}
+            items:
+              - key: account_json
+                path: account_json
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
