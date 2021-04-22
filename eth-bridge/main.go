@@ -36,7 +36,6 @@ func main() {
 	flag.StringVar(&bridgeCfg.StellarSeed, "secret", "", "stellar secret")
 	flag.StringVar(&bridgeCfg.StellarNetwork, "network", "testnet", "stellar network url")
 
-	flag.StringArrayVar(&bridgeCfg.Signers, "signer", nil, "list of signers service addresses")
 	flag.BoolVar(&bridgeCfg.RescanBridgeAccount, "rescan", false, "if true is provided, we rescan the bridge stellar account and mint all transactions again")
 
 	flag.BoolVar(&bridgeCfg.Follower, "follower", false, "if true then the bridge will run in follower mode meaning that it will not submit mint transactions to the multisig contract, if false the bridge will also submit transactions")

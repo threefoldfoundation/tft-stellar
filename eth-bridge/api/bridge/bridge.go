@@ -25,7 +25,6 @@ type Bridge struct {
 	bridgeContract   *BridgeContract
 	wallet           *stellarWallet
 	blockPersistency *ChainPersistency
-	signers          []string
 	mut              sync.Mutex
 	config           *BridgeConfig
 }
@@ -43,7 +42,6 @@ type BridgeConfig struct {
 	StellarSeed             string
 	RescanBridgeAccount     bool
 	PersistencyFile         string
-	Signers                 []string
 	Follower                bool
 }
 
@@ -80,7 +78,6 @@ func NewBridge(ctx context.Context, config *BridgeConfig, host host.Host, router
 		bridgeContract:   contract,
 		blockPersistency: blockPersistency,
 		wallet:           w,
-		signers:          config.Signers,
 		config:           config,
 	}
 
