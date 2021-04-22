@@ -115,6 +115,7 @@ func createLibp2pHost(ctx context.Context, privateKey crypto.PrivKey) (host.Host
 type SignersClient struct {
 	peers  []peer.ID
 	host   host.Host
+	router routing.PeerRouting
 	client *gorpc.Client
 }
 
@@ -133,16 +134,13 @@ func NewSignersClient(ctx context.Context, host host.Host, router routing.PeerRo
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to get peer info")
 		}
-
-		if err := connectToPeer(ctx, host, router, id); err != nil {
-			return nil, errors.Wrapf(err, "failed to connect to host id '%s'", id.Pretty())
-		}
 		ids = append(ids, id)
 	}
 
 	return &SignersClient{
 		client: gorpc.NewClient(host, Protocol),
 		host:   host,
+		router: router,
 		peers:  ids,
 	}, nil
 }
@@ -189,10 +187,15 @@ func (s *SignersClient) Sign(ctx context.Context, signRequest SignRequest) ([]Si
 }
 
 func (s *SignersClient) sign(ctx context.Context, id peer.ID, signRequest SignRequest) (*SignResponse, error) {
+	if len(s.host.Peerstore().Addrs(id)) == 0 {
+		if err := connectToPeer(ctx, s.host, s.router, id); err != nil {
+			return nil, errors.Wrapf(err, "failed to connect to host id '%s'", id.Pretty())
+		}
+	}
+
 	var response SignResponse
 	if err := s.client.CallContext(ctx, id, "SignerService", "Sign", &signRequest, &response); err != nil {
 		return nil, err
-
 	}
 
 	return &response, nil
