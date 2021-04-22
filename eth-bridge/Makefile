@@ -4,4 +4,4 @@ build:
 	GOOS=linux go build -ldflags $(ldflags)
 
 docker: build
-	cp eth-bridge genesis.json docker/ && cd docker && docker build -t eth-bridge:latest .
+	cp -r eth-bridge genesis docker/ && cd docker && docker build -t eth-bridge:latest .
