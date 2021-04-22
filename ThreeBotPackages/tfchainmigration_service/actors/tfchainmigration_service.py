@@ -181,7 +181,7 @@ class TFchainmigration_service(BaseActor):
             raise j.exceptions.Value(str(exc))
 
     @actor_method
-    def migrate_tokens(self, tfchain_address, stellar_address, args: dict = None):
+    def migrate_tokens(self, tfchain_address=None, stellar_address=None, args: dict = None):
         # Backward compatibility with jsx service for request body {'args': {'address': <address>}}
         if not tfchain_address and not stellar_address and not args:
             raise j.exceptions.Value(f"missing a required argument: 'tfchain_address' and 'stellar_address' ")
