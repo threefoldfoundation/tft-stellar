@@ -70,7 +70,7 @@ spec:
             - name: config-volume
               mountPath: /etc/eth-bridge
             - name: bridge-storage-{{ .Release.Name }}
-              mountPath: /app/node
+              mountPath: /storage
       volumes:
         - name: bridge-storage-{{ .Release.Name }}
           persistentVolumeClaim:

@@ -49,11 +49,13 @@ global:
     #    hosts:
     #      - chart-example.local
 
+hostStoragePath: '/storage1'
+
 # should be provided on startup
 stellar_secret: ''
 account_json: |-
-
-  account_password: ''
+  
+account_password: 'test123'
 # mainnet bsc: https://bsc-dataseed.binance.org/
 # testnet bsc: https://data-seed-prebsc-1-s1.binance.org:8545/
 eth_client_url: "https://data-seed-prebsc-1-s1.binance.org:8545/"
