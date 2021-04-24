@@ -59,6 +59,8 @@ class TFchainmigration_service(BaseActor):
     def _is_zero_balance_tfchain(self, tfchain_address):
         # get balance from tfchain
         result = unlockhash_get(tfchain_address)
+        if result is None:
+            return True
         balance = result.balance()
 
         unlocked_tokens = balance.available.value
