@@ -27,7 +27,6 @@ from tfchainmigration_sal import activate_account as activate_account_sal, get_w
 from tfchaintypes.CryptoTypes import PublicKey, PublicKeySpecifier
 from tfchainexplorer import unlockhash_get, ExplorerUnlockhashResult
 
-conversion_wallet = get_wallet()
 TFCHAIN_EXPLORER = "https://explorer2.threefoldtoken.com"
 
 _TFT_FULL_ASSETCODES = {
@@ -44,7 +43,7 @@ _TFTA_FULL_ASSETCODES = {
 class TFchainmigration_service(BaseActor):
     def _stellar_address_used_before(self, stellar_address):
         try:
-            stellar_client = self.conversion_wallet
+            stellar_client = get_wallet()
 
             transactions = stellar_client.list_transactions(address=stellar_address)
             return len(transactions) != 0
@@ -108,16 +107,14 @@ class TFchainmigration_service(BaseActor):
 
         # delegate to the activation pool
         activate_account_sal(escrow_kp.public_key)
-
+        conversion_wallet = get_wallet()
         # no problem using the conversion wallet, just use it's code
-        self.conversion_wallet.add_trustline(asset_code, asset_issuer, escrow_kp.secret)
-        preauth_tx = self.conversion_wallet._create_unlock_transaction(escrow_kp, locked_until)
+        conversion_wallet.add_trustline(asset_code, asset_issuer, escrow_kp.secret)
+        preauth_tx = conversion_wallet._create_unlock_transaction(escrow_kp, locked_until)
         preauth_tx_hash = preauth_tx.hash()
         unlock_hash = stellar_sdk.strkey.StrKey.encode_pre_auth_tx(preauth_tx_hash)
-        self.conversion_wallet._create_unlockhash_transaction(
-            unlock_hash=unlock_hash, transaction_xdr=preauth_tx.to_xdr()
-        )
-        self.conversion_wallet._set_escrow_account_signers(
+        conversion_wallet._create_unlockhash_transaction(unlock_hash=unlock_hash, transaction_xdr=preauth_tx.to_xdr())
+        conversion_wallet._set_escrow_account_signers(
             escrow_kp.public_key, destination_address, preauth_tx_hash, escrow_kp
         )
 
@@ -183,7 +180,7 @@ class TFchainmigration_service(BaseActor):
             raise j.exceptions.Value(str(exc))
 
     @actor_method
-    def migrate_tokens(self, tfchain_address=None, stellar_address=None, args: dict = None):
+    def migrate_tokens(self, tfchain_address=None, stellar_address=None, args: dict = None) -> str:
         # Backward compatibility with jsx service for request body {'args': {'address': <address>}}
         if not tfchain_address and not stellar_address and not args:
             raise j.exceptions.Value(f"missing a required argument: 'tfchain_address' and 'stellar_address' ")
@@ -204,10 +201,15 @@ class TFchainmigration_service(BaseActor):
         if tfchain_address != self._stellar_address_to_tfchain_address(stellar_address):
             raise j.exceptions.Value("The stellar and tfchain addresses are not created from the same private key")
 
-        asset = _TFTA_FULL_ASSETCODES[str(self.conversion_wallet.network)]
+        network = str(get_wallet().network.value)
+
+        asset = _TFTA_FULL_ASSETCODES[network]
 
         # get balance from tfchain
         unlockhash = unlockhash_get(tfchain_address)
+        if unlockhash is None:
+            return json.dumps([])  # nothing to do
+
         balance = unlockhash.balance()
 
         is_authorized = self._is_authorized(unlockhash.unlockhash)
@@ -248,10 +250,10 @@ class TFchainmigration_service(BaseActor):
             except Exception:
                 raise j.exceptions.Value("Decoding memo hash failed")
 
-        tft_asset_issuer = _TFT_FULL_ASSETCODES[str(self.conversion_wallet.network)].split(":")[1]
-        tfta_asset_issuer = _TFTA_FULL_ASSETCODES[str(self.conversion_wallet.network)].split(":")[1]
+        tft_asset_issuer = _TFT_FULL_ASSETCODES[network].split(":")[1]
+        tfta_asset_issuer = _TFTA_FULL_ASSETCODES[network].split(":")[1]
         for asset_issuer in (tfta_asset_issuer, tft_asset_issuer):
-            converter_transactions = self.conversion_wallet.list_transactions(asset_issuer)
+            converter_transactions = get_wallet().list_transactions(asset_issuer)
             for converter_tx in converter_transactions:
                 if converter_tx.memo_hash is None:
                     continue
@@ -274,10 +276,10 @@ class TFchainmigration_service(BaseActor):
                     lock_time_date = datetime.fromtimestamp(lock_time)
                     # if lock time year is before 2021 be convert to TFTA
                     if lock_time_date.year < 2021:
-                        asset = _TFTA_FULL_ASSETCODES[str(self.conversion_wallet.network)]
+                        asset = _TFTA_FULL_ASSETCODES[network]
                     # else we convert to TFT
                     else:
-                        asset = _TFT_FULL_ASSETCODES[str(self.conversion_wallet.network)]
+                        asset = _TFT_FULL_ASSETCODES[network]
 
                     if time.time() < lock_time:
                         conversion_group.apply_async(
