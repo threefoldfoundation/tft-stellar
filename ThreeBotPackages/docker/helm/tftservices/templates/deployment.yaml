@@ -49,6 +49,11 @@ spec:
                 secretKeyRef:
                   name: tftservices-config
                   key: VESTING_WALLET_SECRET
+            - name: MIGRATION_WALLET_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: tftservices-config
+                  key: MIGRATION_WALLET_SECRET
             - name: TFT_SERVICES_NETWORK
               value:  {{ .Values.tftservicesnetwork }}
           ports:

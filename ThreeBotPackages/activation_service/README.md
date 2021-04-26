@@ -39,19 +39,30 @@ If the wallet name does not exist and the secret or network are not set through 
 
 ## Actor
 
-There is one actor with 1 method.
+There is one actor with 2 methods:
 
-- `activate_account`: Activates an addressdoes nothing, here for backwards compatibility
+- `activate_account`: Activates an address
   - param `address`: Stellar address to activate
 
-  This returns an xdr encoded transaction signed by the activation service that activates the account and adds a trustline to TFT using sponsored reserves. It needs to be signed by the address to activate and submitted to the Stellar network within 60 seconds.
+  Returns an xdr encoded transaction signed by the activation service that activates the account and adds a trustline to TFT using sponsored reserves. It needs to be signed by the address to activate and submitted to the Stellar network within 60 seconds.
 
 ```sh
 curl -k --header "Content-Type: application/json" --request POST --data '{"address":"<address>"}' https://<host>/activation_service/actors/activation_service/activate_account
 ```
 
+- `fund_trustline`: Funds a trustline
+  - param `address`: Stellar address to fund a trustline for
+  - param `asset`: Asset to fund the trustline for in CODE:ISSUER format
+
+  Returns an xdr encoded transaction signed by the activation service that adds a trustline to the requested asset using sponsored reserves. It needs to be signed by the account passed and submitted to the Stellar network within 60 seconds.
+
+```sh
+curl -k --header "Content-Type: application/json" --request POST --data '{"address":"<address>", "asset":"<CODE:ISSUER>"}' https://<host>/activation_service/actors/activation_service/fund_trustline
+```
+
 ## Threefoldfoundation deployed urls
 
-- Testnet: `https://testnet.threefold.io/threefoldfoundation/activation_service/activate_account`
+- Testnet:
+  - `https://testnet.threefold.io/threefoldfoundation/activation_service/activate_account`
+  - `https://testnet.threefold.io/threefoldfoundation/activation_service/fund_trustline`
 - Production: `https://tokenservices.threefold.io/threefoldfoundation/activation_service/activate_account`
-

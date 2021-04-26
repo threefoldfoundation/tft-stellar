@@ -2,7 +2,7 @@ from .BaseDataType import BaseDataTypeClass
 from .PrimitiveTypes import Hash
 from .ConditionTypes import UnlockHash, UnlockHashType
 from .rivine.RivineDataFactory import RivineDataFactory
-from pyblake2 import blake2b
+from hashlib import blake2b
 
 from enum import IntEnum
 

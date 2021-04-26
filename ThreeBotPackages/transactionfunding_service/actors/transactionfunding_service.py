@@ -42,8 +42,10 @@ class Transactionfunding_service(BaseActor):
         return stellar_sdk.Server(horizon_url=_HORIZON_NETWORKS[self._get_network()])
 
     def _create_fee_payment_operation(self, from_address, asset):
-        condition=[condition for condition in self.conditions() if condition["asset"]==asset_to_full_asset_string(asset)][0]
-        fee_amount=condition["fee_fixed"]
+        condition = [
+            condition for condition in self.conditions() if condition["asset"] == asset_to_full_asset_string(asset)
+        ][0]
+        fee_amount = condition["fee_fixed"]
         fee_target = condition["fee_account_id"]
 
         return stellar_sdk.Payment(fee_target, asset, fee_amount, from_address)
@@ -80,7 +82,7 @@ class Transactionfunding_service(BaseActor):
         ]
         return conditions
 
-    def _fee_bump(self,txe: stellar_sdk.TransactionEnvelope) -> dict:
+    def _fee_bump(self, txe: stellar_sdk.TransactionEnvelope) -> dict:
 
         funding_wallet = self._get_slave_fundingwallet()
 
@@ -90,7 +92,6 @@ class Transactionfunding_service(BaseActor):
         horizon_server = self._get_horizon_server()
         base_fee = horizon_server.fetch_base_fee()
 
-        source_account = funding_wallet.load_account()
         fb_txe = stellar_sdk.TransactionBuilder.build_fee_bump_transaction(
             source_public_kp,
             base_fee=base_fee,
@@ -98,13 +99,20 @@ class Transactionfunding_service(BaseActor):
             network_passphrase=self._get_network_passphrase(),
         )
         fb_txe.sign(source_signing_kp)
-        response = horizon_server.submit_transaction(fb_txe)
+        try:
+            response = horizon_server.submit_transaction(fb_txe)
+        except stellar_sdk.exceptions.BadRequestError as ex:
+            result_codes = ex.extras["result_codes"]
+            if result_codes.get("transaction") == "tx_fee_bump_inner_failed":
+                error_data = j.data.serializers.json.dumps({"operations": result_codes.get("operations", [])})
+                raise j.exceptions.Value(error_data)
+            raise ex
 
         fund_if_needed(funding_wallet.instance_name)
 
         return {"transactionhash": response["hash"]}
 
-    def _append_fee_payment(self,txe: stellar_sdk.TransactionEnvelope) -> dict:
+    def _append_fee_payment(self, txe: stellar_sdk.TransactionEnvelope) -> dict:
 
         txe.transaction.operations.append(
             self._create_fee_payment_operation(
@@ -115,7 +123,6 @@ class Transactionfunding_service(BaseActor):
         horizon_server = self._get_horizon_server()
         base_fee = horizon_server.fetch_base_fee()
         txe.transaction.fee = base_fee * len(txe.transaction.operations)
-
 
         funding_wallet = self._get_slave_fundingwallet()
 
@@ -149,12 +156,18 @@ class Transactionfunding_service(BaseActor):
             except j.data.serializers.json.json.JSONDecodeError:
                 pass
 
-        txe = stellar_sdk.transaction_envelope.TransactionEnvelope.from_xdr(transaction + "===", self._get_network_passphrase())
+        txe = stellar_sdk.transaction_envelope.TransactionEnvelope.from_xdr(
+            transaction + "===", self._get_network_passphrase()
+        )
 
         asset_fees = self._get_asset_fees()
 
         if len(txe.transaction.operations) == 0:
             raise j.exceptions.NotFound("No operations in the supplied transaction")
+
+        if is_signed_transaction(txe):
+            return self._fee_bump(txe)
+
         asset = None
         for op in txe.transaction.operations:
             if type(op) != stellar_sdk.operation.Payment:
@@ -169,8 +182,6 @@ class Transactionfunding_service(BaseActor):
             else:
                 asset = op.asset
 
-        if is_signed_transaction(txe):
-            return self._fee_bump(txe)
         return self._append_fee_payment(txe)
 
 

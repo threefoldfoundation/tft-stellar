@@ -1,5 +1,5 @@
 import hashlib
-from pyblake2 import blake2b
+from hashlib import blake2b
 from datetime import datetime, timedelta
 
 from .PrimitiveTypes import BinaryData, Hash

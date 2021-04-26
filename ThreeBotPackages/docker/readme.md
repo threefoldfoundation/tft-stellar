@@ -1,16 +1,5 @@
 # Dockerfiles  and kubernetes installs
 
-## TFT services
-
-This container image contains a threebot with all the tft services installed
-
-```sh
-docker build tftservices -t tftservices:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
-```
-
-If you installed tftservices through the helm chart and want to get inside the pod:
-`kubectl exec $(kubectl get pods --selector "app.kubernetes.io/name=tftservices" --output=name) -it /bin/bash`
-
 ## jssdk
 
 Base container with js-sdk installed
@@ -18,6 +7,19 @@ Base container with js-sdk installed
 ```sh
 docker build js-sdk -t jssdk:development --no-cache
 ```
+
+## TFT services
+
+This container image contains a threebot with all the tft services installed
+
+Requires the `jssdk:development` image.
+
+```sh
+docker build tftservices -t tftservices:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
+```
+
+If you installed tftservices through the helm chart and want to get inside the pod:
+`kubectl exec $(kubectl get pods --selector "app.kubernetes.io/name=tftservices" --output=name) -it /bin/bash`
 
 ## Statistics
 
