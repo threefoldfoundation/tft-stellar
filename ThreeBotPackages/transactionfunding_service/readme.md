@@ -94,6 +94,17 @@ There is one actor with 2 methods:
 
 It can be called on the following url:`https://<host>//transactionfunding_service/actors/transactionfunding_service/fund_transaction`
 
+There are two options of getting thetransaction funded:
+
+- Send an unsigned transaction containg a single payment operation
+
+The source of the transaction will be modified and a fee payment operation is added. It is signed by the transaction funding service and needs to be signed by the client and submitted to the Stellar network.
+
+- Send a signed transaction containing the oiperation to execute and a fee payment operation. 
+
+The details of the feepayment operation can be found through the conditions endpoint. Set the fee of your transaction to 0.
+The transaction funding service will wrap the transaction in a feebump transaction and submit it to the Stellar network.
+
 curl examle:
 
 ```sh
