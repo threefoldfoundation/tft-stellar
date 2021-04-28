@@ -89,16 +89,16 @@ class Transactionfunding_service(BaseActor):
         source_public_kp = stellar_sdk.Keypair.from_public_key(funding_wallet.address)
         source_signing_kp = stellar_sdk.Keypair.from_secret(funding_wallet.secret)
 
-        horizon_server = self._get_horizon_server()
-        base_fee = horizon_server.fetch_base_fee()
 
         fb_txe = stellar_sdk.TransactionBuilder.build_fee_bump_transaction(
             source_public_kp,
-            base_fee=base_fee,
+            base_fee=5000,
             inner_transaction_envelope=txe,
             network_passphrase=self._get_network_passphrase(),
         )
         fb_txe.sign(source_signing_kp)
+
+        horizon_server = self._get_horizon_server()
         try:
             response = horizon_server.submit_transaction(fb_txe)
         except stellar_sdk.exceptions.BadRequestError as ex:
