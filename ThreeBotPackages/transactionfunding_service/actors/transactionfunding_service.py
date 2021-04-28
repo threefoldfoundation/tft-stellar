@@ -14,6 +14,7 @@ from transactionfunding_sal import ASSET_FEES, WALLET_NAME, NUMBER_OF_SLAVES, fu
 
 _HORIZON_NETWORKS = {"TEST": "https://horizon-testnet.stellar.org", "STD": "https://horizon.stellar.org"}
 
+_MAX_FEE=1000000
 
 def asset_to_full_asset_string(asset: stellar_sdk.Asset) -> str:
     if asset.is_native():
@@ -92,7 +93,7 @@ class Transactionfunding_service(BaseActor):
 
         fb_txe = stellar_sdk.TransactionBuilder.build_fee_bump_transaction(
             source_public_kp,
-            base_fee=5000,
+            base_fee=_MAX_FEE,
             inner_transaction_envelope=txe,
             network_passphrase=self._get_network_passphrase(),
         )
@@ -120,9 +121,7 @@ class Transactionfunding_service(BaseActor):
             )
         )
 
-        horizon_server = self._get_horizon_server()
-        base_fee = horizon_server.fetch_base_fee()
-        txe.transaction.fee = base_fee * len(txe.transaction.operations)
+        txe.transaction.fee = _MAX_FEE
 
         funding_wallet = self._get_slave_fundingwallet()
 
