@@ -2,6 +2,8 @@ import os
 import sys
 import time
 
+from urllib import parse
+
 import stellar_sdk
 from jumpscale.core.exceptions import JSException
 from jumpscale.loader import j
@@ -131,6 +133,7 @@ class VestingService(BaseActor):
         tresholds = account_record["thresholds"]
         if tresholds["low_threshold"] != 10 or tresholds["med_threshold"] != 10 or tresholds["high_threshold"] != 10:
             return False
+        print("Tresholds are fine")
         ## signers found for account
         signers = {signer["key"]: (signer["weight"], signer["type"]) for signer in account_record["signers"]}
         # example of signers item --> {'GCWPSLTHDH3OYH226EVCLOG33NOMDEO4KUPZQXTU7AWQNJPQPBGTLAVM':(5,'ed25519_public_key')}
@@ -168,15 +171,35 @@ class VestingService(BaseActor):
             return cleanup_signer_correct and master_key_weight_correct and owner_key_weight_correct
         return len(account_record["signers"]) == 11 and master_key_weight_correct and owner_key_weight_correct
 
+
+    def _get_vesting_accounts(self, address: str)-> list:
+        vestingaccounts=[]
+        
+        accounts_endpoint=get_wallet()._get_horizon_server().accounts()
+        accounts_endpoint.signer(address)
+        old_cursor="old"
+        new_cursor=""
+        while new_cursor != old_cursor:
+            old_cursor = new_cursor
+            accounts_endpoint.cursor(new_cursor)
+            response = accounts_endpoint.call()
+            next_link = response["_links"]["next"]["href"]
+            next_link_query = parse.urlsplit(next_link).query
+            cursor = parse.parse_qs(next_link_query,keep_blank_values=True).get("cursor")
+            new_cursor = cursor[0]
+            for record in response["_embedded"]["records"]:
+                if "tft-vesting" in record.get("data"):
+                    decoded_data = j.data.serializers.base64.decode(record["data"]["tft-vesting"]).decode()
+                    if decoded_data == VESTING_SCHEME:
+                        if self._verify_signers(record, address):
+                            vestingaccounts.append(record)
+        return vestingaccounts
+
     def _check_has_vesting_account(self, address: str):
-        accounts = get_wallet()._get_horizon_server().accounts()
-        accounts_for_signer = accounts.for_signer(address).call()
-        for record in accounts_for_signer["_embedded"]["records"]:
-            if "tft-vesting" in record.get("data"):
-                decoded_data = j.data.serializers.base64.decode(record["data"]["tft-vesting"]).decode()
-                if decoded_data == VESTING_SCHEME:
-                    if self._verify_signers(record, address):
-                        return record["account_id"]
+        vestingaccounts=self._get_vesting_accounts(address)
+        if len(vestingaccounts)>0:
+            return vestingaccounts[0]["account_id"]
+        return nil
 
     def _create_recovery_transaction(self, vesting_address: str) -> stellar_sdk.TransactionEnvelope:
         activation_account_id = get_wallet().address
@@ -258,6 +281,37 @@ class VestingService(BaseActor):
         try:
             escrow_address = self._create_vesting_account(owner_address)
             data = {"address": escrow_address}
+
+        except stellar_sdk.exceptions.NotFoundError as e:
+            j.logger.exception("Error: Address not found", exception=e)
+            data = {"Error": "Address not found"}
+
+        except stellar_sdk.exceptions.BadRequestError as e:
+            if e.extras.get("invalid_field", "") == "account_id":
+                data = {"Error": "Address not valid"}
+            else:
+                data = {"Error": f"{e.title}: {e.detail}"}
+            j.logger.exception(str(data), exception=e)
+
+        except j.exceptions.Value as e:
+            data = {"Error": e.args[0]}
+            j.logger.exception(str(data), exception=e)
+
+        return data
+    
+    @actor_method
+    def vesting_accounts(self, owner_address: str="") -> dict:
+        if owner_address=="":
+            raise j.exceptions.Value("owner_address is required")
+        try:
+            found_vesting_accounts= self._get_vesting_accounts(owner_address)
+            vesting_accounts=[]
+            data = {"owner_adress": owner_address}
+            for found_vesting_account in found_vesting_accounts:
+                vesting_account={"address":found_vesting_account["account_id"]}
+                vesting_accounts.append(vesting_account)
+
+            data["vesting_accounts"]=vesting_accounts
 
         except stellar_sdk.exceptions.NotFoundError as e:
             j.logger.exception("Error: Address not found", exception=e)

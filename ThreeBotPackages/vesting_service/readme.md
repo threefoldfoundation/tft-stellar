@@ -1,5 +1,23 @@
 # Vesting Service
 
+## Available methods
+
+### Create vesting account
+
+`create_vesting_account`
+
+### List vesting accounts
+
+`vesting_accounts`
+
+On localhost: `https://localhost:443/vesting_service/actors/vesting_service/vesting_accounts`
+
+It can be called using an http POST  with `application/json` as content type and with the following data:
+
+```json
+{ "owner_address": "<ADDRESS>"}
+```
+
 ## Threefoldfoundation deployed urls
 
 ### Testnet
