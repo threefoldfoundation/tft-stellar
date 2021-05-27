@@ -3,13 +3,11 @@ import sys
 import os
 import toml
 
-import gevent
-
 from jumpscale.loader import j
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/sals/")
-from vesting_sal import create_gevent_pool, set_wallet
+from vesting_sal import set_wallet
 
 
 class vesting_service:
@@ -33,8 +31,6 @@ class vesting_service:
                 wallet.activate_through_friendbot()
 
         set_wallet(wallet)
-
-        create_gevent_pool()
 
     def start(self, **kwargs):
         self.install(**kwargs)
