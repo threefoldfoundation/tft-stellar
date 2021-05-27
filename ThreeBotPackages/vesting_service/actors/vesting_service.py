@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import decimal
 
 from urllib import parse
 
@@ -309,6 +310,15 @@ class VestingService(BaseActor):
             data = {"owner_adress": owner_address}
             for found_vesting_account in found_vesting_accounts:
                 vesting_account={"address":found_vesting_account["account_id"]}
+                tft_balance=decimal.Decimal(0)
+                for balance in found_vesting_account["balances"]:
+                    if balance.get("asset_code")=="TFT":
+                        tft_balance=decimal.Decimal(balance["balance"])
+                free_balance=decimal.Decimal(0)
+                vested_balance=tft_balance-free_balance
+                vesting_account["balance"]=str(tft_balance)
+                vesting_account["free"]=str(free_balance)
+                vesting_account["vested"]=str(vested_balance)
                 vesting_accounts.append(vesting_account)
 
             data["vesting_accounts"]=vesting_accounts
