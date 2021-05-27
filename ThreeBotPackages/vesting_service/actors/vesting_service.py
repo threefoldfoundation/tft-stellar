@@ -134,7 +134,7 @@ class VestingService(BaseActor):
         tresholds = account_record["thresholds"]
         if tresholds["low_threshold"] != 10 or tresholds["med_threshold"] != 10 or tresholds["high_threshold"] != 10:
             return False
-        print("Tresholds are fine")
+            
         ## signers found for account
         signers = {signer["key"]: (signer["weight"], signer["type"]) for signer in account_record["signers"]}
         # example of signers item --> {'GCWPSLTHDH3OYH226EVCLOG33NOMDEO4KUPZQXTU7AWQNJPQPBGTLAVM':(5,'ed25519_public_key')}
