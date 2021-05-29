@@ -29,16 +29,11 @@ def tft_price_command(starttimestamp):
 
     # Get TFT bprices in XLM
     r = requests.get(
-        "https://api.stellar.expert/explorer/public/asset/TFT-GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47"
+        "https://api.stellar.expert/explorer/public/asset/TFT-GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47/stats-history"
     )
     r.raise_for_status()
-    parsed_response = r.json()
-    if not "history" in parsed_response:
-        print("No history in stellar.expert response")
-        print(parsed_response)
-        return
+    history = r.json()
 
-    history = parsed_response["history"]
     relevant_history = [
         {"ts": i["ts"], "price": i["price"], "traded_amount": i["traded_amount"]} for i in history if "price" in i
     ]
