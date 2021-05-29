@@ -15,6 +15,8 @@ def xlm_price_at(xlm_usd_values, timestamp):
         i += 1
 
 
+
+# May 2021 timestamp: 1619827200
 @click.command(help="Calculate the tft price using stellar.expert")
 @click.argument("starttimestamp", required=False, type=int, default=0)
 def tft_price_command(starttimestamp):
@@ -53,9 +55,9 @@ def tft_price_command(starttimestamp):
         weighted_average_price += average * volume
         total_volume += volume
 
-        print(f"{datetime.datetime.fromtimestamp(timestamp)}: high: {usd_high} USD low: {usd_low} USD volume: {volume}")
+        print(f"{datetime.datetime.fromtimestamp(timestamp)} high: {usd_high:.5f} USD low: {usd_low:.5f} USD volume: {volume}")
     weighted_average_price = weighted_average_price / total_volume
-    print("Weighted average price=", weighted_average_price)
+    print(f"Weighted average price= { weighted_average_price:.5f}")
 
 
 if __name__ == "__main__":
