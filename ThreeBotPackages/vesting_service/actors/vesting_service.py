@@ -301,7 +301,7 @@ class VestingService(BaseActor):
         return data
     
     @actor_method
-    def vesting_accounts(self, owner_address: str="") -> dict:
+    def vesting_accounts(self, owner_address: str) -> dict:
         if owner_address=="":
             raise j.exceptions.Value("owner_address is required")
         try:
