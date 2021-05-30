@@ -42,8 +42,7 @@ apt-get install -y git python3-venv python3-pip redis-server tmux nginx wget -y
 pip3 install poetry
 python3 -m pip install js-sdk
 ```
-Copy paste the above into the ubuntu container and wait. This will take a while and a lot of output will be generated to your screen.  Have a coffee and wait it out.
-
+Copy paste all the lines above into the ubuntu container and press `enter`. This will take a while and a lot of output will be generated to your screen.  Have a coffee and wait it out.  When this is done - repeat with all the lines in the block below:
 ```
 cd
 mkdir code
