@@ -36,8 +36,6 @@ And if you look carefully, the command prompt changed to `root@a6c169a3ac2f:/#` 
 
 To do the following needed steps, it's easiest to copy & paste the following steps into the ubuntu container.  You can select the complete block and press `enter`
 
-[This](update_ubuntu.md)
-
 ```
 apt update
 apt upgrade -y
