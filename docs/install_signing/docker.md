@@ -53,6 +53,7 @@ cd github
 mkdir threefoldtech
 cd threefoldtech
 wget https://github.com/threefoldtech/js-sdk/tarball/master ; tar xvf ./master ; rm master
+cd three*
 poetry update
 poetry install
 poetry shell
@@ -63,18 +64,6 @@ The end result is all updates software, and in the ubuntu container you now have
 
 So type ```jsng``` and see something liek this:
 ```
-  • Installing minio (4.0.21)
-  • Installing netaddr (0.7.20)
-  • Installing protobuf (3.17.1)
-  • Installing pycountry (19.8.18)
-  • Installing pygithub (1.54.1)
-  • Installing pypng (0.0.20)
-  • Installing pyqrcode (1.2.1)
-  • Installing python-digitalocean (1.16.0)
-  • Installing python-taiga (1.0.0)
-  • Installing requests-unixsocket (0.2.0)
-  • Installing sendgrid (6.7.0)
-  • Installing stellar-sdk (2.4.1)
 root@51b1e37e5510:~/code/github/threefoldtech/threefoldtech-js-sdk-e44e950# jsng
 JS-NG>
 
@@ -96,7 +85,7 @@ Response should look like:
 Stellar(
   instance_name='TFCosigningwallet',
   network=<Network.STD: 'STD'>,
-  address='<<your stella signing wallet address',
+  address='<<your stella signing wallet address>>',
   secret='<<your private key>>'
 )
 
