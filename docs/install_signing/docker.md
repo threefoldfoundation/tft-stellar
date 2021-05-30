@@ -21,7 +21,7 @@ This should give you a lot of outout describing what options are available for t
 
 To download and store the docker ubuntu image:
 ```
-docker run -ti ubuntu
+docker run -v /$HOME:/mnt/my_home -ti ubuntu
 ```
 
 Output should look like:
@@ -137,6 +137,8 @@ With that link, comlpete the following command in the ubuntu container:
 wget <<insert copied link>>
 ```
 you should now have that file in the base directory of the `js-sdk` repo.   To sign all we need to do is:
+
+## 5. Sign the TFT payouts with your private key
 ```
 ./sign.py <<name_of_downloaded_file_from_previous_signer.txt>> <<my_name_outputfile.txt>>
 ```
@@ -149,6 +151,9 @@ Signing 1386.1497888 TFT:GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC4
 Signing 9656.2832274 
 .......
 ```
+## 6. Upload the output to the Github issue to the next singer to use.
+
+Depending of the month there will be a dedicated issue to handle the multisignatore sequence.  When you are done - please upload the resulting file to a cooment in github.
 
 
 
