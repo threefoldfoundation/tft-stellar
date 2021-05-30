@@ -17,7 +17,7 @@ johndoe@Johns-MacBook-Pro-6 github % docker
 ```
 This should give you a lot of outout describing what options are available for the `docker` command.
 
-## 1. download and store the docker ubuntu image
+## 1. Download and update the docker ubuntu image
 
 To download and store the docker ubuntu image:
 ```
@@ -47,6 +47,8 @@ apt upgrade -y
 ```bash
 apt-get install -y git python3-venv python3-pip redis-server tmux nginx wget -y
 ```
+
+## 2. Install the required software for the signing SDK
 
 ```bash
 pip3 install poetry
@@ -93,6 +95,7 @@ JS-NG>
  [F4] Emacs  1/1 [F3] History [F6] Paste mode                                                                                                                  [F2] Menu - CPython 3.8.5
  ```
 
+## 3. Install the private key in the `jsngz` container
 Now we're ready to rock. Last item is to install you private key.  To do so - we need type in two command in the `jsng` shell.
 
 First one:
@@ -118,6 +121,8 @@ All done, you can now exit.
 ```
 exit()
 ```
+
+## 4. Get the signing script and previous signers output.
 
 To get the signing script please do this:
 ```
