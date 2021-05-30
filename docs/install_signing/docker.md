@@ -36,7 +36,7 @@ And if you look carefully, the command prompt changed to `root@a6c169a3ac2f:/#` 
 
 To do the following needed steps, it's easiest to copy & paste the following steps into the ubuntu container.  You can select the complete block and press `enter`
 
-[This is the file](./update_ubuntu.md)
+[This](update_ubuntu.md)
 
 ```
 apt update
@@ -102,6 +102,31 @@ All done, you can now exit.
 exit()
 ```
 
+To get the signing script please do this:
+```
+wget  https://raw.githubusercontent.com/threefoldfoundation/tft-stellar/development_install_minting/docs/install_signing/sign.py
+chmod 755 ./sign.py
+```
+
+And to get the previous signers output please go to the issue and copy the link to the file of the previous signer: ![](img/copy_link.png)
+
+With that link, comlpete the following command in the ubuntu container:
+```
+wget <<insert copied link>>
+```
+you should now have that file in the base directory of the `js-sdk` repo.   To sign all we need to do is:
+```
+./sign.py <<name_of_downloaded_file_from_previous_signer.txt>> <<my_name_outputfile.txt>>
+```
+
+A process should start (and take a couple of hours to complete) that looks like this:
+```
+JS-NG> exit()
+root@acc50e7f1bda:~/code/github/threefoldtech/threefoldtech-js-sdk-e44e950# ./sign.py payouts_signed_by_ahmed.txt new_out.txt
+Signing 1386.1497888 TFT:GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47 to <MuxedAccount [account_id=GAMT37U3JASMVGI5GR4TD7HV7ECOUUY7I4A7NZPOVNJKBY27ET7NQFQ2, account_id_id=None]> with memo 000cd192858680a001f70cdbbadde487322a58bfc27804afc050e13e272f9336 and sequence number 121828310719140709
+Signing 9656.2832274 
+.......
+```
 
 
 
