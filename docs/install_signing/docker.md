@@ -13,9 +13,9 @@ Per operating system:
 
 Once installed you should be able to do the following test in a terminal / command shell and get the (long) output of the docker command.
 ```
-johndoe@Johns-MacBook-Pro-6 github % docker
+johndoe@badaboom github % docker
 ```
-This should give you a lot of outout describing what options are available for the `docker` command.
+This should give you a lot of output describing what options are available for the `docker` command.
 
 ## 1. Download and update the docker ubuntu image
 
