@@ -153,7 +153,27 @@ Signing 9656.2832274
 ```
 ## 6. Upload the output to the Github issue to the next singer to use.
 
-Depending of the month there will be a dedicated issue to handle the multisignatore sequence.  When you are done - please upload the resulting file to a cooment in github.
+Depending of the month there will be a dedicated issue to handle the multi-signature sequence.  When you are done - please upload the resulting file to a comment in github.
 
+To do so copy the output file (result) from you signing the transactions to your laptop:
+
+```
+cp ./<<output_file_name.txt>> /mnt/my_home
+```
+
+Now you can exit the docker container:
+```
+exit
+```
+
+```
+exit
+```
+first `exit` exits the poetry shell, the second `exit` exits the container.
+
+Now you should find the file you created in you `homedirectory`.  For Macos this is here in the finder:
+![](img/homedir.png)
+
+You can simply drag and drop the file to a the Github issue comment.
 
 
