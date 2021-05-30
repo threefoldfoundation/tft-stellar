@@ -56,8 +56,8 @@ pip3 install poetry
 python3 -m pip install js-sdk
 ```
 
-Copy paste all the lines above into the ubuntu container and press `enter`. This will take a while and a lot of output will be generated to your screen.  Have a coffee and wait it out.  When this is done - repeat with all the lines in the block below:
-```
+Copy paste all the lines above into the ubuntu container and press `enter`. This will take a while and a lot of output will be generated to your screen.  Have a coffee and wait it out.  When this is done - repeat with all the lines in the blocks below:
+```bash
 cd
 mkdir code
 cd code
@@ -65,8 +65,14 @@ mkdir github
 cd github
 mkdir threefoldtech
 cd threefoldtech
+```
+
+```bash
 wget https://github.com/threefoldtech/js-sdk/tarball/master ; tar xvf ./master ; rm master
 cd three*
+```
+
+```bash
 poetry update
 poetry install
 poetry shell
