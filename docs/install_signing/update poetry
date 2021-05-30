@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# update and install the peotry environment + js-sdk
+cd
+mkdir code
+cd code
+mkdir github
+cd github
+mkdir threefoldtech
+cd threefoldtech
+wget https://github.com/threefoldtech/js-sdk/tarball/master ; tar xvf ./master ; rm master
+cd three*
+poetry update
+poetry install
+poetry shell
