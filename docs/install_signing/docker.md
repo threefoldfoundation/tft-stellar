@@ -36,15 +36,25 @@ And if you look carefully, the command prompt changed to `root@a6c169a3ac2f:/#` 
 
 To do the following needed steps, it's easiest to copy & paste the following steps into the ubuntu container.  copy paste them one by one and press `enter`
 
-```apt update```
+```bash
+apt update
+```
 
-```apt upgrade -y```
+```bash
+apt upgrade -y
+```
 
-```apt-get install -y git python3-venv python3-pip redis-server tmux nginx wget -y```
+```bash
+apt-get install -y git python3-venv python3-pip redis-server tmux nginx wget -y
+```
 
-```pip3 install poetry```
+```bash
+pip3 install poetry
+```
 
-```python3 -m pip install js-sdk```
+```bash
+python3 -m pip install js-sdk
+```
 
 Copy paste all the lines above into the ubuntu container and press `enter`. This will take a while and a lot of output will be generated to your screen.  Have a coffee and wait it out.  When this is done - repeat with all the lines in the block below:
 ```
