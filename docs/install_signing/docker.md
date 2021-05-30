@@ -161,6 +161,11 @@ To do so copy the output file (result) from you signing the transactions to your
 cp ./<<output_file_name.txt>> /mnt/my_home
 ```
 
+For the record, when you exit the container it does not store any of the actions that you have done in / on the container.  So for the next minting period you have to go through the whole procedure again.
+
+We can however preserve the correct status of the container but then you have to be able to "maintain" that container and makde sure you do updates and upgrades that will happen in the 30 day period between singing activities yourself.  At this point we belief it's better to not store the state in you laptop and buidl the container everytime from scratch.  Let me (@weynandkuijpers) know if you feel that you can maintain the container in the appropriate way.
+
+
 Now you can exit the docker container:
 ```
 exit
