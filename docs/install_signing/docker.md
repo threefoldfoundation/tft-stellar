@@ -78,7 +78,7 @@ Now we're ready to rock. Last item is to install you private key.  To do so - we
 
 First one:
 ```
-j.clients.stellar.new('TFCosigningwallet', secret='<<insert your private key - starting with a capital S')
+j.clients.stellar.new('TFCosigningwallet', secret='<<insert your private key - starting with a capital S>>')
 ```
 Response should look like:
 ```
