@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# all commands run in sequence.
+
+apt update
+apt upgrade -y
+apt-get install -y git python3-venv python3-pip redis-server tmux nginx wget -y
+pip3 install poetry
+python3 -m pip install js-sdk
