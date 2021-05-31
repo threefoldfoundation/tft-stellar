@@ -126,7 +126,7 @@ exit()
 
 To get the signing script please do this:
 ```
-wget  https://raw.githubusercontent.com/threefoldfoundation/tft-stellar/development_install_minting/docs/install_signing/sign.py
+wget  https://raw.githubusercontent.com/threefoldfoundation/tft-stellar/development_1.4.5/docs/install_signing/sign.py
 chmod 755 ./sign.py
 ```
 
