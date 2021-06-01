@@ -200,7 +200,7 @@ class VestingService(BaseActor):
         vestingaccounts=self._get_vesting_accounts(address)
         if len(vestingaccounts)>0:
             return vestingaccounts[0]["account_id"]
-        return nil
+        return None
 
     def _create_recovery_transaction(self, vesting_address: str) -> stellar_sdk.TransactionEnvelope:
         activation_account_id = get_wallet().address
