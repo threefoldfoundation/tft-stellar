@@ -59,6 +59,13 @@ Adding this extra signer requires an extra 0.5 XLM per escrow account.
 
 They are published to the unlock-service  which already contain the unlocktransactions for the locked tokens so people can verify that this transaction is nothing fishy.
 
-### Examples and testcode
+### Price determination
 
-The [testscripts](./testscripts/) folder contains testscripts in Python to create escrow accounts on the Stellar test network.
+The price for a month is determined using [stellar.expert](https://stellar.expert) data.
+A [script](../scrips/info/stellarexpert/tftprice.py) to determine the weighted average price for a month is available so everyone can check.
+
+monthly prices:
+
+|month| USD price |
+|-----|-----------|
+|o5/2021|0.09940|
