@@ -82,7 +82,7 @@ So type ```jsng``` and see something like this:
 
 ![](img/jsng.png)
 
-## 3. Install the private key in the `jsngz` container
+## 3. Install the private key in the `jsng` container
 Now we're ready to rock. Last item is to install you private key.  To do so - we need type in two command in the `jsng` shell.
 
 First one:
