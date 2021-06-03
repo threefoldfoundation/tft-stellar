@@ -25,14 +25,9 @@ docker run -v /$HOME:/mnt/my_home -ti ubuntu
 ```
 
 Output should look like:
-```
-Unable to find image 'ubuntu:latest' locally
-latest: Pulling from library/ubuntu
-Digest: sha256:adf73ca014822ad8237623d388cedf4d5346aa72c270c5acc01431cc93e18e2d
-Status: Downloaded newer image for ubuntu:latest
-root@a6c169a3ac2f:/#
-```
-And if you look carefully, the command prompt changed to `root@a6c169a3ac2f:/#` which means you are no inside the running ubuntu container.
+![](img/ubuntu-start.png)
+
+And if you look carefully, the command prompt changed to `root@4d86ef7e4a2a:/#` which means you are no inside the running ubuntu container.
 
 To do the following needed steps, it's easiest to copy & paste the following steps into the ubuntu container.  copy paste them one by one and press `enter`
 
@@ -84,35 +79,23 @@ It will produce again a lot of output - another coffee or do some work.
 The end result is all updates software, and in the ubuntu container you now have a fully configures poetry shell which is what you need to start `jsng`.
 
 So type ```jsng``` and see something like this:
-```
-root@51b1e37e5510:~/code/github/threefoldtech/threefoldtech-js-sdk-e44e950# jsng
-JS-NG>
 
-
-
-
-
- [F4] Emacs  1/1 [F3] History [F6] Paste mode                                                                                                                  [F2] Menu - CPython 3.8.5
- ```
+![](img/jsng.png)
 
 ## 3. Install the private key in the `jsngz` container
 Now we're ready to rock. Last item is to install you private key.  To do so - we need type in two command in the `jsng` shell.
 
 First one:
 ```
-j.clients.stellar.new('TFCosigningwallet', secret='<<insert your private key - starting with a capital S>>')
+j.clients.stellar.new('TFCosigningwallet', secret='.....')
 ```
-Response should look like:
-```
-Stellar(
-  instance_name='TFCosigningwallet',
-  network=<Network.STD: 'STD'>,
-  address='<<your stella signing wallet address>>',
-  secret='<<your private key>>'
-)
+And please replace the '.....' with the co-signer private key that you have sotred somewhere safe.
 
-JS-NG>
-```
+
+Response should look like:
+
+![](img/wallet-response.png)
+
 Success!  you now just need to save the private in in the `jsng` environment.  This is one more command:
 ```
 j.clients.stellar.TFCosigningwallet.save()
