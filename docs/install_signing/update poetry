@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# update the OS
+echo "Updating the OS...."
+apt update >/dev/null 2>&1
+apt upgrade -y >/dev/null 2>&1
+
+echo "Adding missing software....."
+apt-get install -y git python3-venv python3-pip redis-server tmux nginx wget -y
+
+echo "Installing poetry...."
+pip3 install poetry >/dev/null 2>&1
+
+echo "Installing python"
+python3 -m pip install js-sdk >/dev/null 2>&1
+
+
 # update and install the peotry environment + js-sdk
 cd
 mkdir code
@@ -8,8 +23,8 @@ mkdir github
 cd github
 mkdir threefoldtech
 cd threefoldtech
-wget https://github.com/threefoldtech/js-sdk/tarball/master ; tar xvf ./master ; rm master
+wget https://github.com/threefoldtech/js-sdk/tarball/master ; tar xvf ./master ; rm master >/dev/null 2>&1
 cd three*
-poetry update
-poetry install
+poetry update >/dev/null 2>&1
+poetry install >/dev/null 2>&1
 poetry shell
