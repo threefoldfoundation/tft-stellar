@@ -4,11 +4,9 @@ import sys
 import os
 import stellar_sdk
 
-from beaker.middleware import SessionMiddleware
 from bottle import Bottle, request, HTTPError, response
 
 from jumpscale.loader import j
-from jumpscale.packages.auth.bottle.auth import SESSION_OPTS
 
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
@@ -249,4 +247,3 @@ def get_address_info(address):
     return response
 
 
-app = SessionMiddleware(app, SESSION_OPTS)
