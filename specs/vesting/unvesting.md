@@ -3,7 +3,7 @@
 ## Price determination
 
 The price for a month is determined using [stellar.expert](https://stellar.expert) data.
-A [script](../scrips/info/stellarexpert/tftprice.py) to determine the weighted average price for a month is available so everyone can check.
+A [script](../../scrips/info/stellarexpert/tftprice.py) to determine the weighted average price for a month is available so everyone can check.
 
 ## Ckecking vesting accounts
 
