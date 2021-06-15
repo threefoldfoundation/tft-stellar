@@ -314,9 +314,9 @@ class VestingService(BaseActor):
                         tft_balance=decimal.Decimal(balance["balance"])
                 free_balance=decimal.Decimal(0)
                 vested_balance=tft_balance-free_balance
-                vesting_account["balance"]=str(tft_balance)
-                vesting_account["free"]=str(free_balance)
-                vesting_account["vested"]=str(vested_balance)
+                vesting_account["balance"]=f"{tft_balance:.7f}"
+                vesting_account["free"]=f"{free_balance:.7f}"
+                vesting_account["vested"]=f"{vested_balance:.7f}"
                 vesting_accounts.append(vesting_account)
 
             data["vesting_accounts"]=vesting_accounts
