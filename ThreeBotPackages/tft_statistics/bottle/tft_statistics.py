@@ -4,11 +4,9 @@ import sys
 import os
 import stellar_sdk
 
-from beaker.middleware import SessionMiddleware
 from bottle import Bottle, request, HTTPError, response
 
 from jumpscale.loader import j
-from jumpscale.packages.auth.bottle.auth import SESSION_OPTS
 
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
@@ -235,18 +233,22 @@ def get_address_info(address):
 
     if data.escrow_accounts:
         locked_amounts = []
+        free_locked_amounts=[]
         for locked_amount in data.escrow_accounts:
-            locked_amounts.append(
-                {
+            locked_amount_response={
                     "address": locked_amount.address,
-                    "locked_until": datetime.datetime.fromtimestamp(locked_amount.unlock_time).isoformat(),
                     "balances": balances_to_reponse(locked_amount.balances),
                 }
-            )
-
+            if locked_amount.unlock_time is not None:
+                locked_amount_response["locked_until"]= datetime.datetime.fromtimestamp(locked_amount.unlock_time).isoformat()
+                locked_amounts.append(locked_amount_response)
+            else:
+                free_locked_amounts.append(locked_amount_response)
+    if locked_amounts:
         response["locked_amounts"] = locked_amounts
+    if free_locked_amounts:
+        response["free_amounts"]=free_locked_amounts
 
     return response
 
 
-app = SessionMiddleware(app, SESSION_OPTS)
