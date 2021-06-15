@@ -244,8 +244,6 @@ class VestingService(BaseActor):
 
         activation_account = wallet.load_account()
 
-        tftasset = wallet._get_asset()
-
         txb = (
             stellar_sdk.TransactionBuilder(activation_account, network_passphrase=self._get_network_passphrase())
             .append_create_account_op(escrow_address, starting_balance="7.6")
