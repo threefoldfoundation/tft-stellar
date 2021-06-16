@@ -244,10 +244,10 @@ def get_address_info(address):
                 locked_amounts.append(locked_amount_response)
             else:
                 free_locked_amounts.append(locked_amount_response)
-    if locked_amounts:
-        response["locked_amounts"] = locked_amounts
-    if free_locked_amounts:
-        response["free_amounts"]=free_locked_amounts
+        if locked_amounts:
+            response["locked_amounts"] = locked_amounts
+        if free_locked_amounts:
+            response["free_amounts"]=free_locked_amounts
 
     return response
 
