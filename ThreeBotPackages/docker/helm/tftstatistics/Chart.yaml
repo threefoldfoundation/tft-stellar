@@ -4,9 +4,9 @@ description: A Helm chart for deploying the tft statistics api
 
 type: application
 
-version: 1.4.0
+version: 1.4.1
 
 sources:
   - https://github.com/threefoldfoundation/tft-stellar
   
-appVersion: 1.4.4
+appVersion: 1.4.5
