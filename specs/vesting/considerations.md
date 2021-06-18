@@ -2,9 +2,10 @@
 
 ## Libp2p
 
-**TODO:** explain why libp2p is a very good option to communicate between the cosigners:
-
 - Zero config
+
+  Since a Stellar address is just a ED25119 public key, we can use decentralized communication and peerdiscovery if the peers are discoverable through a derivative of this public key. [Libp2p](https://libp2p.io) is such a communication system.
+
 - NAT traversal + peer routing
 
 ## Posting the unvesting transaction from the wallet to the cosigners
