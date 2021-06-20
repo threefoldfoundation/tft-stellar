@@ -9,15 +9,15 @@ import (
 
 func main() {
 
-	var walletSecret string
+	var accountSecret string
 	var network string
 
-	flag.StringVar(&walletSecret, "walletsecret", "", "The Cosigning walletsecret")
+	flag.StringVar(&walletSecret, "accountsecret", "", "The Cosigning account secret")
 	flag.StringVar(&network, "network", "public", "The stellar network to use: 'public' or 'test'")
 
 	flag.Parse()
 
-	libp2pPrivKey := communication.GetLibp2pPrivateKeyFromStellarSeed(walletSecret)
+	libp2pPrivKey := communication.GetLibp2pPrivateKeyFromStellarSeed(accountSecret)
 	//stellarKP := keypair.MustParseFull(walletSecret)
 	rootCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()

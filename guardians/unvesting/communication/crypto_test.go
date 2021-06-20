@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestStellarAddressFromP2PPublicKey(t *testing.T) {
@@ -13,12 +14,7 @@ func TestStellarAddressFromP2PPublicKey(t *testing.T) {
 	expectedAddress := "GDQBGPCWOSWZG4YNPOPVP3CBSAL435AZNKZ2HZ43VLNOVGXBWG2U5XRS"
 	rawPublicKey, _ := hex.DecodeString(rawPublicKeyAsHex)
 	publicKey, _ := crypto.UnmarshalEd25519PublicKey(rawPublicKey)
-	address, err := stellarAddressFromP2PPublicKey(publicKey)
-	if err != nil {
-		t.Error(err)
-	}
-	if address != expectedAddress {
-		t.Fail()
-	}
-
+	address, err := StellarAddressFromP2PPublicKey(publicKey)
+	assert.NoError(t, err)
+	assert.Equal(t, expectedAddress, address)
 }
