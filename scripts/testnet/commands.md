@@ -7,9 +7,9 @@ These commands are available through [js-ng shell](https://github.com/threefoldt
 Create the wallets:
 
 ```sh
-j.clients.stellar.new('testtftissuerwallet', network='TEST')
-j.clients.stellar.new('testfreetftissuerwallet', network='TEST')
-j.clients.stellar.new('testtftaissuerwallet', network='TEST')
+j.clients.stellar.new('testtftissuer', network='TEST')
+j.clients.stellar.new('testfreetftissuer', network='TEST')
+j.clients.stellar.new('testtftaissuer', network='TEST')
 ```
 
 or recreate with the secrets.
@@ -17,9 +17,9 @@ or recreate with the secrets.
 Activate and fund the account:
 
 ```sh
-j.clients.stellar.testtftissuerwallet.activate_through_friendbot()
-j.clients.stellar.testfreetftissuerwallet.activate_through_friendbot()
-j.clients.stellar.testtftaissuerwallet.activate_through_friendbot()
+j.clients.stellar.testtftissuer.activate_through_friendbot()
+j.clients.stellar.testfreetftissuer.activate_through_friendbot()
+j.clients.stellar.testtftaissuer.activate_through_friendbot()
 ```
 
 ## Publish Token home domain
@@ -40,19 +40,17 @@ service accounts:
 
 ```python
 j.clients.stellar.new('testtxfundingwallet',network='TEST',secret='')
-j.clients.stellar.new('testconverter',network='TEST',secret='')
+j.clients.stellar.new('testmigration_wallet',network='TEST',secret='')
 j.clients.stellar.new('testactivation_wallet',network='TEST',secret='')
-j.clients.stellar.new('testfaucetwallet',network='TEST',secret='')
+j.clients.stellar.new('testvesting_wallet',network='TEST',secret='')
 ```
 
 ```python
 j.clients.stellar.testtxfundingwallet.activate_through_friendbot()
-j.clients.stellar.testconverter.activate_through_friendbot()
+j.clients.stellar.testmigration_wallet.activate_through_friendbot()
 j.clients.stellar.testactivation_wallet.activate_through_friendbot()
-j.clients.stellar.testfaucetwallet.activate_through_friendbot()
-j.clients.stellar.testfaucetwallet.add_known_trustline('TFT')
+j.clients.stellar.testvesting_wallet.activate_through_friendbot()
 j.clients.stellar.testtxfundingwallet.add_known_trustline('TFT')
 j.clients.stellar.testtxfundingwallet.add_known_trustline('TFTA')
-j.clients.stellar.testconverter.add_known_trustline('TFT')
-j.clients.stellar.testconverter.add_known_trustline('TFTA')
+j.clients.stellar.testtxfundingwallet.add_known_trustline('FreeTFT')
 ```
