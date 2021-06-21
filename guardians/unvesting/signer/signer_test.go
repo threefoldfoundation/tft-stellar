@@ -10,7 +10,7 @@ import (
 func TestSigningServiceGetStatus(t *testing.T) {
 	s := NewSigningService("test")
 	request := GetStatusRequest{}
-	reply := GetStatusResponse{}
+	reply := GetStatusReply{}
 	err := s.GetStatus(context.Background(), request, &reply)
 	assert.NoError(t, err)
 	assert.Equal(t, "Alive and kicking", reply.Message)

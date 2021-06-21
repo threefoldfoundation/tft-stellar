@@ -45,8 +45,5 @@ func (c *ConnectionManager) ConnectTo(address string) (err error) {
 		log.Fatalln("ERROR getting peerID from signer", address, err)
 	}
 	err = ConnectToPeer(c.Ctx, c.Host, c.Routing, peerID)
-	if err != nil {
-		log.Println("Failed to connect to ", address, err)
-	}
 	return
 }

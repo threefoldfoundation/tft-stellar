@@ -9,7 +9,6 @@ import (
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	"github.com/stellar/go/keypair"
 	"github.com/threefoldfoundation/tft-stellar/guardians/unvesting/communication"
-
 	"github.com/threefoldfoundation/tft-stellar/guardians/unvesting/signer"
 )
 
@@ -43,7 +42,7 @@ func main() {
 	defer cancel()
 	connMgr.Start(communicationCtx, libp2pPrivKey)
 	signerService := signer.NewSigningService(network)
-	server := gorpc.NewServer(connMgr.Host, communication.ProtocolID)
+	server := gorpc.NewServer(connMgr.Host, signer.ProtocolID)
 	server.Register(&signerService)
 	for {
 		time.Sleep(time.Second * 10)
