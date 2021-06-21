@@ -11,7 +11,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
-const protocolID = protocol.ID("/tft/guardians/unvesting/1.0.0")
+const ProtocolID = protocol.ID("/tft/guardians/unvesting/1.0.0")
 
 //ConnectionManager handles streams amd connections
 type ConnectionManager struct {
