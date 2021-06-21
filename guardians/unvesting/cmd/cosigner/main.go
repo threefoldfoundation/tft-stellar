@@ -22,7 +22,12 @@ func main() {
 
 	kp, err := keypair.ParseFull(accountSecret)
 	if err != nil {
+		flag.Usage()
 		log.Fatalln("Invalid accountsecret")
+	}
+	if network != "public" && network != "test" {
+		flag.Usage()
+		log.Fatalln("Invalid network")
 	}
 	log.Println("Starting cosigner with account", kp.Address(), "on the", network, "network")
 	libp2pPrivKey := communication.GetLibp2pPrivateKeyFromStellarSeed(accountSecret)

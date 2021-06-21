@@ -16,7 +16,11 @@ func main() {
 
 	flag.Parse()
 
-	log.Println("Starting iniator on the", network, "network")
+	if network != "public" && network != "test" {
+		flag.Usage()
+		log.Fatalln("Invalid network")
+	}
+	log.Println("Starting initiator on the", network, "network")
 	rootCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
