@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"time"
 
 	"github.com/threefoldfoundation/tft-stellar/guardians/unvesting/communication"
 )
@@ -21,4 +22,7 @@ func main() {
 	communicationCtx, cancel := context.WithCancel(rootCtx)
 	defer cancel()
 	connMgr.Start(communicationCtx, nil)
+	for {
+		time.Sleep(time.Second * 10)
+	}
 }

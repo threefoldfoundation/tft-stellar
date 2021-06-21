@@ -27,6 +27,7 @@ func NewConnectionManager() *ConnectionManager {
 }
 
 //Start creates a libp2p host and starts handling connections
+// If privateKey is nil, a libp2p host is started without a predefined peerID
 func (c *ConnectionManager) Start(ctx context.Context, privateKey crypto.PrivKey) (err error) {
 	c.Ctx = ctx
 	libp2pCtx, unused := context.WithCancel(ctx)
@@ -36,17 +37,16 @@ func (c *ConnectionManager) Start(ctx context.Context, privateKey crypto.PrivKey
 	return
 }
 
-//connectTo connects to a peer with a specific Stellar address
-func (c *ConnectionManager) connectTo(address string) {
+//ConnectTo connects to a peer with a specific Stellar address
+func (c *ConnectionManager) ConnectTo(address string) (err error) {
 	peerID, err := GetPeerIDFromStellarAddress(address)
 	if err != nil {
-		//Fatal since we got the address from the Stellar network so it should be valid
+		//Fatal since it's a predetermined address so it should be valid
 		log.Fatalln("ERROR getting peerID from signer", address, err)
 	}
 	err = ConnectToPeer(c.Ctx, c.Host, c.Routing, peerID)
 	if err != nil {
 		log.Println("Failed to connect to ", address, err)
-	} else {
-		log.Println("Connected to ", address)
 	}
+	return
 }
