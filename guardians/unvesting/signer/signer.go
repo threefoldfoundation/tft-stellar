@@ -67,3 +67,11 @@ func (s *SigningService) GetStatus(ctx context.Context, r GetStatusRequest, repl
 	reply.Message = "Alive and kicking"
 	return
 }
+
+type SignArgs struct{}
+type SignReply struct{}
+
+func (s *SigningService) Sign(ctx context.Context, r SignArgs, reply *SignReply) (err error) {
+
+	return
+}

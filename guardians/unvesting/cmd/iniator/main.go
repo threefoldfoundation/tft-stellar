@@ -8,8 +8,6 @@ import (
 
 	"github.com/threefoldfoundation/tft-stellar/guardians/unvesting/communication"
 	"github.com/threefoldfoundation/tft-stellar/guardians/unvesting/signer"
-
-	gorpc "github.com/libp2p/go-libp2p-gorpc"
 )
 
 func main() {
@@ -40,19 +38,16 @@ func main() {
 			log.Println("Connected to signer", signerAddress)
 		}
 	}
-	signerClient := gorpc.NewClient(connMgr.Host, signer.ProtocolID)
+	signerClient := signer.NewSigningClient(connMgr.Host)
 	for {
 		//Check the status of the signers every 10 minutes
 		for _, signerAddress := range signerAddresses {
-			peerID, _ := communication.GetPeerIDFromStellarAddress(signerAddress)
-			var reply signer.GetStatusReply
-			err := signerClient.Call(peerID, "SigningService", "GetStatus", signer.GetStatusRequest{}, &reply)
+			statusMessage, err := signerClient.CallGetStatus(signerAddress)
 			if err != nil {
 				log.Println("ERROR calling GetStatus for signer", signerAddress, ":", err)
 			} else {
-				log.Println("Status of", signerAddress, ":", reply.Message)
+				log.Println("Status of", signerAddress, ":", statusMessage)
 			}
-
 		}
 		time.Sleep(time.Minute * 10)
 	}
