@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"log"
 	"time"
 
 	"github.com/threefoldfoundation/tft-stellar/guardians/unvesting/communication"
@@ -15,6 +16,7 @@ func main() {
 
 	flag.Parse()
 
+	log.Println("Starting iniator on the", network, "network")
 	rootCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
