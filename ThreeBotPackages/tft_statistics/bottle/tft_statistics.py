@@ -31,6 +31,10 @@ def get_stats():
     """
     query_params = request.query.decode()
     tokencode = query_params.get("tokencode", "TFT")
+
+    if tokencode not in ["TFT", "TFTA"]:
+        return HTTPError(status=j.tools.http.status_codes.codes.BAD_REQUEST)
+
     # cache the request in local redis via service
     redis = j.clients.redis.get("redis_instance")
     cached_data = redis.get(tokencode)
@@ -46,6 +50,9 @@ def total_tft():
     query_params = request.query.decode()
     tokencode = query_params.get("tokencode", "TFT")
 
+    if tokencode not in ["TFT", "TFTA"]:
+        return HTTPError(status=j.tools.http.status_codes.codes.BAD_REQUEST)
+
     # cache the request in local redis
     redis = j.clients.redis.get("redis_instance")
     cached_data = redis.get(f"{tokencode}-total_tft")
@@ -59,6 +66,9 @@ def total_tft():
 def total_unlocked_tft():
     query_params = request.query.decode()
     tokencode = query_params.get("tokencode", "TFT")
+
+    if tokencode not in ["TFT", "TFTA"]:
+        return HTTPError(status=j.tools.http.status_codes.codes.BAD_REQUEST)
 
     # cache the request in local redis
     redis = j.clients.redis.get("redis_instance")
