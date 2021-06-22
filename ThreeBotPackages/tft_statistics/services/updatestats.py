@@ -8,7 +8,12 @@ from jumpscale.tools.servicemanager.servicemanager import BackgroundService
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/../../")
 
-from tft_statistics.bottle.tft_statistics import _get_stats
+from tft_statistics.sals.stats_sals import (
+    update_foundation_wallets_data,
+    update_stats,
+    update_total_tft,
+    update_total_unlocked_tft,
+)
 
 
 class UpdateTokensStats(BackgroundService):
@@ -20,11 +25,36 @@ class UpdateTokensStats(BackgroundService):
 
     def job(self):
 
+        # update foundation wallets
+        j.logger.info(f"Updating foundation wallets")
+        foundation_wallets = update_foundation_wallets_data()
+        j.logger.debug(f"Foundation wallets updated successfully {foundation_wallets}")
+
+        # update total tft & tfta total tokens
+        j.logger.info("Updating total TFT")
+        total_tft = update_total_tft(tokencode="TFT")
+        j.logger.debug(f"Successfully updated total tft with: {total_tft}")
+
+        j.logger.info("Updating total TFTA")
+        total_tft = update_total_tft(tokencode="TFTA")
+        j.logger.debug(f"Successfully updated total tft with: {total_tft}")
+
+        # update total tft & tfta unlocked tokens
+        j.logger.info("Updating total unlocked TFT")
+        total_unlocked_tft = update_total_unlocked_tft(tokencode="TFT")
+        j.logger.debug(f"Successfully updated total unlocked tft with: {total_unlocked_tft}")
+
+        j.logger.info("Updating total TFTA")
+        total_unlocked_tfta = update_total_unlocked_tft(tokencode="TFTA")
+        j.logger.debug(f"Successfully updated total unlocked tft with: {total_unlocked_tfta}")
+
+        # update tft & tfta stats
         j.logger.info("Updating statistics for TFT tokens")
-        tft = _get_stats(tokencode="TFT")
+        tft = update_stats(tokencode="TFT")
         j.logger.debug(f"Successfully updated TFT stats with: {tft}")
+
         j.logger.info("Updating statistics for TFTA tokens")
-        tfta = _get_stats(tokencode="TFTA")
+        tfta = update_stats(tokencode="TFTA")
         j.logger.debug(f"Successfully updated TFTA stats with: {tfta}")
 
 
