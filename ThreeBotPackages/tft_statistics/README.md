@@ -29,10 +29,8 @@ JS-NG> server.start()
 ## Examples
 
 - https://localhost/tft_statistics/api/stats
-- https://localhost/tft_statistics/api/stats?network=public
+- https://localhost/tft_statistics/api/stats?tokencode=TFT
 - https://localhost/tft_statistics/api/stats?tokencode=TFTA
-- https://localhost/tft_statistics/api/stats?network=public&tokencode=TFTA
-- https://localhost/tft_statistics/api/stats?network=public&tokencode=TFTA&detailed=true
 - https://localhost/tft_statistics/api/foundationaccounts
 - https://localhost/tft_statistics/api/total_tft
 - https://localhost/tft_statistics/api/total_unlocked_tft

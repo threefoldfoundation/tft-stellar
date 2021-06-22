@@ -1,7 +1,6 @@
 import datetime
 import os
 import sys
-import os
 import stellar_sdk
 
 from bottle import Bottle, request, HTTPError, response
@@ -73,29 +72,17 @@ def get_foundation_wallets():
     return res
 
 
-@app.route("/api/stats")
-def get_stats():
-    """Statistics about TFT and TFTA
-
-    Args:
-        network (str ["test", "public"], optional): Defaults to "public".
-        tokencode (str ["TFT", "TFTA"], optional): Defaults to "TFT".
-        detailed (bool, optional): Defaults to False.
+def _get_stats(tokencode: str = "TFT", detailed: bool = True) -> dict:
     """
-    query_params = request.query.decode()
-    network = query_params.get("network", "public")
-    tokencode = query_params.get("tokencode", "TFT")
-    detailed = j.data.serializers.json.loads(query_params.get("detailed", "false"))
+    Helper method used in the service to update the stats and cache it every 1h
+    Only the detailed statistics for TFT and TFTA need to be calculated, the non-detailed ones, can be derived from the detailed
+    Args:
+        tokencode (str ["TFT", "TFTA"], optional): Defaults to "TFT".
+        detailed (bool, optional): Defaults to True.
+    """
     res = {}
-
-    # cache the request in local redis
     redis = j.clients.redis.get("redis_instance")
-    cached_data = redis.get(f"{network}-{tokencode}-{detailed}")
-    if cached_data:
-        return cached_data
-
-    collector = StatisticsCollector(network)
-
+    collector = StatisticsCollector("public")
     if detailed:
         foundation_wallets = _get_foundation_wallets()
         foundation_addresses = []
@@ -109,6 +96,7 @@ def get_stats():
     res["total_accounts"] = f"{stats['num_accounts']}"
     res["total_locked_tokens"] = f"{stats['total_locked']:,.7f}"
     res["total_vested_tokens"] = f"{stats['total_vested']:,.7f}"
+    res["collection_time"] = datetime.datetime.now().isoformat()
     if not detailed:
         res["total_illiquid_foundation_tokens"] = f"{stats['total_foundation']:,.7f}"
         total_liquid_tokens = stats["total"] - stats["total_locked"] - stats["total_vested"] - stats["total_foundation"]
@@ -140,9 +128,27 @@ def get_stats():
                 f"{locked_amount['amount']:,.7f} locked until {datetime.datetime.fromtimestamp(locked_amount['until'])}"
             )
     results = j.data.serializers.json.dumps(res)
-    redis.set(f"{network}-{tokencode}-{detailed}", results, ex=get_cache_time())
-
+    redis.set(tokencode, results)
     return results
+
+
+@app.route("/api/stats")
+def get_stats():
+    """Statistics about TFT and TFTA
+
+    Args:
+        tokencode (str ["TFT", "TFTA"], optional): Defaults to "TFT".
+    """
+    query_params = request.query.decode()
+    tokencode = query_params.get("tokencode", "TFT")
+    # cache the request in local redis via service
+    redis = j.clients.redis.get("redis_instance")
+    cached_data = redis.get(tokencode)
+
+    if cached_data:
+        return cached_data
+
+    return HTTPError(status=j.tools.http.status_codes.codes.SERVICE_UNAVAILABLE)
 
 
 @app.route("/api/total_tft")
@@ -233,22 +239,23 @@ def get_address_info(address):
 
     if data.escrow_accounts:
         locked_amounts = []
-        free_locked_amounts=[]
+        free_locked_amounts = []
         for locked_amount in data.escrow_accounts:
-            locked_amount_response={
-                    "address": locked_amount.address,
-                    "balances": balances_to_reponse(locked_amount.balances),
-                }
+            locked_amount_response = {
+                "address": locked_amount.address,
+                "balances": balances_to_reponse(locked_amount.balances),
+            }
             if locked_amount.unlock_time is not None:
-                locked_amount_response["locked_until"]= datetime.datetime.fromtimestamp(locked_amount.unlock_time).isoformat()
+                locked_amount_response["locked_until"] = datetime.datetime.fromtimestamp(
+                    locked_amount.unlock_time
+                ).isoformat()
                 locked_amounts.append(locked_amount_response)
             else:
                 free_locked_amounts.append(locked_amount_response)
         if locked_amounts:
             response["locked_amounts"] = locked_amounts
         if free_locked_amounts:
-            response["free_amounts"]=free_locked_amounts
+            response["free_amounts"] = free_locked_amounts
 
     return response
-
 
