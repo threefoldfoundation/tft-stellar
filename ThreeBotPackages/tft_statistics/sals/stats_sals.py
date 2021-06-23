@@ -88,7 +88,7 @@ def update_total_unlocked_tft(tokencode="TFT"):
     return total_unlocked_tft
 
 
-def update_stats(tokencode: str = "TFT", detailed: bool = True) -> dict:
+def update_stats(tokencode: str = "TFT") -> dict:
     """
     Helper method used in the service to update the stats and cache it every 1h
     Only the detailed statistics for TFT and TFTA need to be calculated, the non-detailed ones, can be derived from the detailed
@@ -99,50 +99,43 @@ def update_stats(tokencode: str = "TFT", detailed: bool = True) -> dict:
     res = {}
     redis = j.clients.redis.get("redis_instance")
     collector = StatisticsCollector("public")
-    if detailed:
-        foundation_wallets = _get_foundation_wallets()
-        foundation_addresses = []
-        for category in foundation_wallets:
-            foundation_addresses += [account["address"] for account in category["wallets"]]
-    else:
-        foundation_addresses = _get_not_liquid_foundation_addesses()
 
-    stats = collector.getstatistics(tokencode, foundation_addresses, detailed)
+    foundation_wallets = _get_foundation_wallets()
+    foundation_addresses = []
+    for category in foundation_wallets:
+        foundation_addresses += [account["address"] for account in category["wallets"]]
+
+    stats = collector.getstatistics(tokencode, foundation_addresses, True)
     res["total_tokens"] = f"{stats['total']:,.7f}"
     res["total_accounts"] = f"{stats['num_accounts']}"
     res["total_locked_tokens"] = f"{stats['total_locked']:,.7f}"
     res["total_vested_tokens"] = f"{stats['total_vested']:,.7f}"
     res["collection_time"] = datetime.datetime.now().isoformat()
-    if not detailed:
-        res["total_illiquid_foundation_tokens"] = f"{stats['total_foundation']:,.7f}"
-        total_liquid_tokens = stats["total"] - stats["total_locked"] - stats["total_vested"] - stats["total_foundation"]
-        res["total_liquid_tokens"] = f"{total_liquid_tokens:,.7f}"
-    else:
-        foundation_amounts = {account["account"]: account["amount"] for account in stats["foundation"]}
-        foundation_liquid_amount = 0.0
-        foundation_illiquid_amount = 0.0
 
-        for category in foundation_wallets:
-            for foundation_wallet in category["wallets"]:
-                amount = foundation_amounts.get(foundation_wallet["address"], 0)
-                foundation_wallet["amount"] = f"{amount:,.7f}"
-                if foundation_wallet["liquid"]:
-                    foundation_liquid_amount += amount
-                else:
-                    foundation_illiquid_amount += amount
+    foundation_amounts = {account["account"]: account["amount"] for account in stats["foundation"]}
+    foundation_liquid_amount = 0.0
+    foundation_illiquid_amount = 0.0
 
-        res["total_liquid_foundation_tokens"] = f"{foundation_liquid_amount:,.7f}"
-        res["total_illiquid_foundation_tokens"] = f"{foundation_illiquid_amount:,.7f}"
-        total_liquid_tokens = (
-            stats["total"] - stats["total_locked"] - stats["total_vested"] - foundation_illiquid_amount
+    for category in foundation_wallets:
+        for foundation_wallet in category["wallets"]:
+            amount = foundation_amounts.get(foundation_wallet["address"], 0)
+            foundation_wallet["amount"] = f"{amount:,.7f}"
+            if foundation_wallet["liquid"]:
+                foundation_liquid_amount += amount
+            else:
+                foundation_illiquid_amount += amount
+
+    res["total_liquid_foundation_tokens"] = f"{foundation_liquid_amount:,.7f}"
+    res["total_illiquid_foundation_tokens"] = f"{foundation_illiquid_amount:,.7f}"
+    total_liquid_tokens = stats["total"] - stats["total_locked"] - stats["total_vested"] - foundation_illiquid_amount
+    res["total_liquid_tokens"] = f"{total_liquid_tokens:,.7f}"
+    res["foundation_accounts_info"] = foundation_wallets
+    res["locked_tokens_info"] = []
+    for locked_amount in stats["locked"]:
+        res["locked_tokens_info"].append(
+            f"{locked_amount['amount']:,.7f} locked until {datetime.datetime.fromtimestamp(locked_amount['until'])}"
         )
-        res["total_liquid_tokens"] = f"{total_liquid_tokens:,.7f}"
-        res["foundation_accounts_info"] = foundation_wallets
-        res["locked_tokens_info"] = []
-        for locked_amount in stats["locked"]:
-            res["locked_tokens_info"].append(
-                f"{locked_amount['amount']:,.7f} locked until {datetime.datetime.fromtimestamp(locked_amount['until'])}"
-            )
+
     results = j.data.serializers.json.dumps(res)
     redis.set(tokencode, results)
     return results
