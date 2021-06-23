@@ -55,9 +55,10 @@ def total_tft():
 
     # cache the request in local redis
     redis = j.clients.redis.get("redis_instance")
-    cached_data = redis.get(f"{tokencode}-total_tft")
-    if cached_data:
-        return cached_data
+    cached_data = j.data.serializers.json.loads(redis.get(tokencode))
+
+    if cached_data.get("total_tokens"):
+        return cached_data.get("total_tokens").replace(",", "")
 
     return HTTPError(status=j.tools.http.status_codes.codes.SERVICE_UNAVAILABLE)
 
@@ -72,9 +73,15 @@ def total_unlocked_tft():
 
     # cache the request in local redis
     redis = j.clients.redis.get("redis_instance")
-    cached_data = redis.get(f"{tokencode}-total_unlocked_tft")
+    cached_data = j.data.serializers.json.loads(redis.get(tokencode))
     if cached_data:
-        return cached_data
+        total_tokens = float(cached_data["total_tokens"].replace(",", ""))
+        total_locked_tokens = float(cached_data["total_locked_tokens"].replace(",", ""))
+        total_vested_tokens = float(cached_data["total_vested_tokens"].replace(",", ""))
+        total_foundation = float(cached_data["total_illiquid_foundation_tokens"].replace(",", ""))
+        total_unlocked_tokens = total_tokens - total_locked_tokens - total_vested_tokens - total_foundation
+
+        return str(total_unlocked_tokens)
 
     return HTTPError(status=j.tools.http.status_codes.codes.SERVICE_UNAVAILABLE)
 

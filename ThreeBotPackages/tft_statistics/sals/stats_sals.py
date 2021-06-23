@@ -15,11 +15,6 @@ from stats import StatisticsCollector
 TFT_ISSUER = "GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47"
 
 
-def get_cache_time():
-    caching_time = os.environ.get("TFTSTATISTICS_CACHETIME", "600")
-    return int(caching_time)
-
-
 def _get_foundation_wallets() -> list:
     redis = j.clients.redis.get("redis_instance")
     cached_data = redis.get(f"foundationaccounts-raw")
@@ -30,15 +25,8 @@ def _get_foundation_wallets() -> list:
     if not foundationwallets_path:
         return []
     foundationaccounts = j.data.serializers.json.load_from_file(foundationwallets_path)
-    redis.set(f"foundationaccounts-raw", j.data.serializers.json.dumps(foundationaccounts), ex=get_cache_time())
+    redis.set(f"foundationaccounts-raw", j.data.serializers.json.dumps(foundationaccounts))
     return foundationaccounts
-
-
-def _get_not_liquid_foundation_addesses() -> list:
-    result = []
-    for category in _get_foundation_wallets():
-        result += [account["address"] for account in category["wallets"] if not account["liquid"]]
-    return result
 
 
 def update_foundation_wallets_data():
@@ -61,31 +49,6 @@ def update_foundation_wallets_data():
     res = j.data.serializers.json.dumps(foundation_wallets)
     redis.set(f"foundationaccounts-detailed", res)
     return res
-
-
-def update_total_tft(tokencode="TFT"):
-    redis = j.clients.redis.get("redis_instance")
-    collector = StatisticsCollector("public")
-    stats = collector.getstatistics(tokencode, [], False)
-    total = stats["total"]
-    redis.set(f"{tokencode}-total_tft", total)
-    return total
-
-
-def update_total_unlocked_tft(tokencode="TFT"):
-    redis = j.clients.redis.get("redis_instance")
-    collector = StatisticsCollector("public")
-    stats = collector.getstatistics(tokencode, _get_not_liquid_foundation_addesses(), False)
-
-    total_tft = stats["total"]
-    total_locked_tft = stats["total_locked"]
-    total_vested_tft = stats["total_vested"]
-    total_foundation = stats["total_foundation"]
-
-    total_unlocked_tft = total_tft - total_locked_tft - total_vested_tft - total_foundation
-
-    redis.set(f"{tokencode}-total_unlocked_tft", total_unlocked_tft)
-    return total_unlocked_tft
 
 
 def update_stats(tokencode: str = "TFT") -> dict:
