@@ -1,7 +1,4 @@
 import datetime
-import os
-import sys
-import os
 import stellar_sdk
 
 from bottle import Bottle, request, HTTPError, response
@@ -9,68 +6,20 @@ from bottle import Bottle, request, HTTPError, response
 from jumpscale.loader import j
 
 
-current_full_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_full_path + "/../../../lib/stats/")
-
-from stats import StatisticsCollector
-
-TFT_ISSUER = "GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47"
-
 app = Bottle()
-
-
-def get_cache_time():
-    caching_time = os.environ.get("TFTSTATISTICS_CACHETIME", "600")
-    return int(caching_time)
-
-
-def _get_foundation_wallets() -> list:
-    redis = j.clients.redis.get("redis_instance")
-    cached_data = redis.get(f"foundationaccounts-raw")
-    if cached_data:
-        return j.data.serializers.json.loads(cached_data)
-
-    foundationwallets_path = os.environ.get("TFACCOUNTS", None)
-    if not foundationwallets_path:
-        return []
-    foundationaccounts = j.data.serializers.json.load_from_file(foundationwallets_path)
-    redis.set(f"foundationaccounts-raw", j.data.serializers.json.dumps(foundationaccounts), ex=get_cache_time())
-    return foundationaccounts
-
-
-def _get_not_liquid_foundation_addesses() -> list:
-    result = []
-    for category in _get_foundation_wallets():
-        result += [account["address"] for account in category["wallets"] if not account["liquid"]]
-    return result
 
 
 @app.route("/api/foundationaccounts")
 def get_foundation_wallets():
     response.content_type = "application/json"
+
     redis = j.clients.redis.get("redis_instance")
+
     cached_data = redis.get(f"foundationaccounts-detailed")
     if cached_data:
         return cached_data
-    foundation_wallets = _get_foundation_wallets()
 
-    horizon_server = stellar_sdk.Server("https://horizon.stellar.org")
-    for category in foundation_wallets:
-        for foundation_wallet in category["wallets"]:
-            endpoint = horizon_server.accounts().account_id(foundation_wallet["address"])
-            account_data = endpoint.call()
-            tftbalances = [
-                balance["balance"]
-                for balance in account_data["balances"]
-                if balance.get("asset_code") == "TFT" and balance.get("asset_issuer") == TFT_ISSUER
-            ]
-            foundation_wallet["TFT"] = tftbalances[0] if tftbalances else "0.0"
-            foundation_wallet["signers"] = [signer["key"] for signer in account_data["signers"]]
-            required_signatures = account_data["thresholds"]["med_threshold"]
-            foundation_wallet["required_signatures"] = required_signatures if required_signatures != 0 else 1
-    res = j.data.serializers.json.dumps(foundation_wallets)
-    redis.set(f"foundationaccounts-detailed", res, ex=get_cache_time())
-    return res
+    return HTTPError(status=j.tools.http.status_codes.codes.SERVICE_UNAVAILABLE)
 
 
 @app.route("/api/stats")
@@ -78,116 +27,63 @@ def get_stats():
     """Statistics about TFT and TFTA
 
     Args:
-        network (str ["test", "public"], optional): Defaults to "public".
         tokencode (str ["TFT", "TFTA"], optional): Defaults to "TFT".
-        detailed (bool, optional): Defaults to False.
     """
     query_params = request.query.decode()
-    network = query_params.get("network", "public")
     tokencode = query_params.get("tokencode", "TFT")
-    detailed = j.data.serializers.json.loads(query_params.get("detailed", "false"))
-    res = {}
 
-    # cache the request in local redis
+    if tokencode not in ["TFT", "TFTA"]:
+        return HTTPError(status=j.tools.http.status_codes.codes.BAD_REQUEST)
+
+    # cache the request in local redis via service
     redis = j.clients.redis.get("redis_instance")
-    cached_data = redis.get(f"{network}-{tokencode}-{detailed}")
+    cached_data = redis.get(tokencode)
+
     if cached_data:
         return cached_data
 
-    collector = StatisticsCollector(network)
-
-    if detailed:
-        foundation_wallets = _get_foundation_wallets()
-        foundation_addresses = []
-        for category in foundation_wallets:
-            foundation_addresses += [account["address"] for account in category["wallets"]]
-    else:
-        foundation_addresses = _get_not_liquid_foundation_addesses()
-
-    stats = collector.getstatistics(tokencode, foundation_addresses, detailed)
-    res["total_tokens"] = f"{stats['total']:,.7f}"
-    res["total_accounts"] = f"{stats['num_accounts']}"
-    res["total_locked_tokens"] = f"{stats['total_locked']:,.7f}"
-    res["total_vested_tokens"] = f"{stats['total_vested']:,.7f}"
-    if not detailed:
-        res["total_illiquid_foundation_tokens"] = f"{stats['total_foundation']:,.7f}"
-        total_liquid_tokens = stats["total"] - stats["total_locked"] - stats["total_vested"] - stats["total_foundation"]
-        res["total_liquid_tokens"] = f"{total_liquid_tokens:,.7f}"
-    else:
-        foundation_amounts = {account["account"]: account["amount"] for account in stats["foundation"]}
-        foundation_liquid_amount = 0.0
-        foundation_illiquid_amount = 0.0
-
-        for category in foundation_wallets:
-            for foundation_wallet in category["wallets"]:
-                amount = foundation_amounts.get(foundation_wallet["address"], 0)
-                foundation_wallet["amount"] = f"{amount:,.7f}"
-                if foundation_wallet["liquid"]:
-                    foundation_liquid_amount += amount
-                else:
-                    foundation_illiquid_amount += amount
-
-        res["total_liquid_foundation_tokens"] = f"{foundation_liquid_amount:,.7f}"
-        res["total_illiquid_foundation_tokens"] = f"{foundation_illiquid_amount:,.7f}"
-        total_liquid_tokens = (
-            stats["total"] - stats["total_locked"] - stats["total_vested"] - foundation_illiquid_amount
-        )
-        res["total_liquid_tokens"] = f"{total_liquid_tokens:,.7f}"
-        res["foundation_accounts_info"] = foundation_wallets
-        res["locked_tokens_info"] = []
-        for locked_amount in stats["locked"]:
-            res["locked_tokens_info"].append(
-                f"{locked_amount['amount']:,.7f} locked until {datetime.datetime.fromtimestamp(locked_amount['until'])}"
-            )
-    results = j.data.serializers.json.dumps(res)
-    redis.set(f"{network}-{tokencode}-{detailed}", results, ex=get_cache_time())
-
-    return results
+    return HTTPError(status=j.tools.http.status_codes.codes.SERVICE_UNAVAILABLE)
 
 
 @app.route("/api/total_tft")
 def total_tft():
     query_params = request.query.decode()
-    network = query_params.get("network", "public")
     tokencode = query_params.get("tokencode", "TFT")
+
+    if tokencode not in ["TFT", "TFTA"]:
+        return HTTPError(status=j.tools.http.status_codes.codes.BAD_REQUEST)
 
     # cache the request in local redis
     redis = j.clients.redis.get("redis_instance")
-    cached_data = redis.get(f"{network}-{tokencode}-total_tft")
-    if cached_data:
-        return cached_data
+    cached_data = j.data.serializers.json.loads(redis.get(tokencode))
 
-    collector = StatisticsCollector(network)
-    stats = collector.getstatistics(tokencode, [], False)
+    if cached_data.get("total_tokens"):
+        return cached_data.get("total_tokens").replace(",", "")
 
-    total = stats["total"]
-    redis.set(f"{network}-{tokencode}-total_tft", total, ex=get_cache_time())
-    return f"{total}"
+    return HTTPError(status=j.tools.http.status_codes.codes.SERVICE_UNAVAILABLE)
 
 
 @app.route("/api/total_unlocked_tft")
 def total_unlocked_tft():
     query_params = request.query.decode()
-    network = query_params.get("network", "public")
     tokencode = query_params.get("tokencode", "TFT")
+
+    if tokencode not in ["TFT", "TFTA"]:
+        return HTTPError(status=j.tools.http.status_codes.codes.BAD_REQUEST)
 
     # cache the request in local redis
     redis = j.clients.redis.get("redis_instance")
-    cached_data = redis.get(f"{network}-{tokencode}-total_unlocked_tft")
+    cached_data = j.data.serializers.json.loads(redis.get(tokencode))
     if cached_data:
-        return cached_data
+        total_tokens = float(cached_data["total_tokens"].replace(",", ""))
+        total_locked_tokens = float(cached_data["total_locked_tokens"].replace(",", ""))
+        total_vested_tokens = float(cached_data["total_vested_tokens"].replace(",", ""))
+        total_foundation = float(cached_data["total_illiquid_foundation_tokens"].replace(",", ""))
+        total_unlocked_tokens = total_tokens - total_locked_tokens - total_vested_tokens - total_foundation
 
-    collector = StatisticsCollector(network)
-    stats = collector.getstatistics(tokencode, _get_not_liquid_foundation_addesses(), False)
+        return str(total_unlocked_tokens)
 
-    total_tft = stats["total"]
-    total_locked_tft = stats["total_locked"]
-    total_vested_tft = stats["total_vested"]
-    total_foundation = stats["total_foundation"]
-    total_unlocked_tft = total_tft - total_locked_tft - total_vested_tft - total_foundation
-
-    redis.set(f"{network}-{tokencode}-total_unlocked_tft", total_unlocked_tft, ex=get_cache_time())
-    return f"{total_unlocked_tft}"
+    return HTTPError(status=j.tools.http.status_codes.codes.SERVICE_UNAVAILABLE)
 
 
 @app.route("/api/account/<address>")
@@ -233,22 +129,23 @@ def get_address_info(address):
 
     if data.escrow_accounts:
         locked_amounts = []
-        free_locked_amounts=[]
+        free_locked_amounts = []
         for locked_amount in data.escrow_accounts:
-            locked_amount_response={
-                    "address": locked_amount.address,
-                    "balances": balances_to_reponse(locked_amount.balances),
-                }
+            locked_amount_response = {
+                "address": locked_amount.address,
+                "balances": balances_to_reponse(locked_amount.balances),
+            }
             if locked_amount.unlock_time is not None:
-                locked_amount_response["locked_until"]= datetime.datetime.fromtimestamp(locked_amount.unlock_time).isoformat()
+                locked_amount_response["locked_until"] = datetime.datetime.fromtimestamp(
+                    locked_amount.unlock_time
+                ).isoformat()
                 locked_amounts.append(locked_amount_response)
             else:
                 free_locked_amounts.append(locked_amount_response)
-    if locked_amounts:
-        response["locked_amounts"] = locked_amounts
-    if free_locked_amounts:
-        response["free_amounts"]=free_locked_amounts
+        if locked_amounts:
+            response["locked_amounts"] = locked_amounts
+        if free_locked_amounts:
+            response["free_amounts"] = free_locked_amounts
 
     return response
-
 
