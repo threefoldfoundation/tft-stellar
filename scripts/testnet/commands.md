@@ -54,3 +54,5 @@ j.clients.stellar.testtxfundingwallet.add_known_trustline('TFT')
 j.clients.stellar.testtxfundingwallet.add_known_trustline('TFTA')
 j.clients.stellar.testtxfundingwallet.add_known_trustline('FreeTFT')
 ```
+
+Restart the transaction funding service to recreate the slave wallets.
