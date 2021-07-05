@@ -8,6 +8,8 @@ import (
 
 	"github.com/threefoldfoundation/tft-stellar/guardians/unvesting/communication"
 	"github.com/threefoldfoundation/tft-stellar/guardians/unvesting/signer"
+
+	"github.com/threefoldfoundation/tft-stellar/guardians/unvesting/price"
 )
 
 func main() {
@@ -22,6 +24,11 @@ func main() {
 		log.Fatalln("Invalid network")
 	}
 	log.Println("Starting initiator on the", network, "network")
+	_, err := price.GetMontlyPrice(5, 2021)
+	if err != nil {
+		log.Println("ERROR getting the montly price for 05/2021:", err)
+	}
+
 	rootCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -31,7 +38,7 @@ func main() {
 	connMgr.Start(communicationCtx, nil)
 	signerAddresses := signer.GetSignerAddresses(network)
 	for _, signerAddress := range signerAddresses {
-		err := connMgr.ConnectTo(signerAddress)
+		err = connMgr.ConnectTo(signerAddress)
 		if err != nil {
 			log.Println("Failed to connect to signer", signerAddress, err)
 		} else {
