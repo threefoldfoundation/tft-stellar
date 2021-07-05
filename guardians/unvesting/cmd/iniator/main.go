@@ -24,10 +24,11 @@ func main() {
 		log.Fatalln("Invalid network")
 	}
 	log.Println("Starting initiator on the", network, "network")
-	_, err := price.GetMontlyPrice(5, 2021)
+	may2021Price, err := price.GetMontlyPrice(5, 2021)
 	if err != nil {
 		log.Println("ERROR getting the montly price for 05/2021:", err)
 	}
+	log.Println(may2021Price.Month, "2021 Price:", may2021Price.Price)
 
 	rootCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()

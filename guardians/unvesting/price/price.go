@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 // MontlyPrice Is a Price in USD for a specific month
 type MonthlyPrice struct {
-	Month int32
-	Year  int32
+	Month time.Month
+	Year  int
 	Price float64
 }
 
@@ -66,7 +67,7 @@ func getTFTPriceHistory() (history []historyItem, err error) {
 }
 
 // GetMontlyPrice calculates a MontlyPrice using stellar.expert
-func GetMontlyPrice(month, year int32) (m MonthlyPrice, err error) {
+func GetMontlyPrice(month time.Month, year int) (m MonthlyPrice, err error) {
 	m.Month = month
 	m.Year = year
 	xlmPrices, err := getXLMPrices()
@@ -80,5 +81,27 @@ func GetMontlyPrice(month, year int32) (m MonthlyPrice, err error) {
 	}
 	l := tftPriceHistory[len(tftPriceHistory)-1]
 	fmt.Println("Last tft history item: timestamp:", l.Timestamp, "traded amount:", l.TradedAmount, "price:", l.Price)
+
+	startTimestamp := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC).Unix()
+
+	nextmonth := (month + 1) % 12
+	endyear := year
+	if nextmonth != month+1 {
+		endyear += 1
+	}
+	endTimestamp := time.Date(endyear, nextmonth, 1, 0, 0, 0, 0, time.UTC).Unix()
+
+	weighted_average_price := 0.0
+	total_volume := 0.0
+	for _, historypoint := range tftPriceHistory {
+		if historypoint.Timestamp < startTimestamp || historypoint.Timestamp > endTimestamp {
+			continue
+		}
+
+	}
+	if total_volume > 0.0 {
+		weighted_average_price /= total_volume
+	}
+	m.Price = weighted_average_price
 	return
 }
