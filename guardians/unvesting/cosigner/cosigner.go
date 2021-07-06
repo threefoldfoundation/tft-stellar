@@ -1,8 +1,7 @@
-package main
+package cosigner
 
 import (
 	"context"
-	"flag"
 	"log"
 	"time"
 
@@ -12,25 +11,14 @@ import (
 	"github.com/threefoldfoundation/tft-stellar/guardians/unvesting/signer"
 )
 
-func main() {
-
-	var accountSecret string
-	var network string
-
-	flag.StringVar(&accountSecret, "accountsecret", "", "The Cosigning account secret")
-	flag.StringVar(&network, "network", "public", "The stellar network to use: 'public' or 'test'")
-
-	flag.Parse()
+//Start starts a cosigner
+func Start(accountSecret string, network string) (err error) {
 
 	kp, err := keypair.ParseFull(accountSecret)
 	if err != nil {
-		flag.Usage()
-		log.Fatalln("Invalid accountsecret")
+		return
 	}
-	if network != "public" && network != "test" {
-		flag.Usage()
-		log.Fatalln("Invalid network")
-	}
+
 	log.Println("Starting cosigner with account", kp.Address(), "on the", network, "network")
 	libp2pPrivKey := communication.GetLibp2pPrivateKeyFromStellarSeed(accountSecret)
 	//stellarKP := keypair.MustParseFull(walletSecret)

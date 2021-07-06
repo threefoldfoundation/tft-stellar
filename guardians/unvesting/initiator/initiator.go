@@ -1,8 +1,7 @@
-package main
+package initiator
 
 import (
 	"context"
-	"flag"
 	"log"
 	"time"
 
@@ -12,17 +11,8 @@ import (
 	"github.com/threefoldfoundation/tft-stellar/guardians/unvesting/price"
 )
 
-func main() {
-	var network string
+func Start(network string) {
 
-	flag.StringVar(&network, "network", "public", "The stellar network to use: 'public' or 'test'")
-
-	flag.Parse()
-
-	if network != "public" && network != "test" {
-		flag.Usage()
-		log.Fatalln("Invalid network")
-	}
 	log.Println("Starting initiator on the", network, "network")
 	montlyPrices := []price.MonthlyPrice{}
 	calculationDate := time.Date(2021, 5, 1, 0, 0, 0, 0, time.UTC)

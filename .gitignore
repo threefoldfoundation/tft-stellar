@@ -8,5 +8,4 @@ specs/vesting/testscripts/cosigners.json
 specs/vesting/testscripts/testing.txt
 ThreeBotPackages/unlock_service/scripts/testnetdata
 scripts/data
-guardians/unvesting/cmd/cosigner/cosigner
-guardians/unvesting/cmd/iniator/iniator
+guardians/unvesting/unvesting
