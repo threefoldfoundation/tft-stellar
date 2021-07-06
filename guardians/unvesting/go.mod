@@ -1,6 +1,6 @@
 module github.com/threefoldfoundation/tft-stellar/guardians/unvesting
 
-go 1.15
+go 1.16
 
 require (
 	github.com/libp2p/go-libp2p v0.14.2
