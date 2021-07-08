@@ -1,0 +1,8 @@
+apiVersion: v2
+name: tftunvesting
+description: Unvesting cosigning application
+type: application
+
+version: 0.1.0
+
+appVersion: "latest"
