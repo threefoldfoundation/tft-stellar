@@ -22,3 +22,14 @@ The transaction envelope is then xdr encoded and sent to the cosigners to valida
 **TODO:** define if this endpoint is on the python vesting service implementation
 
 The timeout of the transaction should be set to at least 10 minutes to allow the cosigners to coordinate the signing process and submit the transaction to the Stellar network in time.
+
+## Guardians cosigning
+
+When the client initiated the unvesting, the guardians need to cosign to fulfill the signing requirements and submit it to the Stellar network.
+
+In a first version, an initiator coordinating the signing process is a simple and efficient approach.
+
+The initiator forwards the transaction to the cosigners over libp2p. The cosigners validate the unvesting transaction and respond with a signed transaction if it's valid.
+The initiator combines the signatures ( a weight of 10 is required) and submits it to the Stellar network.
+
+![Cosigning graph](cosigning.svg)
