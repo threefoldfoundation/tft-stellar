@@ -1,6 +1,7 @@
 FROM golang:1.16 as BUILDER
 WORKDIR /go/src/github.com/threefoldfoundation/tft-stellar/guardians/unvesting
 COPY ./ ./
+ENV CGO_ENABLED=0
 RUN go build -ldflags '-w -s -extldflags "-static"'
 
 FROM alpine:3.13.5
