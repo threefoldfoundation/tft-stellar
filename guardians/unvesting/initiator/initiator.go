@@ -34,14 +34,6 @@ func Start(network string) {
 	defer cancel()
 	connMgr.Start(communicationCtx, nil)
 	signerAddresses := signer.GetSignerAddresses(network)
-	for _, signerAddress := range signerAddresses {
-		err := connMgr.ConnectTo(signerAddress)
-		if err != nil {
-			log.Println("Failed to connect to signer", signerAddress, err)
-		} else {
-			log.Println("Connected to signer", signerAddress)
-		}
-	}
 	signerClient := signer.NewSigningClient(connMgr.Host)
 	for {
 		//Check the status of the signers every 10 minutes
