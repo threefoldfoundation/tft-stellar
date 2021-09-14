@@ -32,7 +32,7 @@ def tft_price_command(starttimestamp, endtimestamp):
     first_value[0] = int(time.time()) + 1
     xlm_usd_values[0] = first_value
 
-    # Get TFT bprices in XLM
+    # Get TFT prices in XLM
     r = requests.get(
         "https://api.stellar.expert/explorer/public/asset/TFT-GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47/stats-history"
     )
