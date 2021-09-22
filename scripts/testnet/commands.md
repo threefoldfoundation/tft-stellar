@@ -43,6 +43,7 @@ j.clients.stellar.new('testtxfundingwallet',network='TEST',secret='')
 j.clients.stellar.new('testmigration_wallet',network='TEST',secret='')
 j.clients.stellar.new('testactivation_wallet',network='TEST',secret='')
 j.clients.stellar.new('testvesting_wallet',network='TEST',secret='')
+j.clients.stellar.new('testBTCissuer',network='TEST',secret='')
 ```
 
 ```python
@@ -50,9 +51,7 @@ j.clients.stellar.testtxfundingwallet.activate_through_friendbot()
 j.clients.stellar.testmigration_wallet.activate_through_friendbot()
 j.clients.stellar.testactivation_wallet.activate_through_friendbot()
 j.clients.stellar.testvesting_wallet.activate_through_friendbot()
-j.clients.stellar.testtxfundingwallet.add_known_trustline('TFT')
-j.clients.stellar.testtxfundingwallet.add_known_trustline('TFTA')
-j.clients.stellar.testtxfundingwallet.add_known_trustline('FreeTFT')
+ j.clients.stellar.testBTCissuer.activate_through_friendbot()
 ```
 
 Restart the transaction funding service to recreate the slave wallets.
