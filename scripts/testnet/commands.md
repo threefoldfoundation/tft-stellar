@@ -51,7 +51,7 @@ j.clients.stellar.testtxfundingwallet.activate_through_friendbot()
 j.clients.stellar.testmigration_wallet.activate_through_friendbot()
 j.clients.stellar.testactivation_wallet.activate_through_friendbot()
 j.clients.stellar.testvesting_wallet.activate_through_friendbot()
- j.clients.stellar.testBTCissuer.activate_through_friendbot()
+j.clients.stellar.testBTCissuer.activate_through_friendbot()
 ```
 
 Restart the transaction funding service to recreate the slave wallets.
