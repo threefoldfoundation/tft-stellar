@@ -145,8 +145,12 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
 
     print(f"Too much issued: {totaltoomuchissued} locked tokens:")
     for issuance in toomuchissued:
-        issuancetime = int(issuance.split()[2])
-        print(f"{issuance} {datetime.fromtimestamp(issuancetime)}")
+        issuancetime_field=issuance.split()[2]
+        if issuancetime_field=="unlocked":
+            print(f"{issuance}")
+        else:
+            issuancetime = int(issuancetime_field)
+            print(f"{issuance} {datetime.fromtimestamp(issuancetime)}")
 
     totalmissingissuances = Decimal()
     for issuance in missingissuances:
