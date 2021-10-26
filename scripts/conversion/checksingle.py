@@ -67,6 +67,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
     print(f"Deauthorization transaction: {deauthorizationtx}")
 
     issuedtokens = []
+    issuetime=0
     totalissuedamount = Decimal()
     totalfreeissued = Decimal()
     totallockedissued = Decimal()
@@ -78,6 +79,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
         amount = Decimal(splitissuance[1])
         tokencode = splitissuance[2]
         address = splitissuance[3]
+        issuetime=int(splitissuance[5])
         totalissuedamount += amount
         if (tfchainaddress == stellar_address_to_tfchain_address(address)) or (address == mainstellaraddress):
             mainstellaraddress = address
@@ -99,6 +101,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
     unlocked_tokens = Decimal("{0:.7f}".format(balance.available.value))
     locked_tokens = balance.locked.value
     print(f"Tfchain TFT: {unlocked_tokens+locked_tokens} Free: {unlocked_tokens} Locked: {locked_tokens}")
+    #print(f"Tfchain time: {balance.chain_time} {datetime.fromtimestamp(balance.chain_time)}")
     print(f"Tokens issued: {totalissuedamount} Free: {totalfreeissued} Locked: {totallockedissued}")
 
     # Generate list of locked tokens that should have been issued
@@ -114,7 +117,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
             lock_time_date = datetime.fromtimestamp(lock_time)
             # if lock time year is before 2021 be convert to TFTA else we convert to TFT
             asset = "TFTA" if lock_time_date.year < 2021 else "TFT"
-            if time.time() < lock_time:
+            if issuetime < lock_time:
                 amount = Decimal("{0:.7f}".format(coin_output.value.value))
                 totalockedamountthatshouldhavebeenisssued += amount
                 lockedshouldhavebeenissued.append(f"{amount} {asset} {math.ceil(lock_time)}")
