@@ -8,6 +8,7 @@ import base64, binascii
 import time
 from urllib import parse
 import stellar_sdk
+from dateutil.parser import parse as dateparse
 
 
 ISSUERS = {
@@ -42,9 +43,10 @@ def list_issued():
                     response_transaction["envelope_xdr"], stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
                 )
                 paymentoperation = env.transaction.operations[0]
+                
 
                 print(
-                    f"{memo} {paymentoperation.amount} {tokencode} {paymentoperation.destination} {response_transaction['id']}"
+                    f"{memo} {paymentoperation.amount} {tokencode} {paymentoperation.destination} {response_transaction['id']} { int(dateparse(response_transaction['created_at']).timestamp())}"
                 )
 
 
