@@ -44,6 +44,10 @@ j.clients.stellar.new('testmigration_wallet',network='TEST',secret='')
 j.clients.stellar.new('testactivation_wallet',network='TEST',secret='')
 j.clients.stellar.new('testvesting_wallet',network='TEST',secret='')
 j.clients.stellar.new('testBTCissuer',network='TEST',secret='')
+j.clients.stellar.testtxfundingwallet.add_known_trustline('FreeTFT')
+j.clients.stellar.testtxfundingwallet.add_known_trustline('TFT')
+j.clients.stellar.testtxfundingwallet.add_known_trustline('TFTA')
+j.clients.stellar.testtxfundingwallet.add_trustline("BTC",j.clients.stellar.testBTCissuer.address)
 ```
 
 ```python
