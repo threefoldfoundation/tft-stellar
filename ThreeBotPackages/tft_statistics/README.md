@@ -14,12 +14,11 @@ JS-NG> server.start()
 ## Endpoints
 
 - `https://<host>/tft_statistics/api/stats`
-
- Query params:
-
-  - network: (str ["test", "public"], optional): Defaults to "public".
-  - tokencode: (str ["TFT", "TFTA"], optional): Defaults to "TFT".
-  - detailed: (bool, optional): Defaults to False.
+    
+    Query params:
+    - network: (str ["test", "public"], optional): Defaults to "public".
+    - tokencode: (str ["TFT", "TFTA"], optional): Defaults to "TFT".
+    - detailed: (bool, optional): Defaults to False.
 
 - `https://<host>/tft_statistics/api/total_tft`
 - `https://<host>/tft_statistics/api/total_unlocked_tft`
@@ -41,9 +40,10 @@ JS-NG> server.start()
 
 - `https://statsdata.testnet.threefold.io/stellar_stats/api/stats`
 - `https://statsdata.testnet.threefold.io/stellar_stats/api/foundationaccounts`
-- `https://statsdata.testnet.threefold.iostellar_stats//api/account/<address>`
+- `https://statsdata.testnet.threefold.io/stellar_stats//api/account/<address>`
 
 ## Production environment
 
 - `https://statsdata.threefoldtoken.com/stellar_stats/api/stats`
 - `https://statsdata.threefoldtoken.com/stellar_stats/api/foundationaccounts`
+- `https://statsdata.threefold.io/stellar_stats//api/account/<address>`
