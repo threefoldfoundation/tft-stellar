@@ -41,14 +41,6 @@ docker build tftbackup -t tftbackup:$(git describe --abbrev=0 --tags | sed 's/^v
 
 There is an example of deploying this image on kubernetes as a cronjob in the [tftbackup readme](./tftbackup/readme.md)
 
-## vesting dashboard
-
-Requires the `jssdk:development` image.
-
-```sh
-docker build vestingdashboard -t vestingdashboard:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
-```
-
 ## helm charts
 
 The helm charts are located in the `helm` folder.
@@ -64,7 +56,6 @@ Empty the folder if it already existed and in this folder, package the charts yo
 ```sh
 helm package ./../tftservices
 helm package ./../tftstatistics
-helm package ./../vestingdashboard
 ```
 
 ## Update the index

@@ -1,2 +1,0 @@
-
-kubectl exec $(kubectl get pods --selector "app.kubernetes.io/name=vestingdashboard" --output=name) -it -- poetry run /root/sandbox/var/downloaded_packages/threefoldfoundation_tft-stellar_vesting_dashboard_master/tft-stellar/ThreeBotPackages/vesting_dashboard/scripts/export.py
