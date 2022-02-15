@@ -3,7 +3,7 @@
 For development purposes, the tokens are also available on the Stellar testnet.
 Threefoldtoken on the stellar network
 
-## TFT on Stellar estnet
+## TFT on Stellar Testnet
 
 - assetCode: TFT
 - issuer: GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3
