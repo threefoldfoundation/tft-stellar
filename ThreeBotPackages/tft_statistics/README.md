@@ -41,9 +41,10 @@ JS-NG> server.start()
 
 - `https://statsdata.testnet.threefold.io/stellar_stats/api/stats`
 - `https://statsdata.testnet.threefold.io/stellar_stats/api/foundationaccounts`
-- `https://statsdata.testnet.threefold.iostellar_stats//api/account/<address>`
+- `https://statsdata.testnet.threefold.io/stellar_stats/api/account/<address>`
 
 ## Production environment
 
 - `https://statsdata.threefoldtoken.com/stellar_stats/api/stats`
 - `https://statsdata.threefoldtoken.com/stellar_stats/api/foundationaccounts`
+- `https://statsdata.threefoldtoken.com/stellar_stats/api/account/<address>`
