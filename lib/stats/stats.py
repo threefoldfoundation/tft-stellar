@@ -146,7 +146,7 @@ def get_locked_accounts(network, tokencode: str, foundationaccounts: list):
 
             if len(preauth_signers) > 0:
                 locked_accounts.append(
-                    {"account": account_id, "amount": tokenbalance, "preauth_signers": preauth_signers}
+                    {"account": account_id, "amount": tokenbalance, "preauth_signers": preauth_signers, "signers":account["signers"]}
                 )
 
     return locked_accounts, vesting_accounts, foundation_accounts
