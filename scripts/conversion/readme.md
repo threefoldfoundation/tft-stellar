@@ -32,11 +32,15 @@ This will create a file with a `memo amount tokencode destination transactionid`
 
 ## Check the status for all migrations
 
+This requires an up to date deauthorizations.txt and issued.txt file.
+
 ```sh
 ./check.py
 ```
 
 ## check the status for a single migration
+
+This requires an up to date deauthorizations.txt and issued.txt file.
 
 ```sh
 ./checksingle.py <tfchainadress>
