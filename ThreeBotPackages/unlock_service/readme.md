@@ -17,11 +17,9 @@ j.servers.threebot.default.packages.add(giturl="https://github.com/threefoldfoun
 
 The server will start and the actor methods will be available at `<HOST>/unlock_service/actors/unlock_service/<ACTOR_METHOD>`
 
-The following kwargs can also be given to configure the package:
-
 Test out the creation of an unlockhash transaction:
 
-`curl -H "Content-Type: application/json" -d '{ "unlockhash": "", "transaction_xdr": "" }' -XPOST https://localhost/unlock_service/actors/unlock_service/create_unlockhash_transaction -k`
+`curl -H "Content-Type: application/json" -d '{ "unlockhash": "", "transaction_xdr": "" }' -XPOST https://localhost/unlock_service/actors/unlock_service/create_unlockhash_transaction --insecure`
 
 ## Actor
 
@@ -35,5 +33,5 @@ There is one actor with 2 methods.
 
 ## Threefoldfoundation deployed urls
 
-- Testnet: `https://testnet.threefold.io/threefoldfoundation/unlock_service'
-- Production: `https://tokenservices.threefold.io/threefoldfoundation/unlock_service/'
+- Testnet:<https://testnet.threefold.io/threefoldfoundation/unlock_service/create_unlockhash_transaction> and <https://testnet.threefold.io/threefoldfoundation/unlock_service/get_unlockhash_transaction>
+- Production: <https://tokenservices.threefold.io/threefoldfoundation/unlock_service/create_unlockhash_transaction> and <https://tokenservices.threefold.io/threefoldfoundation/unlock_service/get_unlockhash_transaction>

@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # pylint: disable=no-value-for-parameter
 import click
-import os
-import sys
 import requests
 import json
 
