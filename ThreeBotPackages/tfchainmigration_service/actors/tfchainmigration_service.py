@@ -157,21 +157,19 @@ class TFchainmigration_service(BaseActor):
         converted_address.save()
         return False
 
-    def _is_authorized(self, unlockhash):
+    def _is_authorized(self, tfchain_address : str):
         """
         Query the explorer backend to see if an address is currently authorized.
-        @param unlockhash: UnlockHash for which to look up the authorizaton state
+        @param tfchain_address: tfchain_address for which to look up the authorizaton state
         """
-        if not isinstance(unlockhash, ExplorerUnlockhashResult):
-            raise j.exceptions.Value(f"Argument must be of type UnlockHash, got type {type(unlockhash)}")
         # define endpoint
-        endpoint = f"/explorer/authcoin/status?addr={unlockhash.json()}"
-        # parse response
+        endpoint = f"/explorer/authcoin/status?addr={tfchain_address}"
+        # parse response, this returns an array of json booleans
         resp = requests.get(TFCHAIN_EXPLORER + endpoint)
-        resp = j.data.serializers.json.loads(resp)
+        resp=resp.json()
 
         try:
-            # parse response, this returns an array of json booleans, we only check 1 address in this function
+            # we only check 1 address in this function
             # so it's always index 0 we are interested in.
             return resp["auths"][0]
         except (KeyError, IndexError) as exc:
@@ -211,9 +209,7 @@ class TFchainmigration_service(BaseActor):
 
         balance = unlockhash.balance()
 
-        is_authorized = self._is_authorized(unlockhash.unlockhash)
-
-        if is_authorized:
+        if self._is_authorized(tfchain_address):
             raise j.exceptions.Value("Tfchain addressess should be deauthorized first before migrating to Stellar")
 
         memo_hash = None
