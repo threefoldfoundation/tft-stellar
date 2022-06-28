@@ -13,7 +13,6 @@ import sys
 import stellar_sdk
 from stellar_sdk.exceptions import NotFoundError
 from stellar_sdk import strkey
-from jumpscale.core.exceptions import JSException
 from jumpscale.loader import j
 from jumpscale.servers.gedis.baseactor import BaseActor, actor_method
 
@@ -79,7 +78,7 @@ class TFchainmigration_service(BaseActor):
 
     def _transfer(self, destination_address, amount, asset: str, locked_until=None, memo_hash=None):
         issuer_address = asset.split(":")[1]
-        converter_wallet = j.clients.stellar.get(WALLET_NAME)
+        converter_wallet = get_wallet()
         return converter_wallet.transfer(
             destination_address,
             amount,
@@ -148,7 +147,7 @@ class TFchainmigration_service(BaseActor):
         if self._stellar_address_used_before(address):
             raise j.exceptions.Value("This address is not new")
 
-        return activate_account_sal.activate_account(address)
+        return activate_account_sal(address)
 
     def _address_converted_before(self, address: str):
         if address in CONVERTED_ADDRESS_MODEL.list_all():
@@ -203,7 +202,7 @@ class TFchainmigration_service(BaseActor):
 
         network = str(get_wallet().network.value)
 
-        asset = _TFTA_FULL_ASSETCODES[network]
+        asset = _TFT_FULL_ASSETCODES[network]
 
         # get balance from tfchain
         unlockhash = unlockhash_get(tfchain_address)
@@ -220,11 +219,11 @@ class TFchainmigration_service(BaseActor):
         memo_hash = None
         sorted_transactions = sorted(unlockhash.transactions, key=lambda tx: tx.height, reverse=True)
         for tx in sorted_transactions:
-            if tx.version.value == 176:
+            if tx.version.value == 176: # deauthorization transaction
                 memo_hash = tx.id
 
         if memo_hash is None:
-            raise j.exceptions.Value("Deathorization transaction is still being processed")
+            raise j.exceptions.Value("Deauthorization transaction is still being processed")
 
         unlocked_tokens = balance.available.value
         locked_tokens = balance.locked.value
@@ -273,13 +272,6 @@ class TFchainmigration_service(BaseActor):
                     lock_time = coin_output.condition.lock.value
                     if lock_time == 0:
                         continue
-                    lock_time_date = datetime.fromtimestamp(lock_time)
-                    # if lock time year is before 2021 be convert to TFTA
-                    if lock_time_date.year < 2021:
-                        asset = _TFTA_FULL_ASSETCODES[network]
-                    # else we convert to TFT
-                    else:
-                        asset = _TFT_FULL_ASSETCODES[network]
 
                     if time.time() < lock_time:
                         conversion_group.apply_async(

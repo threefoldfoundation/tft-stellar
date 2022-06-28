@@ -6,7 +6,7 @@ Js-ng Service for converting Threefold tft's to Stellar tft's. To be used as a T
 
 You need following knowledge to start this server.
 
-- `converter_secret`: is the secret key of the converter account which holds the Stellar TFT's.
+- `converter_secret`: is the secret key of the converter account which is a cosigner of the TFT issuer account with enough weight to satisfy the medium treshold.
 
 ## Running
 
@@ -14,17 +14,16 @@ Make sure the wallet exists and is saved:
 
 ```python
 j.clients.stellar.new("converter_wallet", network="TEST",secret="<converter_secret>")
-j.clients.stellar.activation_wallet.save()
+j.clients.stellar.converter_wallet.save()
 ```
 
 execute the following command in jsng shell:
 `j.servers.threebot.start_default()`
 
-Make sure that for both TFT and TFTA, the converter account can issue tokens:
+Make sure that the converter account can issue TFT tokens:
 
 ```python
-tftissuerwallet.modify_signing_requirements((j.clients.stellar.converter.address,),1,0,3,3)
-tftaissuerwallet.modify_signing_requirements((j.clients.stellar.converter.address,),1,0,3,3)
+tftissuerwallet.modify_signing_requirements((j.clients.stellar.converter_wallet.address,),5,0,5,7)
 ```
 
 Install the package.
@@ -48,11 +47,11 @@ Example with kwargs:
 
 Test out the transfer tokens:
 
-`curl -H "Content-Type: application/json" -d '{ "tfchain_address": "", "stellar_address": "" }' -XPOST http://localhost/threefoldfoundation/tfchainmigration_service/migrate_tokens`
+`curl -H "Content-Type: application/json" -d '{ "tfchain_address": "", "stellar_address": "" }' -XPOST http://localhost/tfchainmigration_service/actors/tfchainmigration_service/migrate_tokens`
 
 ## Production deployment
 
-In Production it is deployed at `https://tokenservices.threefold.io/threefoldfoundation/conversion_service/<actor_method>`
+In production it is deployed at `https://tokenservices.threefold.io/threefoldfoundation/conversion_service/<actor_method>`
 
 ## Actor
 
@@ -63,7 +62,7 @@ There is one actor with 2 methods.
   - param `tfchain_address`: Source Tfchain address
 - `migrate_tokens`: migrate tokens from a TFChain address to a Stellar address. This includes unlocked and locked tokens. Locked tokens will be held in escrow accounts. This function returns the unlock transactions that come with these escrow accounts.
   - param `tfchain_address`: Source Tfchain address
-  - param `stellar_address`: Stellar address to transfer funds to
+  - param `stellar_address`: Stellar address to migrate the TFT's to
 
 ## Notes
 
@@ -71,5 +70,6 @@ A TFChain address balance has a precision of 9, a Stellar one has a precision of
 
 ## TODO
 
+- Cache the transaction listing of the TFT issuer account, the more TFT issuances are done, the longer this is starting to take.
 - Make conversion process for locked tokens faster, right now it executes locked token transfer sequentially. This is because the stellar account requires sequential increments when executing transactions.
 When this process is executed asynchronously the incrementions are scrambled and the stellar network does not aprove on these transactions.
