@@ -22,9 +22,9 @@ sals_path = CURRENT_FULL_PATH + "/../sals/"
 lib_path = CURRENT_FULL_PATH + "/../../../lib/"
 sys.path.extend([sals_path, lib_path])
 
-from tfchainmigration_sal import activate_account as activate_account_sal, get_wallet, CONVERTED_ADDRESS_MODEL, db_pool
+from tfchainmigration_sal import activate_account as activate_account_sal, get_wallet, CONVERTED_ADDRESS_MODEL, get_db_pool, get_issuing_pool
 from tfchaintypes.CryptoTypes import PublicKey, PublicKeySpecifier
-from tfchainexplorer import unlockhash_get, ExplorerUnlockhashResult
+from tfchainexplorer import unlockhash_get
 
 TFCHAIN_EXPLORER = "https://explorer2.threefoldtoken.com"
 
@@ -93,9 +93,7 @@ class TFchainmigration_service(BaseActor):
         if locked_until:
             return self._transfer_locked_tokens(destination_address, amount, asset, locked_until, memo_hash)
         else:
-            asset_code = asset.split(":")[0]
-            pool = self._tft_issuing_pool if asset_code == "TFT" else self._tfta_issuing_pool
-            return pool.apply(self._transfer, args=(destination_address, amount, asset, locked_until, memo_hash))
+            return get_issuing_pool().apply(self._transfer, args=(destination_address, amount, asset, locked_until, memo_hash))
 
     def _transfer_locked_tokens(self, destination_address, amount, asset: str, locked_until=None, memo_hash=None):
         asset_code = asset.split(":")[0]
@@ -235,7 +233,7 @@ class TFchainmigration_service(BaseActor):
 
         # check if the conversion already happened
         # First look in our internal db
-        if db_pool.apply(self._address_converted_before, (stellar_address,)):
+        if get_db_pool().apply(self._address_converted_before, (stellar_address,)):
             raise j.exceptions.Value("Migration already executed for address")
 
         # check the stellar network to be sure

@@ -7,10 +7,8 @@ from jumpscale.loader import j
 class ConvertedAddress(Base):
     stellaraddress = fields.String()
 
-# pool = None
 activation_pool = None
-tft_issuing_pool = None
-tfta_issuing_pool = None
+issuing_pool = None
 db_pool = None
 
 WALLET = None
@@ -20,10 +18,9 @@ CONVERTED_ADDRESS_MODEL.always_reload = True
 
 
 def create_gevent_pools():
-    global activation_pool, tft_issuing_pool, tfta_issuing_pool, db_pool
+    global activation_pool, issuing_pool, db_pool
     activation_pool = gevent.pool.Pool(1)
-    tft_issuing_pool = gevent.pool.Pool(1)
-    tfta_issuing_pool = gevent.pool.Pool(1)
+    issuing_pool = gevent.pool.Pool(1)
     db_pool = gevent.pool.Pool(1)
 
 
@@ -34,6 +31,11 @@ def _activate_account(address):
 def activate_account(address):
     activation_pool.apply(_activate_account, args=(address,))
 
+def get_db_pool():
+    return db_pool
+
+def get_issuing_pool():
+    return issuing_pool
 
 def set_wallet(wallet):
     global WALLET
