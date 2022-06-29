@@ -111,11 +111,11 @@ class TFchainmigration_service(BaseActor):
         preauth_tx_hash = preauth_tx.hash()
         unlock_hash = stellar_sdk.strkey.StrKey.encode_pre_auth_tx(preauth_tx_hash)
         conversion_wallet._create_unlockhash_transaction(unlock_hash=unlock_hash, transaction_xdr=preauth_tx.to_xdr())
-        conversion_wallet._set_escrow_account_signers(
+        conversion_wallet._set_account_signers(
             escrow_kp.public_key, destination_address, preauth_tx_hash, escrow_kp
         )
 
-        # delegate to the issuing pool
+        # delegate the transfer to the issuing pool
         self.transfer(escrow_kp.public_key, amount, asset, memo_hash=memo_hash)
 
         return preauth_tx.to_xdr()
