@@ -1,5 +1,7 @@
 # Dockerfiles  and kubernetes installs
 
+If executing docker builds on an Apple Silicon chip, add `--platform linux/amd64`.
+
 ## jssdk
 
 Base container with js-sdk installed
