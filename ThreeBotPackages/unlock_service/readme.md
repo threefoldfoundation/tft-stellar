@@ -19,7 +19,15 @@ The server will start and the actor methods will be available at `<HOST>/unlock_
 
 Test out the creation of an unlockhash transaction:
 
-`curl -H "Content-Type: application/json" -d '{ "unlockhash": "", "transaction_xdr": "" }' -XPOST https://localhost/unlock_service/actors/unlock_service/create_unlockhash_transaction --insecure`
+```sh
+curl -H "Content-Type: application/json" -d '{ "unlockhash": "testhash", "transaction_xdr": "testxdr" }' -XPOST https://localhost/unlock_service/actors/unlock_service/create_unlockhash_transaction --insecure
+```
+
+and getting it back:
+
+```sh
+curl -H "Content-Type: application/json" -d '{ "unlockhash": "testhash" }' -XPOST https://localhost/unlock_service/actors/unlock_service/get_unlockhash_transaction --insecure
+```
 
 ## Actor
 

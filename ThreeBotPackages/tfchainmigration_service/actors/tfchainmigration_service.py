@@ -232,7 +232,8 @@ class TFchainmigration_service(BaseActor):
             raise Exception("Can't migrate right now, address had unconfirmed locked balance.")
 
         # check if the conversion already happened
-        # First look in our internal db
+        # First look in our internal db 
+        # This is to prevent concurrent calls for the same adress
         if get_db_pool().apply(self._address_converted_before, (stellar_address,)):
             raise j.exceptions.Value("Migration already executed for address")
 

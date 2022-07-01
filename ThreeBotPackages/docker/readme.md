@@ -51,7 +51,7 @@ The helm charts are located in the `helm` folder.
 
 Upgrade the version.
 
-Create a "packagedcharts" folder here. It is already in the .gitignore.
+Create a "packagedcharts" folder in the `helm` folder. It is already in the .gitignore.
 
 Empty the folder if it already existed and in this folder, package the charts you modified:
 
