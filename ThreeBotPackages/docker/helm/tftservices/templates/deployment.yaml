@@ -65,6 +65,13 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: unlockservice-storage-{{ .Release.Name }}
+              mountPath: /root/.config/jumpscale/secureconfig/models/UnlockhashTransaction
+      volumes:
+        - name: unlockservice-storage-{{ .Release.Name }}
+          persistentVolumeClaim:
+            claimName: {{if .Values.unlockServiceVolume.existingpersistentVolumeClaim }} {{.Values.unlockServiceVolume.existingpersistentVolumeClaim}} {{ else }} tft-unlockservice-volume-claim-{{ .Release.Name }} {{ end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

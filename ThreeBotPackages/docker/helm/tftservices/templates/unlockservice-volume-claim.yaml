@@ -1,0 +1,13 @@
+{{- if not .Values.unlockServiceVolume.existingpersistentVolumeClaim -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tft-unlockservice-volume-claim-{{ .Release.Name }}
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.unlockServiceVolume.size }}
+{{- end }}

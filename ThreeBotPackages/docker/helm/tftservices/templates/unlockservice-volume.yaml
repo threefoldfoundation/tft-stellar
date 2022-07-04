@@ -1,0 +1,16 @@
+{{- if .Values.unlockServiceVolume.persistentVolume.create -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tft-unlockservice-volume-{{ .Release.Name }}
+    type: local
+spec:
+  storageClassName: local-path
+  capacity:
+    storage: {{ .Values.unlockServiceVolume.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.unlockServiceVolume.persistentVolume.hostPath }}
+    type: DirectoryOrCreate
+{{- end }}

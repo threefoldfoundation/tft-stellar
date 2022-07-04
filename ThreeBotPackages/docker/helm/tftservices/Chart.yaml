@@ -4,7 +4,7 @@ description: A Helm chart for the tft services
 
 type: application
 
-version: 0.4.2
+version: 0.4.3
 
 sources:
   - https://github.com/threefoldfoundation/tft-stellar
