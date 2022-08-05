@@ -8,3 +8,4 @@ specs/vesting/testscripts/cosigners.json
 specs/vesting/testscripts/testing.txt
 ThreeBotPackages/unlock_service/scripts/testnetdata
 scripts/data
+specs/l2validatorapplication/destinationaddress/destinationaddress

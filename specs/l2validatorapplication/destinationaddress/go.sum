@@ -1,0 +1,6 @@
+github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
+github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+github.com/stellar/go v0.0.0-20220729224424-bd25a437b9b0 h1:xgHcGipEsyTRdCGKpUkDKS/WghFdwBkZSsFrf0PyrBc=
+github.com/stellar/go v0.0.0-20220729224424-bd25a437b9b0/go.mod h1:KwWGjhG5DceU63MoF4eAsjbt++Pn7hwYfdXS66WouGw=
+github.com/stellar/go-xdr v0.0.0-20211103144802-8017fc4bdfee h1:fbVs0xmXpBvVS4GBeiRmAE3Le70ofAqFMch1GTiq/e8=
+github.com/stellar/go-xdr v0.0.0-20211103144802-8017fc4bdfee/go.mod h1:yoxyU/M8nl9LKeWIoBrbDPQ7Cy+4jxRcWcOayZ4BMps=
