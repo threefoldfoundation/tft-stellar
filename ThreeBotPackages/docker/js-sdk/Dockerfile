@@ -10,7 +10,7 @@ RUN apt-get install -y tzdata
 RUN apt-get upgrade -y
 
 #install prerequisites
-RUN apt-get install -y git python3-venv python3-pip redis-server tmux nginx
+RUN apt-get install -y git python3-venv python3-pip redis restic tmux nginx
 RUN pip3 install poetry
 
 #install js-sdk
