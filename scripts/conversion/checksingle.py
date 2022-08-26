@@ -111,9 +111,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
             lock_time = coin_output.condition.lock.value
             if lock_time == 0:
                 continue
-            lock_time_date = datetime.fromtimestamp(lock_time)
-            # if lock time year is before 2021 be convert to TFTA else we convert to TFT
-            asset = "TFTA" if lock_time_date.year < 2021 else "TFT"
+            asset = "TFT"
             if time.time() < lock_time:
                 amount = Decimal("{0:.7f}".format(coin_output.value.value))
                 totalockedamountthatshouldhavebeenisssued += amount
@@ -160,7 +158,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
     print("Correction script:")
     print(f"deauthtxid='{deauthorizationtx}'")
     if unlocked_tokens != totalfreeissued:
-        asset = FULL_ASSETCODES["TFTA"]
+        asset = FULL_ASSETCODES["TFT"]
         issuer_address = asset.split(":")[1]
         print(
             f"conversionwallet.transfer('{mainstellaraddress}','{unlocked_tokens}',asset='{asset}', memo_hash=deauthtxid,fund_transaction=False,from_address='{issuer_address}')"
