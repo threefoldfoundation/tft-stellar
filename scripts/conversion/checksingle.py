@@ -53,9 +53,16 @@ def get_escrowaccount_unlocktime(address):
 @click.argument("issuedfile", default="issued.txt", type=click.File("r"))
 @click.option("--stellaraddress", default="", type=str)
 def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddress):
-    if stellaraddress:
-        if tfchainaddress != stellar_address_to_tfchain_address(stellaraddress):
-            print("Warning: The tfchain address does not match the stellar adress")
+    if not tfchainaddress:
+        if not stellaraddress:
+            raise click.BadArgumentUsage("if no tfchain address is given, a stellaraddress is required")
+        else:
+            tfchainaddress = stellar_address_to_tfchain_address(stellaraddress)
+            print(f"Tfchain address: {tfchainaddress}")
+    else:
+        if stellaraddress:
+            if tfchainaddress != stellar_address_to_tfchain_address(stellaraddress):
+                print("Warning: The tfchain address does not match the stellar adress")
 
     deauthorizationtx = None
     for deauthorization in deauthorizationsfile.read().splitlines():
