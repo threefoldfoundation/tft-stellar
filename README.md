@@ -32,11 +32,11 @@ These tokens are regular Stellar custom assets so the normal Stellar documentati
 
 ## tft-stellar services
 
-- [Conversion Service](ThreeBotPackages/conversion-service/readme.md): Service for converting TFChain TFT's to Stellar TFT's.
-- [Stellar Faucet](ThreeBotPackages/stellar_faucet/readme.md): Faucet for receiving Testnet Stellar TFT's to any testnet Stellar address.
-- [Unlock Service](ThreeBotPackages/unlock-service/readme.md): Service for storing and retrieving unlock transaction for a Stellar Wallet.
-- [Transaction funding service](ThreeBotPackages/transactionfunding-service/readme.md): Service for funding TFT transactions with Lumens(XLM).
-- [Activation service](ThreeBotPackages/activation-service/readme.md): Service for activation of new accounts.
+- [Conversion Service](ThreeBotPackages/tfchainmigration_service/readme.md): Service for converting TFChain TFT's to Stellar TFT's.
+- [TFT Faucet](ThreeBotPackages/tft_faucet/readme.md): Faucet for receiving Testnet Stellar TFT's to any testnet Stellar address.
+- [Unlock Service](ThreeBotPackages/unlock_service/readme.md): Service for storing and retrieving unlock transaction for a Stellar Wallet.
+- [Transaction funding service](ThreeBotPackages/transactionfunding_service/readme.md): Service for funding TFT transactions with Lumens(XLM).
+- [Activation service](ThreeBotPackages/activation_service/readme.md): Service for activation of new accounts.
 
 Url: `https://tokenservices.threefold.io`
 
