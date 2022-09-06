@@ -1,6 +1,7 @@
 # Conversion Service
 
 Js-ng Service for converting Threefold tft's to Stellar tft's. To be used as a Threebot package.
+Only activating a Stellar account with the same secret as a Rivine account is left, the actual migration needs to be done through a support ticket.
 
 ## Requirements
 
@@ -47,7 +48,7 @@ Example with kwargs:
 
 Test out the transfer tokens:
 
-`curl -H "Content-Type: application/json" -d '{ "tfchain_address": "", "stellar_address": "" }' -XPOST http://localhost/tfchainmigration_service/actors/tfchainmigration_service/migrate_tokens`
+`curl -H "Content-Type: application/json" -d '{ "tfchain_address": "", "address": "" }' -XPOST http://localhost/tfchainmigration_service/actors/tfchainmigration_service/activate_account`
 
 ## Production deployment
 
@@ -60,16 +61,4 @@ There is one actor with 2 methods.
 - `activate_account`: activates a Stellar account with a minimal balance.
   - param `address`: Stellar address to activate
   - param `tfchain_address`: Source Tfchain address
-- `migrate_tokens`: migrate tokens from a TFChain address to a Stellar address. This includes unlocked and locked tokens. Locked tokens will be held in escrow accounts. This function returns the unlock transactions that come with these escrow accounts.
-  - param `tfchain_address`: Source Tfchain address
-  - param `stellar_address`: Stellar address to migrate the TFT's to
-
-## Notes
-
-A TFChain address balance has a precision of 9, a Stellar one has a precision of 7. We fetch the balance of unlocked/locked tokens from a TFChain address and set the precision to 7 to be compatible with Stellar.
-
-## TODO
-
-- Cache the transaction listing of the TFT issuer account, the more TFT issuances are done, the longer this is starting to take.
-- Make conversion process for locked tokens faster, right now it executes locked token transfer sequentially. This is because the stellar account requires sequential increments when executing transactions.
-When this process is executed asynchronously the incrementions are scrambled and the stellar network does not aprove on these transactions.
+- `migrate_tokens`: Return an eroor saying that a support ticket needs to be created.
