@@ -4,9 +4,6 @@ from jumpscale.core.base import StoredFactory,Base, fields
 from jumpscale.loader import j
 
 
-class ConvertedAddress(Base):
-    stellaraddress = fields.String()
-
 activation_pool = None
 
 WALLET = None
