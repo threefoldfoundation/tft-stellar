@@ -40,7 +40,7 @@ service accounts:
 
 ```python
 j.clients.stellar.new('testtxfundingwallet',network='TEST',secret='')
-j.clients.stellar.new('testconverter',network='TEST',secret='')
+j.clients.stellar.new('testmigration_wallet',network='TEST',secret='')
 j.clients.stellar.new('testactivation_wallet',network='TEST',secret='')
 j.clients.stellar.new('testfaucetwallet',network='TEST',secret='')
 ```
@@ -53,6 +53,6 @@ j.clients.stellar.testfaucetwallet.activate_through_friendbot()
 j.clients.stellar.testfaucetwallet.add_known_trustline('TFT')
 j.clients.stellar.testtxfundingwallet.add_known_trustline('TFT')
 j.clients.stellar.testtxfundingwallet.add_known_trustline('TFTA')
-j.clients.stellar.testconverter.add_known_trustline('TFT')
-j.clients.stellar.testconverter.add_known_trustline('TFTA')
+j.clients.stellar.testmigration_walle.add_known_trustline('TFT')
+j.clients.stellar.testmigration_walle.add_known_trustline('TFTA')
 ```
