@@ -130,6 +130,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
 
     missingissuances = lockedshouldhavebeenissued
     toomuchissued = []
+    issued_alreadyunlocked=[]
 
     print("Isuances:")
     for issuance in issuedtokens:
@@ -137,6 +138,10 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
         splitissuance = issuance.split()
         if splitissuance[3] == "Free":
             continue
+        if splitissuance[3]== "already" and splitissuance[4]=="unlocked":
+            formattedissuance= f"{Decimal(splitissuance[0]):.7f} {splitissuance[1]}"
+            issued_alreadyunlocked.append(formattedissuance)
+            continue 
         formattedissuance = f"{Decimal(splitissuance[0]):.7f} {splitissuance[1]} {splitissuance[4]}"
         if formattedissuance in missingissuances:
             missingissuances.remove(formattedissuance)
@@ -150,6 +155,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
 
     print(f"Too much issued: {totaltoomuchissued} locked tokens:")
     for issuance in toomuchissued:
+        
         issuancetime = int(issuance.split()[2])
         print(f"{issuance} {datetime.fromtimestamp(issuancetime)}")
 
@@ -158,10 +164,15 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
         splitissuance = issuance.split()
         totalmissingissuances += Decimal(splitissuance[0])
 
+    print(f"Locked issuances already unlocked:")
+    for issuance in issued_alreadyunlocked:
+        print(issuance)
+
     print(f"Missing issuances: {totalmissingissuances} tokens:")
     for issuance in missingissuances:
         print(issuance)
-
+    
+    
     print("Correction script:")
     print(f"deauthtxid='{deauthorizationtx}'")
     if unlocked_tokens != totalfreeissued:
