@@ -52,7 +52,8 @@ def get_escrowaccount_unlocktime(address):
 @click.argument("deauthorizationsfile", default="deauthorizations.txt", type=click.File("r"))
 @click.argument("issuedfile", default="issued.txt", type=click.File("r"))
 @click.option("--stellaraddress", default="", type=str)
-def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddress):
+@click.option("--conversiontime",default=0,type=int)
+def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddress,conversiontime):
     if not tfchainaddress:
         if not stellaraddress:
             raise click.BadArgumentUsage("if no tfchain address is given, a stellaraddress is required")
@@ -118,8 +119,11 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
             lock_time = coin_output.condition.lock.value
             if lock_time == 0:
                 continue
+            
             asset = "TFT"
-            if time.time() < lock_time:
+            freetime=time.time() if conversiontime==0 else conversiontime
+            
+            if freetime < lock_time:
                 amount = Decimal("{0:.7f}".format(coin_output.value.value))
                 totalockedamountthatshouldhavebeenisssued += amount
                 lockedshouldhavebeenissued.append(f"{amount} {asset} {math.ceil(lock_time)}")
