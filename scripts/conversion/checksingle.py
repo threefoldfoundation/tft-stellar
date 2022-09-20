@@ -103,7 +103,8 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
 
     unlockhash = unlockhash_get(tfchainaddress)
     balance = unlockhash.balance()
-
+    freetime=time.time() if conversiontime==0 else conversiontime
+    balance.chain_time=freetime
     unlocked_tokens = Decimal("{0:.7f}".format(balance.available.value))
     locked_tokens = balance.locked.value
     print(f"Tfchain TFT: {unlocked_tokens+locked_tokens} Free: {unlocked_tokens} Locked: {locked_tokens}")
@@ -121,7 +122,6 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
                 continue
             
             asset = "TFT"
-            freetime=time.time() if conversiontime==0 else conversiontime
             
             if freetime < lock_time:
                 amount = Decimal("{0:.7f}".format(coin_output.value.value))
@@ -130,7 +130,8 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
 
     print(f"Locked tokens that should have been issued ({totalockedamountthatshouldhavebeenisssued}):")
     for should in lockedshouldhavebeenissued:
-        print(should)
+        unlocktime = int(should.split()[2])
+        print(f"{should} {datetime.fromtimestamp(unlocktime)}")
 
     missingissuances = lockedshouldhavebeenissued
     toomuchissued = []
@@ -152,6 +153,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
         else:
             toomuchissued.append(formattedissuance)
 
+
     totaltoomuchissued = Decimal()
     for issuance in toomuchissued:
         splitissuance = issuance.split()
@@ -163,19 +165,21 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
         issuancetime = int(issuance.split()[2])
         print(f"{issuance} {datetime.fromtimestamp(issuancetime)}")
 
+    print(f"Locked issuances already unlocked:")
+    for issuance in issued_alreadyunlocked:
+        print(issuance)
+
     totalmissingissuances = Decimal()
     for issuance in missingissuances:
         splitissuance = issuance.split()
         totalmissingissuances += Decimal(splitissuance[0])
 
-    print(f"Locked issuances already unlocked:")
-    for issuance in issued_alreadyunlocked:
-        print(issuance)
-
     print(f"Missing issuances: {totalmissingissuances} tokens:")
     for issuance in missingissuances:
-        print(issuance)
-    
+        issuancetime = int(issuance.split()[2])
+        print(f"{issuance} {datetime.fromtimestamp(issuancetime)}")
+    if unlocked_tokens != totalfreeissued:
+       print(f"{unlocked_tokens-totalfreeissued} TFT")
     
     print("Correction script:")
     print(f"deauthtxid='{deauthorizationtx}'")
@@ -183,7 +187,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
         asset = FULL_ASSETCODES["TFT"]
         issuer_address = asset.split(":")[1]
         print(
-            f"conversionwallet.transfer('{mainstellaraddress}','{unlocked_tokens}',asset='{asset}', memo_hash=deauthtxid,fund_transaction=False,from_address='{issuer_address}')"
+            f"conversionwallet.transfer('{mainstellaraddress}','{unlocked_tokens-totalfreeissued}',asset='{asset}', memo_hash=deauthtxid,fund_transaction=False,from_address='{issuer_address}')"
         )
 
     for issuance in missingissuances:
