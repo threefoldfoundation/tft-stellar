@@ -1,3 +1,12 @@
+[DOCUMENTATION]
+ORG_NAME="Threefold foundation"
+ORG_URL="https://testnet.threefold.io"
+ORG_LOGO="https://threefoldfoundation.github.io/tft/tft_icon.png"
+ORG_PHYSICAL_ADDRESS="Dubai, UAE"
+ORG_GITHUB="threefoldfoundation"
+ORG_OFFICIAL_EMAIL="support@testnet.threefold.io"
+ORG_SUPPORT_EMAIL="support@testnet.threefold.io"
+
 [[CURRENCIES]]
 code = "TFT"
 issuer = "GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3"
