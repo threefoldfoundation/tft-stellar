@@ -13,6 +13,8 @@ current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/../sals/")
 from activation_sal import activate_account as activate_account_sal, get_wallet
 
+_MAX_FEE=1000000
+
 SUPPORTED_ASSETS = {
     "TEST": [
         "TFT:GA47YZA3PKFUZMPLQ3B5F2E3CJIB57TGGU7SPCQT2WAEYKN766PWIMB3",
@@ -56,16 +58,14 @@ class ActivationService(BaseActor):
     def _activate_account(self, address):
         wallet = self._get_wallet()
         tftasset = wallet._get_asset()
-        server = wallet._get_horizon_server()
 
         source_account = wallet.load_account()
 
-        base_fee = server.fetch_base_fee()
         transaction = (
             stellar_sdk.TransactionBuilder(
                 source_account=source_account,
                 network_passphrase=self._get_network_passphrase(wallet.network.value),
-                base_fee=base_fee,
+                base_fee=_MAX_FEE,
             )
             .append_begin_sponsoring_future_reserves_op(address)
             .append_create_account_op(destination=address, starting_balance="0")
@@ -96,16 +96,13 @@ class ActivationService(BaseActor):
 
         asset_code, asset_issuer = asset.split(":")
 
-        server = wallet._get_horizon_server()
-
         source_account = wallet.load_account()
 
-        base_fee = server.fetch_base_fee()
         transaction = (
             stellar_sdk.TransactionBuilder(
                 source_account=source_account,
                 network_passphrase=self._get_network_passphrase(wallet.network.value),
-                base_fee=base_fee,
+                base_fee=_MAX_FEE,
             )
             .append_begin_sponsoring_future_reserves_op(address)
             .append_change_trust_op(asset_code=asset_code, asset_issuer=asset_issuer, source=address)
