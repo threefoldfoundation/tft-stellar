@@ -35,13 +35,7 @@ JS-NG> server.start()
 - <https://localhost/tft_statistics/api/total_tft>
 - <https://localhost/tft_statistics/api/total_unlocked_tft>
 
-## Deployed examples
-
-## Test environment
-
-- `https://statsdata.testnet.threefold.io/stellar_stats/api/stats`
-- `https://statsdata.testnet.threefold.io/stellar_stats/api/foundationaccounts`
-- `https://statsdata.testnet.threefold.io/stellar_stats/api/account/<address>`
+## Deployed url's
 
 ## Production environment
 
