@@ -17,9 +17,9 @@ JS-NG> server.start()
 
  Query params:
 
-  - network: (str ["test", "public"], optional): Defaults to "public".
-  - tokencode: (str ["TFT", "TFTA"], optional): Defaults to "TFT".
-  - detailed: (bool, optional): Defaults to False.
+- network: (str ["test", "public"], optional): Defaults to "public".
+- tokencode: (str ["TFT", "TFTA"], optional): Defaults to "TFT".
+- detailed: (bool, optional): Defaults to False.
 
 - `https://<host>/tft_statistics/api/total_tft`
 - `https://<host>/tft_statistics/api/total_unlocked_tft`
@@ -28,12 +28,12 @@ JS-NG> server.start()
 
 ## Examples
 
-- https://localhost/tft_statistics/api/stats
-- https://localhost/tft_statistics/api/stats?tokencode=TFT
-- https://localhost/tft_statistics/api/stats?tokencode=TFTA
-- https://localhost/tft_statistics/api/foundationaccounts
-- https://localhost/tft_statistics/api/total_tft
-- https://localhost/tft_statistics/api/total_unlocked_tft
+- <https://localhost/tft_statistics/api/stats>
+- <https://localhost/tft_statistics/api/stats?tokencode=TFT>
+- <https://localhost/tft_statistics/api/stats?tokencode=TFTA>
+- <https://localhost/tft_statistics/api/foundationaccounts>
+- <https://localhost/tft_statistics/api/total_tft>
+- <https://localhost/tft_statistics/api/total_unlocked_tft>
 
 ## Deployed examples
 
