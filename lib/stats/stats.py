@@ -172,8 +172,8 @@ class StatisticsCollector(object):
             return None
         txe = stellar_sdk.TransactionEnvelope.from_xdr(unlock_tx["transaction_xdr"], self._network_passphrase)
         tx = txe.transaction
-        if tx.time_bounds is not None:
-            return tx.time_bounds.min_time
+        if tx.preconditions is not None and tx.preconditions.time_bounds is not None:
+            return tx.preconditions.time_bounds.min_time
         return None
 
     def getstatistics(self, tokencode: str, foundationaccounts: list, detailed: bool):
