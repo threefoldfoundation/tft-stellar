@@ -1,12 +1,12 @@
 apiVersion: v2
 name: tftstatistics
-description: A Helm chart for deploying the tft statistics api
+description: TFT statistics api
 
 type: application
 
-version: 1.4.2
+version: 1.4.3
 
 sources:
   - https://github.com/threefoldfoundation/tft-stellar
-  
-appVersion: 1.4.8
+
+appVersion: 1.4.13-b1
