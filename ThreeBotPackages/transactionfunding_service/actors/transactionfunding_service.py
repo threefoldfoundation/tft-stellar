@@ -125,15 +125,14 @@ class Transactionfunding_service(BaseActor):
 
         funding_wallet = self._get_slave_fundingwallet()
 
-        source_public_kp = stellar_sdk.Keypair.from_public_key(funding_wallet.address)
-        source_signing_kp = stellar_sdk.Keypair.from_secret(funding_wallet.secret)
-
         source_account = funding_wallet.load_account()
         source_account.increment_sequence_number()
-        txe.transaction.source = source_public_kp
 
         txe.transaction.sequence = source_account.sequence
-        txe.sign(source_signing_kp)
+
+        txe.transaction.source = stellar_sdk.MuxedAccount.from_account(funding_wallet.address)
+        
+        txe.sign(funding_wallet.secret)
 
         transaction_xdr = txe.to_xdr()
 
