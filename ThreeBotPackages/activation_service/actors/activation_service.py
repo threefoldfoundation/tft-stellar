@@ -69,7 +69,7 @@ class ActivationService(BaseActor):
             )
             .append_begin_sponsoring_future_reserves_op(address)
             .append_create_account_op(destination=address, starting_balance="0")
-            .append_change_trust_op(asset_issuer=tftasset.issuer, asset_code=tftasset.code, source=address)
+            .append_change_trust_op(stellar_sdk.Asset(tftasset.code,tftasset.issuer), source=address)
             .append_end_sponsoring_future_reserves_op(address)
             .set_timeout(60)
             .build()
@@ -105,7 +105,7 @@ class ActivationService(BaseActor):
                 base_fee=_MAX_FEE,
             )
             .append_begin_sponsoring_future_reserves_op(address)
-            .append_change_trust_op(asset_code=asset_code, asset_issuer=asset_issuer, source=address)
+            .append_change_trust_op(stellar_sdk.Asset(asset_code,asset_issuer), source=address)
             .append_end_sponsoring_future_reserves_op(address)
             .set_timeout(60)
             .build()
