@@ -169,7 +169,7 @@ class Transactionfunding_service(BaseActor):
 
         asset = None
         for op in txe.transaction.operations:
-            if type(op) != stellar_sdk.operation.Payment:
+            if type(op) != stellar_sdk.Payment:
                 raise j.exceptions.Value("Only payment operations are supported")
             full_asset_code = asset_to_full_asset_string(op.asset)
 
