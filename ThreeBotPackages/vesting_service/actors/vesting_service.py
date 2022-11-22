@@ -102,7 +102,7 @@ class VestingService(BaseActor):
         if len(tx.operations) != 3:
             return False
         change_trust_op = tx.operations[0]
-        if not type(change_trust_op) is stellar_sdk.operation.change_trust.ChangeTrust:
+        if not type(change_trust_op) is stellar_sdk.change_trust.ChangeTrust:
             return False
         if not change_trust_op.source is None:
             return False
@@ -111,7 +111,7 @@ class VestingService(BaseActor):
         if change_trust_op.asset.code != "TFT" or change_trust_op.asset.issuer != self._get_tft_issuer():
             return False
         manage_data_op = tx.operations[1]
-        if not type(manage_data_op) is stellar_sdk.operation.manage_data.ManageData:
+        if not type(manage_data_op) is stellar_sdk.manage_data.ManageData:
             return False
         if not manage_data_op.source is None:
             return False
@@ -120,7 +120,7 @@ class VestingService(BaseActor):
         if not manage_data_op.data_value is None:
             return False
         account_merge_op = tx.operations[2]
-        if not type(account_merge_op) is stellar_sdk.operation.account_merge.AccountMerge:
+        if not type(account_merge_op) is stellar_sdk.account_merge.AccountMerge:
             return False
         if not account_merge_op.source is None:
             return False
