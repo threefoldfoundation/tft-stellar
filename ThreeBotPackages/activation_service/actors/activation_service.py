@@ -3,8 +3,6 @@ import sys
 import time
 
 import stellar_sdk
-from stellar_sdk.exceptions import Ed25519PublicKeyInvalidError, BadRequestError, SdkError
-from jumpscale.core.exceptions import JSException
 from jumpscale.loader import j
 from jumpscale.servers.gedis.baseactor import BaseActor, actor_method
 
