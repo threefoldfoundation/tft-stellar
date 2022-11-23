@@ -11,7 +11,7 @@ A funding service accepts transaction envelopes and funds the required lumen.
 
 The funding service adds a payment operation of 0.1 of the token being transferred to itself and then it's up to the client to accept it or not.
 
-This way transaction fees stay  in the same token.
+This way transaction fees stay in the same token.
 
 ## Stellar signatures
 
