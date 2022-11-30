@@ -27,3 +27,7 @@ testnet:
 - TFTA:GB55A4RR4G2MIORJTQA4L6FENZU7K4W7ATGY6YOT2CW47M5SZYGYKSCT
 - FreeTFT:GBLDUINEFYTF7XEE7YNWA3JQS4K2VD37YU7I2YAE7R5AHZDKQXSS2J6R"
 - USDC:GAHHZJT5OIK6HXDXLCSRDTTNPE52CMXFWW6YQXCBMHW2HUI6D365HPOO ( not the official circle tesnet USDC)
+
+## how do I acquire testnet tokens?
+
+Liquidity pools are provided so you can swap testnet XLM with testnet TFT and testnet USDC on the Stellar dex.

@@ -7,7 +7,7 @@ from stellar_sdk.exceptions import Ed25519SecretSeedInvalidError
 from stellarconstants import PUBLIC_HORIZON_SERVER, DEFAULT_TRANSACTION_TIMEOUT
 
 
-def set_home_domain(tokencode, home_domain, issuer_secret, network):
+def set_home_domain(home_domain, issuer_secret, network):
     try:
         issuer_keypair = stellar_sdk.Keypair.from_secret(issuer_secret)
     except Ed25519SecretSeedInvalidError:
@@ -35,12 +35,11 @@ def set_home_domain(tokencode, home_domain, issuer_secret, network):
 @click.command(
     help="Set the homedomain on a custom asset as described at https://www.stellar.org/developers/guides/issuing-assets.html#discoverablity-and-meta-information "
 )
-@click.argument("tokencode", type=str, required=True)
 @click.argument("home_domain", type=str, required=True)
 @click.option("--network", type=click.Choice(["public", "test"], case_sensitive=False), default="public")
 @click.option("--issuer_secret", type=str, required=True, help="The secret key of the issuer")
-def set_home_domain_command(tokencode, home_domain, issuer_secret, network):
-    set_home_domain(tokencode, home_domain, issuer_secret, network)
+def set_home_domain_command(home_domain, issuer_secret, network):
+    set_home_domain(home_domain, issuer_secret, network)
 
 
 if __name__ == "__main__":
