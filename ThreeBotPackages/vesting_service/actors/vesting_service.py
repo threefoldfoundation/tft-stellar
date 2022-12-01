@@ -95,14 +95,12 @@ class VestingService(BaseActor):
             else stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE,
         )
         tx = txe.transaction
-        if not type(tx.source) is stellar_sdk.keypair.Keypair:
-            return False
-        if tx.source.public_key != vesting_account_id:
+        if tx.source.account_id != vesting_account_id:
             return False
         if len(tx.operations) != 3:
             return False
         change_trust_op = tx.operations[0]
-        if not type(change_trust_op) is stellar_sdk.change_trust.ChangeTrust:
+        if not type(change_trust_op) is stellar_sdk.ChangeTrust:
             return False
         if not change_trust_op.source is None:
             return False
@@ -111,7 +109,7 @@ class VestingService(BaseActor):
         if change_trust_op.asset.code != "TFT" or change_trust_op.asset.issuer != self._get_tft_issuer():
             return False
         manage_data_op = tx.operations[1]
-        if not type(manage_data_op) is stellar_sdk.manage_data.ManageData:
+        if not type(manage_data_op) is stellar_sdk.ManageData:
             return False
         if not manage_data_op.source is None:
             return False
@@ -120,11 +118,11 @@ class VestingService(BaseActor):
         if not manage_data_op.data_value is None:
             return False
         account_merge_op = tx.operations[2]
-        if not type(account_merge_op) is stellar_sdk.account_merge.AccountMerge:
+        if not type(account_merge_op) is stellar_sdk.AccountMerge:
             return False
         if not account_merge_op.source is None:
             return False
-        if account_merge_op.destination != get_wallet().address:
+        if account_merge_op.destination.account_id != get_wallet().address:
             return False
         return True
 
@@ -133,7 +131,6 @@ class VestingService(BaseActor):
         tresholds = account_record["thresholds"]
         if tresholds["low_threshold"] != 10 or tresholds["med_threshold"] != 10 or tresholds["high_threshold"] != 10:
             return False
-        print("Tresholds are fine")
         ## signers found for account
         signers = {signer["key"]: (signer["weight"], signer["type"]) for signer in account_record["signers"]}
         # example of signers item --> {'GCWPSLTHDH3OYH226EVCLOG33NOMDEO4KUPZQXTU7AWQNJPQPBGTLAVM':(5,'ed25519_public_key')}
@@ -166,7 +163,6 @@ class VestingService(BaseActor):
                 master_key_weight_correct = signer["weight"] == 0
             if signer["key"] == owner_address:
                 owner_key_weight_correct = signer["weight"] == 5
-
         if len(account_record["signers"]) == 12:
             return cleanup_signer_correct and master_key_weight_correct and owner_key_weight_correct
         return len(account_record["signers"]) == 11 and master_key_weight_correct and owner_key_weight_correct
