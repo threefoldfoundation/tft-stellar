@@ -1,4 +1,4 @@
-# Commands executed for setting up TFT  on Stellar
+# Commands executed for setting up TFT on Stellar
 
 ## Issuing Account
 
@@ -42,15 +42,14 @@ service accounts:
 j.clients.stellar.new('testtxfundingwallet',network='TEST',secret='')
 j.clients.stellar.new('testmigration_wallet',network='TEST',secret='')
 j.clients.stellar.new('testactivation_wallet',network='TEST',secret='')
-j.clients.stellar.new('testfaucetwallet',network='TEST',secret='')
+j.clients.stellar.new('testvestingwallet',network='TEST',secret='')
 ```
 
 ```python
 j.clients.stellar.testtxfundingwallet.activate_through_friendbot()
 j.clients.stellar.testconverter.activate_through_friendbot()
 j.clients.stellar.testactivation_wallet.activate_through_friendbot()
-j.clients.stellar.testfaucetwallet.activate_through_friendbot()
-j.clients.stellar.testfaucetwallet.add_known_trustline('TFT')
+j.clients.stellar.testvestingwallet.activate_through_friendbot()
 j.clients.stellar.testtxfundingwallet.add_known_trustline('TFT')
 j.clients.stellar.testtxfundingwallet.add_known_trustline('TFTA')
 j.clients.stellar.testmigration_walle.add_known_trustline('TFT')
