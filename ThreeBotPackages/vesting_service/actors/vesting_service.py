@@ -171,21 +171,20 @@ class VestingService(BaseActor):
             return cleanup_signer_correct and master_key_weight_correct and owner_key_weight_correct
         return len(account_record["signers"]) == 11 and master_key_weight_correct and owner_key_weight_correct
 
+    def _get_vesting_accounts(self, address: str) -> list:
+        vestingaccounts = []
 
-    def _get_vesting_accounts(self, address: str)-> list:
-        vestingaccounts=[]
-        
-        accounts_endpoint=get_wallet()._get_horizon_server().accounts()
+        accounts_endpoint = get_wallet()._get_horizon_server().accounts()
         accounts_endpoint.for_signer(address)
-        old_cursor="old"
-        new_cursor=""
+        old_cursor = "old"
+        new_cursor = ""
         while new_cursor != old_cursor:
             old_cursor = new_cursor
             accounts_endpoint.cursor(new_cursor)
             response = accounts_endpoint.call()
             next_link = response["_links"]["next"]["href"]
             next_link_query = parse.urlsplit(next_link).query
-            cursor = parse.parse_qs(next_link_query,keep_blank_values=True).get("cursor")
+            cursor = parse.parse_qs(next_link_query, keep_blank_values=True).get("cursor")
             new_cursor = cursor[0]
             for record in response["_embedded"]["records"]:
                 if "tft-vesting" in record.get("data"):
@@ -196,8 +195,8 @@ class VestingService(BaseActor):
         return vestingaccounts
 
     def _check_has_vesting_account(self, address: str):
-        vestingaccounts=self._get_vesting_accounts(address)
-        if len(vestingaccounts)>0:
+        vestingaccounts = self._get_vesting_accounts(address)
+        if len(vestingaccounts) > 0:
             return vestingaccounts[0]["account_id"]
         return None
 
@@ -297,20 +296,20 @@ class VestingService(BaseActor):
             j.logger.exception(str(data), exception=e)
 
         return data
-    
+
     @actor_method
-    def vesting_accounts(self, owner_address: str="") -> dict:
-        if owner_address=="":
+    def vesting_accounts(self, owner_address: str = "") -> dict:
+        if owner_address == "":
             raise j.exceptions.Value("owner_address is required")
         try:
-            found_vesting_accounts= self._get_vesting_accounts(owner_address)
-            vesting_accounts=[]
+            found_vesting_accounts = self._get_vesting_accounts(owner_address)
+            vesting_accounts = []
             data = {"owner_adress": owner_address}
             for found_vesting_account in found_vesting_accounts:
-                vesting_account={"address":found_vesting_account["account_id"]}
+                vesting_account = {"address": found_vesting_account["account_id"]}
                 vesting_accounts.append(vesting_account)
 
-            data["vesting_accounts"]=vesting_accounts
+            data["vesting_accounts"] = vesting_accounts
 
         except stellar_sdk.exceptions.NotFoundError as e:
             j.logger.exception("Error: Address not found", exception=e)
