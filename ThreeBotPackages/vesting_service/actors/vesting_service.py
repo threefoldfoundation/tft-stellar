@@ -102,7 +102,7 @@ class VestingService(BaseActor):
         if len(tx.operations) != 3:
             return False
         change_trust_op = tx.operations[0]
-        if not type(change_trust_op) is stellar_sdk.change_trust.ChangeTrust:
+        if not type(change_trust_op) is stellar_sdk.ChangeTrust:
             return False
         if not change_trust_op.source is None:
             return False
@@ -248,7 +248,7 @@ class VestingService(BaseActor):
         txb = (
             stellar_sdk.TransactionBuilder(activation_account, network_passphrase=self._get_network_passphrase())
             .append_create_account_op(escrow_address, starting_balance="7.6")
-            .append_change_trust_op("TFT", self._get_tft_issuer(), source=escrow_address)
+            .append_change_trust_op(tftasset, source=escrow_address)
         )
         activation_kp = stellar_sdk.Keypair.from_secret(wallet.secret)
 
