@@ -207,7 +207,7 @@ class VestingService(BaseActor):
         source_account = horizon_server.load_account(vesting_address)
         source_account.sequence += 1
         tx = stellar_sdk.TransactionBuilder(source_account, network_passphrase=self._get_network_passphrase())
-        tx.append_change_trust_op(asset_code="TFT", asset_issuer=self._get_tft_issuer(), limit="0")
+        tx.append_change_trust_op(get_wallet()._get_asset(), limit="0")
         tx.append_manage_data_op(DATA_ENTRY_KEY, None)
         tx.append_account_merge_op(activation_account_id)
         txe = tx.build()
@@ -234,7 +234,6 @@ class VestingService(BaseActor):
 
         horizon_server = self._get_horizon_server()
 
-        base_fee = horizon_server.fetch_base_fee()
         # TODO: serialize with a gevent pool
 
         wallet = get_wallet()
