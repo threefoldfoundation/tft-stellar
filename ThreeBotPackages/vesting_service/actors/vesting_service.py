@@ -102,7 +102,7 @@ class VestingService(BaseActor):
         if len(tx.operations) != 3:
             return False
         change_trust_op = tx.operations[0]
-        if not type(change_trust_op) is stellar_sdk.ChangeTrust:
+        if not type(change_trust_op) is stellar_sdk.change_trust.ChangeTrust:
             return False
         if not change_trust_op.source is None:
             return False
