@@ -3,8 +3,6 @@
 
 import stellar_sdk
 import click
-import requests
-import decimal
 
 
 def create_keypair():
