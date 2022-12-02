@@ -4,9 +4,9 @@ description: TFT statistics api
 
 type: application
 
-version: 1.4.3
+version: 1.4.4
 
 sources:
   - https://github.com/threefoldfoundation/tft-stellar
 
-appVersion: 1.4.13-b1
+appVersion: 1.4.13
