@@ -27,7 +27,7 @@ fund it with 1M testnet TFT and 100k testnet USDC.
 Add liquidity:
 
 ```python
-./lp.py XLM/TFT <testtftissuer secret>
-./lp.py XLM/USDC <testtftissuer secret>
-./lp.py TFT/USDC <testtftissuer secret>
+./lp.py XLM/TFT <testnetdeposit secret>
+./lp.py XLM/USDC <testnetdeposit secret>
+./lp.py TFT/USDC <testnetdeposit secret>
 ```
