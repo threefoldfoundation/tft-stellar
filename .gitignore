@@ -10,3 +10,4 @@ ThreeBotPackages/unlock_service/scripts/testnetdata
 scripts/data
 specs/l2validatorapplication/destinationaddress/destinationaddress
 specs/l2validatorapplication/swap/swap
+.venv

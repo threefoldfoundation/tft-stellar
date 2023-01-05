@@ -14,8 +14,6 @@ docker build js-sdk -t jssdk:development --no-cache
 
 This container image contains a threebot with all the tft services installed
 
-Requires the `jssdk:development` image.
-
 ```sh
 docker build tftservices -t tftservices:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
 ```
