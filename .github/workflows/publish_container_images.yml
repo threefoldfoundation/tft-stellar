@@ -29,10 +29,12 @@ jobs:
           images: threefoldfoundation/tftservices
           tags: |
             type=semver,pattern={{version}}
+
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           push: true
+          no-cache: true
           file: ThreeBotPackages/docker/tftservices/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
