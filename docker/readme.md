@@ -14,8 +14,10 @@ docker build js-sdk -t jssdk:development --no-cache
 
 This container image contains a threebot with all the tft services installed
 
+At the root of this repository:
+
 ```sh
-docker build tftservices -t tftservices:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
+docker build -t tftservices:$(git describe --abbrev=0 --tags | sed 's/^v//') -f docker/tftservices/Dockerfile . --no-cache
 ```
 
 If you installed tftservices through the helm chart and want to get inside the pod:
@@ -25,8 +27,10 @@ If you installed tftservices through the helm chart and want to get inside the p
 
 This container image contains a threebot with the tft_statistics package installed
 
+At the root of this repository:
+
 ```sh
-docker build tftstatistics -t tftstatistics:$(git describe --abbrev=0 --tags | sed 's/^v//') --no-cache
+docker build -t tftstatistics:$(git describe --abbrev=0 --tags | sed 's/^v//') -f docker/tftstatistics/Dockerfile . --no-cache
 ```
 
 ## tftbackup

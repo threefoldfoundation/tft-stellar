@@ -35,6 +35,6 @@ jobs:
         with:
           push: true
           no-cache: true
-          file: ThreeBotPackages/docker/tftservices/Dockerfile
+          file: docker/tftservices/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
