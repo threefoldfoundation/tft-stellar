@@ -26,7 +26,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: threefoldfoundation/tftservices
+          images: ghcr.io/threefoldfoundation/tftservices
           tags: |
             type=semver,pattern={{version}}
 
