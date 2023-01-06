@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  build-and-push-tftservices:
+  build-and-push:
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -22,19 +22,36 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata for Docker
-        id: meta
+      - name: Extract metadata for tftservices
+        id: metatftservices
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/threefoldfoundation/tftservices
           tags: |
             type=semver,pattern={{version}}
 
-      - name: Build and push
+      - name: Build and push tftservices
         uses: docker/build-push-action@v3
         with:
           push: true
           no-cache: true
           file: docker/tftservices/Dockerfile
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.metatftservices.outputs.tags }}
+          labels: ${{ steps.metatftservices.outputs.labels }}
+
+      - name: Extract metadata for tftstatistics
+        id: metatftstatistics
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/threefoldfoundation/tftstatistics
+          tags: |
+            type=semver,pattern={{version}}
+
+      - name: Build and push tftstatistics
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          no-cache: true
+          file: docker/tftstatistics/Dockerfile
+          tags: ${{ steps.metatftstatistics.outputs.tags }}
+          labels: ${{ steps.metatftstatistics.outputs.labels }}
