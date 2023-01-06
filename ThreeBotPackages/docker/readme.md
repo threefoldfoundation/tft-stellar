@@ -23,8 +23,6 @@ If you installed tftservices through the helm chart and want to get inside the p
 
 ## Statistics
 
-Requires the `jssdk:development` image.
-
 This container image contains a threebot with the tft_statistics package installed
 
 ```sh
