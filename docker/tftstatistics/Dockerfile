@@ -18,6 +18,7 @@ RUN pip3 install poetry
 # Copy the source
 RUN mkdir -p /code/threefoldfoundation/tft-stellar
 COPY ./ThreeBotPackages /code/threefoldfoundation/tft-stellar/ThreeBotPackages
+COPY ./lib /code/threefoldfoundation/tft-stellar/lib
 
 WORKDIR /code/threefoldfoundation/tft-stellar
 # install js-sdk
