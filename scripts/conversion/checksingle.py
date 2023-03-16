@@ -103,7 +103,7 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
 
     unlockhash = unlockhash_get(tfchainaddress)
     balance = unlockhash.balance()
-    freetime=time.time() if conversiontime==0 else conversiontime
+    freetime=int(time.time()) if conversiontime==0 else conversiontime
     balance.chain_time=freetime
     unlocked_tokens = Decimal("{0:.7f}".format(balance.available.value))
     locked_tokens = balance.locked.value
