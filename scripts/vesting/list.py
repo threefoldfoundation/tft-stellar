@@ -17,7 +17,7 @@ def list_vesting_accounts(network):
 
     for vesting_account in vesting_accounts:
         print(
-            f"{vesting_account['account']} has {vesting_account['amount']} TFT'"
+            f"{vesting_account['account']} with owner {vesting_account['owner']} has {vesting_account['amount']} TFT'"
         )
 
 

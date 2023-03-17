@@ -73,6 +73,12 @@ def get_vesting_accounts(network, tokencode: str):
                 continue
             vesting_scheme = base64.b64decode((account["data"][VESTING_DATA_ENTRY_KEY])).decode("utf-8")
             preauth_signers = [signer["key"] for signer in account["signers"] if signer["type"] == "preauth_tx"]
+            owners = [
+                signer["key"]
+                for signer in account["signers"]
+                if signer["type"] == "ed25519_public_key" and signer["weight"] == 5
+            ]
+            owner = owners[0] if len(owners) > 0 else ""
             tokenbalances = [
                 float(b["balance"])
                 for b in account["balances"]
@@ -87,6 +93,7 @@ def get_vesting_accounts(network, tokencode: str):
                     "amount": tokenbalance,
                     "preauth_signers": preauth_signers,
                     "scheme": vesting_scheme,
+                    "owner": owner,
                 }
             )
     return vesting_accounts
@@ -146,7 +153,12 @@ def get_locked_accounts(network, tokencode: str, foundationaccounts: list):
 
             if len(preauth_signers) > 0:
                 locked_accounts.append(
-                    {"account": account_id, "amount": tokenbalance, "preauth_signers": preauth_signers, "signers":account["signers"]}
+                    {
+                        "account": account_id,
+                        "amount": tokenbalance,
+                        "preauth_signers": preauth_signers,
+                        "signers": account["signers"],
+                    }
                 )
 
     return locked_accounts, vesting_accounts, foundation_accounts
