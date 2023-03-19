@@ -26,7 +26,7 @@ Let's just prepare the unvest transactions, have them signed by the cosigners an
 
     Gives the owners 7.6 XLM instead of recovering them (=2538 XLM).
 
-    Have to check if the escrow accounts have enough XLM to perform all these operations
+    Have to check if the escrow accounts have enough XLM to perform all these operations. A vesting account normally has 0.09987 XLM available so this should do.
 
 Option 3 is taken as it is the cleanest and most user friendly.
 
@@ -55,4 +55,4 @@ The resulting signatures need to be collected from the ouput files and put in a 
 
 ## Publish the partially signed unvesting transactions
 
-The [vesting service](../../ThreeBotPackages/vesting_service/) needs to get an extra endpoint `unvestingtransaction` that takes the owner as an argument and returns the unvesting traansaction envelope containg the guardian signatures.
+The [vesting service](../../ThreeBotPackages/vesting_service/) needs to get an extra endpoint `unvestingtransaction` that takes the vesting account as an argument (an owner can theoretically have multiple vesting accaonts) and returns the unvesting traansaction envelope containg the guardian signatures.
