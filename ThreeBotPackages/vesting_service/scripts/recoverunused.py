@@ -14,7 +14,7 @@ from stats import get_vesting_accounts, get_unlockhash_transaction
 
 
 @click.command(help="Recoveresting accounts without TFT")
-@click.option("--network", type=click.Choice(["test", "public"], case_sensitive=False), default="test")
+@click.option("--network", type=click.Choice(["test", "public"], case_sensitive=True), default="test")
 def recover_empty_vesting_accounts(network):
 
     vesting_accounts = get_vesting_accounts(network, "TFT")
@@ -37,12 +37,14 @@ def recover_empty_vesting_accounts(network):
                     file=sys.stderr,
                 )
         txe = stellar_sdk.transaction_envelope.TransactionEnvelope.from_xdr(
-            transaction['transaction_xdr'] + "===",
+            transaction["transaction_xdr"] + "===",
             stellar_sdk.Network.TESTNET_NETWORK_PASSPHRASE
             if network == "test"
             else stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE,
         )
-        horizon_server = stellar_sdk.Server() if network == "test" else stellar_sdk.Server("https://horizon.stellar.org")
+        horizon_server = (
+            stellar_sdk.Server() if network == "test" else stellar_sdk.Server("https://horizon.stellar.org")
+        )
         horizon_server.submit_transaction(transaction_envelope=txe)
 
 

@@ -80,7 +80,7 @@ def get_vesting_accounts(network, tokencode: str):
             ]
             owner = owners[0] if len(owners) > 0 else ""
             tokenbalances = [
-                float(b["balance"])
+                b["balance"]
                 for b in account["balances"]
                 if b["asset_type"] == "credit_alphanum4"
                 and b["asset_code"] == tokencode
