@@ -9,12 +9,12 @@ import json
 
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_full_path + "/../../../lib/stats/")
+sys.path.append(current_full_path + "/../../lib/stats/")
 from stats import get_vesting_accounts, get_unlockhash_transaction
 
 
 @click.command(help="Recoveresting accounts without TFT")
-@click.option("--network", type=click.Choice(["test", "public"], case_sensitive=True), default="test")
+@click.option("--network", type=click.Choice(["test", "public"], case_sensitive=False), default="test")
 def recover_empty_vesting_accounts(network):
 
     vesting_accounts = get_vesting_accounts(network, "TFT")
