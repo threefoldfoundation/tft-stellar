@@ -23,7 +23,7 @@ func sign(secret, stellarNetwork, transactionsFilePath, out string) error {
 	}
 
 	if out == "" {
-		out = fmt.Sprintf("%s.txt", kp.Address())
+		out = fmt.Sprintf("signed_unvesting_transactions_%s.txt", kp.Address())
 	}
 
 	signatures := []string{}
