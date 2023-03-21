@@ -18,6 +18,10 @@ func sign(secret, transactionsFilePath, out string) error {
 		return errors.Wrap(err, "invalid stellar secret")
 	}
 
+	if out == "" {
+		out = fmt.Sprintf("%s.txt", kp.Address())
+	}
+
 	signatures := []string{}
 
 	err = HandleFile(transactionsFilePath, func(xdr string) error {
@@ -31,7 +35,7 @@ func sign(secret, transactionsFilePath, out string) error {
 			return errors.New("failed to build transactions")
 		}
 
-		signedTx, _ := transaction.Sign(network.TestNetworkPassphrase, kp)
+		signedTx, _ := transaction.Sign(network.PublicNetworkPassphrase, kp)
 
 		signatures = append(signatures, base64.StdEncoding.EncodeToString(signedTx.Signatures()[0].Signature))
 

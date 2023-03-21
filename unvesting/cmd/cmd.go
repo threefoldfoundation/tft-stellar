@@ -41,21 +41,13 @@ var (
 func Execute() {
 	signCmd.Flags().StringVar(&secret, "secret", "", "Stellar secret")
 	signCmd.MarkFlagRequired("secret")
-
-	signCmd.Flags().StringVar(&transactionsFilePath, "path", "", "Transactions to sign file")
-	signCmd.MarkFlagRequired("path")
-
+	signCmd.Flags().StringVar(&transactionsFilePath, "path", "./unvesting_transactions.txt", "Transactions to sign file")
 	signCmd.Flags().StringVar(&signaturesOutFilePath, "out", "", "File where signatures are stored")
-	signCmd.MarkFlagRequired("out")
 
-	aggregateCmd.Flags().StringVar(&transactionsFilePath, "path", "", "Transactions to sign file")
-	aggregateCmd.MarkFlagRequired("path")
-
+	aggregateCmd.Flags().StringVar(&transactionsFilePath, "path", "unvesting_transactions.txt", "Transactions to sign file")
 	aggregateCmd.Flags().StringVar(&signaturesDirPath, "dir", "", "dirpath where signatures were collected")
 	aggregateCmd.MarkFlagRequired("dir")
-
-	aggregateCmd.Flags().StringVar(&xdrsOutFilePath, "out", "", "file where final xdrs are kept")
-	aggregateCmd.MarkFlagRequired("out")
+	aggregateCmd.Flags().StringVar(&xdrsOutFilePath, "out", "final.txt", "file where final xdrs are kept")
 
 	viper.BindPFlag("secret", signCmd.Flags().Lookup("secret"))
 

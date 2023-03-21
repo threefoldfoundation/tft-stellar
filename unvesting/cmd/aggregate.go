@@ -51,7 +51,7 @@ func aggregateSignatures(transactionsFilePath, dirPath, outfile string) error {
 
 			for i := 0; i <= len(signatures)-1; i++ {
 				parts := strings.Split(signatures[i], ",")
-				tx, err := transactions[i].AddSignatureBase64(network.TestNetworkPassphrase, parts[0], parts[1])
+				tx, err := transactions[i].AddSignatureBase64(network.PublicNetworkPassphrase, parts[0], parts[1])
 				if err != nil {
 					return err
 				}
@@ -74,7 +74,7 @@ func aggregateSignatures(transactionsFilePath, dirPath, outfile string) error {
 		if err != nil {
 			return err
 		}
-		_, _ = datawriter.WriteString(txBase64 + "\n")
+		_, _ = datawriter.WriteString(fmt.Sprintf("%s %s", tx.SourceAccount().AccountID, txBase64) + "\n")
 	}
 
 	datawriter.Flush()
