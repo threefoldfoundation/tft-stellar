@@ -9,13 +9,17 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/stellar/go/network"
 	"github.com/stellar/go/txnbuild"
 )
 
-func aggregateSignatures(transactionsFilePath, dirPath, outfile string) error {
+func aggregateSignatures(transactionsFilePath, stellarNetwork, dirPath, outfile string) error {
+	sNetwork, err := getStellarNetwork(stellarNetwork)
+	if err != nil {
+		return err
+	}
+
 	transactions := []txnbuild.Transaction{}
-	err := HandleFile(transactionsFilePath, func(line string) error {
+	err = HandleFile(transactionsFilePath, func(line string) error {
 		tx, err := txnbuild.TransactionFromXDR(line)
 		if err != nil {
 			return err
@@ -51,7 +55,7 @@ func aggregateSignatures(transactionsFilePath, dirPath, outfile string) error {
 
 			for i := 0; i <= len(signatures)-1; i++ {
 				parts := strings.Split(signatures[i], ",")
-				tx, err := transactions[i].AddSignatureBase64(network.TestNetworkPassphrase, parts[0], parts[1])
+				tx, err := transactions[i].AddSignatureBase64(sNetwork, parts[0], parts[1])
 				if err != nil {
 					return err
 				}
@@ -74,7 +78,7 @@ func aggregateSignatures(transactionsFilePath, dirPath, outfile string) error {
 		if err != nil {
 			return err
 		}
-		_, _ = datawriter.WriteString(txBase64 + "\n")
+		_, _ = datawriter.WriteString(fmt.Sprintf("%s %s", tx.SourceAccount().AccountID, txBase64) + "\n")
 	}
 
 	datawriter.Flush()

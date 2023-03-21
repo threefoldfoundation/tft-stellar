@@ -8,14 +8,22 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/stellar/go/keypair"
-	"github.com/stellar/go/network"
 	"github.com/stellar/go/txnbuild"
 )
 
-func sign(secret, transactionsFilePath, out string) error {
+func sign(secret, stellarNetwork, transactionsFilePath, out string) error {
 	kp, err := keypair.ParseFull(secret)
 	if err != nil {
 		return errors.Wrap(err, "invalid stellar secret")
+	}
+
+	sNetwork, err := getStellarNetwork(stellarNetwork)
+	if err != nil {
+		return err
+	}
+
+	if out == "" {
+		out = fmt.Sprintf("signed_unvesting_transactions_%s.txt", kp.Address())
 	}
 
 	signatures := []string{}
@@ -31,7 +39,7 @@ func sign(secret, transactionsFilePath, out string) error {
 			return errors.New("failed to build transactions")
 		}
 
-		signedTx, _ := transaction.Sign(network.TestNetworkPassphrase, kp)
+		signedTx, _ := transaction.Sign(sNetwork, kp)
 
 		signatures = append(signatures, base64.StdEncoding.EncodeToString(signedTx.Signatures()[0].Signature))
 
