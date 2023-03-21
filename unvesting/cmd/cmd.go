@@ -14,6 +14,7 @@ var (
 	signaturesOutFilePath string
 	signaturesDirPath     string
 	xdrsOutFilePath       string
+	stellarNetwork        string
 
 	rootCmd = &cobra.Command{Use: "unvesting", Short: "A tool for signing unvesting transactions"}
 
@@ -23,7 +24,7 @@ var (
 		Args:  cobra.MatchAll(cobra.ExactArgs(0), cobra.OnlyValidArgs),
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return sign(secret, transactionsFilePath, signaturesOutFilePath)
+			return sign(secret, stellarNetwork, transactionsFilePath, signaturesOutFilePath)
 		},
 	}
 
@@ -33,7 +34,7 @@ var (
 		Args:  cobra.MatchAll(cobra.ExactArgs(0), cobra.OnlyValidArgs),
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return aggregateSignatures(transactionsFilePath, signaturesDirPath, xdrsOutFilePath)
+			return aggregateSignatures(transactionsFilePath, stellarNetwork, signaturesDirPath, xdrsOutFilePath)
 		},
 	}
 )
@@ -43,11 +44,13 @@ func Execute() {
 	signCmd.MarkFlagRequired("secret")
 	signCmd.Flags().StringVar(&transactionsFilePath, "path", "./unvesting_transactions.txt", "Transactions to sign file")
 	signCmd.Flags().StringVar(&signaturesOutFilePath, "out", "", "File where signatures are stored")
+	signCmd.Flags().StringVar(&stellarNetwork, "network", "main", "Stellar network [test, main]")
 
 	aggregateCmd.Flags().StringVar(&transactionsFilePath, "path", "unvesting_transactions.txt", "Transactions to sign file")
 	aggregateCmd.Flags().StringVar(&signaturesDirPath, "dir", "", "dirpath where signatures were collected")
 	aggregateCmd.MarkFlagRequired("dir")
 	aggregateCmd.Flags().StringVar(&xdrsOutFilePath, "out", "final.txt", "file where final xdrs are kept")
+	aggregateCmd.Flags().StringVar(&stellarNetwork, "network", "main", "Stellar network [test, main]")
 
 	viper.BindPFlag("secret", signCmd.Flags().Lookup("secret"))
 

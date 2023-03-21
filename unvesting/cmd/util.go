@@ -2,8 +2,11 @@ package cmd
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
+
+	"github.com/stellar/go/network"
 )
 
 type FileHandlerFunc func(line string) error
@@ -22,4 +25,13 @@ func HandleFile(path string, fn FileHandlerFunc) error {
 	}
 
 	return nil
+}
+
+func getStellarNetwork(networkstr string) (string, error) {
+	if networkstr == "test" {
+		return network.TestNetworkPassphrase, nil
+	} else if networkstr == "prod" {
+		return network.PublicNetworkPassphrase, nil
+	}
+	return "", errors.New("network not supported")
 }
