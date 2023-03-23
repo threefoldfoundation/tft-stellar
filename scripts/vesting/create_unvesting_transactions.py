@@ -16,7 +16,7 @@ DATA_ENTRY_KEY = "tft-vesting"
 @click.command(help="Create unvesting transactions for TFT vesting accounts")
 @click.argument("transactionsfile", default="unvesting_transactions.txt", type=click.File("w"))
 @click.option("--network", type=click.Choice(["test", "public"], case_sensitive=True), default="public")
-def create_unvesting_transactions(outputfile, network):
+def create_unvesting_transactions(transactionsfile, network):
 
     tft_asset = stellar_sdk.Asset(
         "TFT",
@@ -49,7 +49,7 @@ def create_unvesting_transactions(outputfile, network):
         # increase the max transaction fee to 0.099 xlm
         tx_envelope.transaction.fee = 990000
         tx_xdr = tx_envelope.to_xdr()
-        outputfile.write(f"{tx_xdr}\n")
+        transactionsfile.write(f"{tx_xdr}\n")
 
 
 if __name__ == "__main__":
