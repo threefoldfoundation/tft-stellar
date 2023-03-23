@@ -63,7 +63,7 @@ func sign(secret, stellarNetwork, transactionsFilePath, out string) error {
 	datawriter.Flush()
 	file.Close()
 
-	fmt.Printf("\nsigned transactions can be found at: %s\n \nSend this file back to Rob!\n", out)
+	fmt.Printf("\nsigned transactions can be found at: %s\n \nSend this file back to Sabrina\n", out)
 
 	return nil
 }
