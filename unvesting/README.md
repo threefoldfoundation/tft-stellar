@@ -7,7 +7,7 @@ This tool has 2 main functionalities:
 
 ## Build
 
-```
+```sh
 go build .
 ```
 
@@ -15,7 +15,7 @@ go build .
 
 Given a file of unvesting transactions, these can be signed as:
 
-```
+```sh
 ./unvesting sign --secret YOUR_STELLAR_SECRET --path ./unvesting_tx.text --out ./signatures.txt
 ```
 
@@ -27,8 +27,8 @@ Will only be possible if 5 guardians have signed the transactions.
 
 If you wish to aggregate the signatures given a directory of files that contain signatures of the guardians:
 
-```
-./unvesting aggregate --path unvesting_tx.text --dir in/ --out final.txt
+```sh
+./unvesting aggregate --path unvesting_tx.text --dir in/ --out signed_unvesting_transactions.txt
 ```
 
-This will scan all the files in `in/` and output the final transactions as XDR in `final.txt`
+This will scan all the files in `in/` and output the final transactions as XDR in `signed_unvesting_transactions.txt`

@@ -49,7 +49,7 @@ func Execute() {
 	aggregateCmd.Flags().StringVar(&transactionsFilePath, "path", "unvesting_transactions.txt", "Transactions to sign file")
 	aggregateCmd.Flags().StringVar(&signaturesDirPath, "dir", "", "dirpath where signatures were collected")
 	aggregateCmd.MarkFlagRequired("dir")
-	aggregateCmd.Flags().StringVar(&xdrsOutFilePath, "out", "final.txt", "file where final xdrs are kept")
+	aggregateCmd.Flags().StringVar(&xdrsOutFilePath, "out", "signed_unvesting_transactions.txt", "file where final xdrs are kept")
 	aggregateCmd.Flags().StringVar(&stellarNetwork, "network", "main", "Stellar network [test, main]")
 
 	viper.BindPFlag("secret", signCmd.Flags().Lookup("secret"))
