@@ -55,4 +55,4 @@ The resulting signatures need to be collected from the ouput files and put in a 
 
 ## Publish the partially signed unvesting transactions
 
-The [vesting service](../../ThreeBotPackages/vesting_service/) needs to get an extra endpoint `unvestingtransaction` that takes the vesting account as an argument (an owner can theoretically have multiple vesting accaonts) and returns the unvesting traansaction envelope containg the guardian signatures.
+The [vesting service](../../ThreeBotPackages/vesting_service/) needs to get an extra endpoint `unvestingtransaction` that takes the vesting account as an argument (an owner can theoretically have multiple vesting accounts but this is not the case) and returns the unvesting traansaction envelope containg the guardian signatures.
