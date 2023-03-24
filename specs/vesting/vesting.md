@@ -58,7 +58,3 @@ The recovery transaction can only be submitted 2 weeks after the creation giving
 Adding this extra signer requires an extra 0.5 XLM per escrow account.
 
 They are published to the unlock-service  which already contain the unlocktransactions for the locked tokens so people can verify that this transaction is nothing fishy.
-
-### Examples and testcode
-
-The [testscripts](./testscripts/) folder contains testscripts in Python to create escrow accounts on the Stellar test network.
