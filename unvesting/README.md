@@ -13,7 +13,7 @@ This tool has 2 main functionalities:
 ## Build
 
 ```sh
-git clone git@github.com:threefoldfoundation/tft-stellar.git
+git clone https://github.com/threefoldfoundation/tft-stellar
 cd unvesting
 go build .
 ```
