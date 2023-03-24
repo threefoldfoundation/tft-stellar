@@ -12,7 +12,7 @@ from jumpscale.servers.gedis.baseactor import BaseActor, actor_method
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/../sals/")
-from vesting_sal import get_wallet
+from vesting_sal import get_wallet, get_unvesting_transactions
 
 
 _TFT_ISSUERS = {
@@ -215,6 +215,13 @@ class VestingService(BaseActor):
             j.logger.exception(str(data), exception=e)
 
         return data
+
+    @actor_method
+    def unvestingtransaction(self, vestingaccount: str = "") -> str:
+        unvesting_transaction = get_unvesting_transactions().get(vestingaccount, None)
+        if not unvesting_transaction:
+            raise j.exceptions.NotFound("No unvesting transaction found for this address")
+        return unvesting_transaction
 
 
 Actor = VestingService
