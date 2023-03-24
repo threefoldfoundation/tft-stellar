@@ -5,9 +5,16 @@ This tool has 2 main functionalities:
 - Signing unvesting transactions
 - Aggregating unvestingen transactions signatures
 
+## Installations
+
+- Instal [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- Install [Go](https://go.dev/doc/install)
+
 ## Build
 
 ```sh
+git clone git@github.com:threefoldfoundation/tft-stellar.git
+cd unvesting
 go build .
 ```
 
