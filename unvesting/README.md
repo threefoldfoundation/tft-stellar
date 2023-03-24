@@ -14,7 +14,7 @@ This tool has 2 main functionalities:
 
 ```sh
 git clone https://github.com/threefoldfoundation/tft-stellar
-cd unvesting
+cd tft-stellar/unvesting
 go build .
 ```
 
