@@ -6,7 +6,7 @@ import sys
 
 current_full_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_full_path + "/../../lib/stats/")
-from stats import get_vesting_accounts 
+from stats import get_vesting_accounts
 
 
 @click.command(help="Lists the TFT vesting accounts")
