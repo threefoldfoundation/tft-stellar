@@ -50,7 +50,7 @@ func Execute() {
 	aggregateCmd.Flags().StringVar(&signaturesDirPath, "dir", "", "dirpath where signatures were collected")
 	aggregateCmd.MarkFlagRequired("dir")
 	aggregateCmd.Flags().StringVar(&xdrsOutFilePath, "out", "signed_unvesting_transactions.txt", "file where final xdrs are kept")
-	aggregateCmd.Flags().StringVar(&stellarNetwork, "network", "main", "Stellar network [test, main]")
+	aggregateCmd.Flags().StringVar(&stellarNetwork, "network", "prod", "Stellar network [test, prod]")
 
 	viper.BindPFlag("secret", signCmd.Flags().Lookup("secret"))
 
