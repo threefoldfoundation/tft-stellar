@@ -22,9 +22,11 @@ go build .
 
 Given a file of unvesting transactions, these can be signed as:
 
-```sh
-./unvesting sign --secret YOUR_STELLAR_SECRET --path ./unvesting_tx.text --out ./signatures.txt
-```
+
+./unvesting sign --secret YOUR_STELLAR_SECRET --path ./unvesting_tx.text 
+
+**Make sure to add your secret key before you use this command.** 
+**Make sure to add the path to the file that the previous guardian signed.**
 
 This will sign the transactions in `./unvesting_tx.text` and will output the signatures in `./signatures.txt`
 
