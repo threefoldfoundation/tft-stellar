@@ -20,13 +20,15 @@ go build .
 
 ## Signing transactions
 
-Given a file of unvesting transactions, these can be signed as:
+If the file with unvesting transactions is named `unvesting_transactions.txt` and in the same folder as the unvesting executable, these can be signed as:
 
-./unvesting sign --secret YOUR_STELLAR_SECRET --path ./unvesting_tx.text
+./unvesting sign --secret YOUR_STELLAR_SECRET
 
-**Make sure to add your secret key before you use this command.**
+If the file with unvesting transactions is localted somewhere else, a `--path <path/filename>` option can be added.
 
-This will sign the transactions in `./unvesting_tx.text` and will output the signatures in `./signatures.txt`
+**Make sure to have your secret key before you use this command.**
+
+This will sign the transactions in `./unvesting_transactions.txt` and will output the signatures in `signed_unvesting_transactions_YOURSTELLARADDRESS.txt`
 
 ## Aggregating signatures
 
@@ -35,7 +37,7 @@ Will only be possible if 5 guardians have signed the transactions.
 If you wish to aggregate the signatures given a directory of files that contain signatures of the guardians:
 
 ```sh
-./unvesting aggregate --path unvesting_tx.text --dir in/ --out signed_unvesting_transactions.txt
+./unvesting aggregate --path unvesting_transactions.txt --dir in/
 ```
 
 This will scan all the files in `in/` and output the final transactions as XDR in `signed_unvesting_transactions.txt`
