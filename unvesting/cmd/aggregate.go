@@ -42,7 +42,7 @@ func aggregateSignatures(transactionsFilePath, stellarNetwork, dirPath, outfile 
 			return err
 		}
 
-		if !file.IsDir() {
+		if !file.IsDir() && !strings.HasSuffix(path, ".DS_Store") {
 			// read file
 			signatures := []string{}
 			err := HandleFile(path, func(line string) error {
