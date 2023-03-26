@@ -12,3 +12,4 @@ specs/l2validatorapplication/destinationaddress/destinationaddress
 specs/l2validatorapplication/swap/swap
 .venv
 scripts/vesting/unvesting_transactions.txt
+scripts/vesting/unvesting_transactions_production.txt
