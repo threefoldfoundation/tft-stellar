@@ -21,7 +21,9 @@ func HandleFile(path string, fn FileHandlerFunc) error {
 
 	scanner := bufio.NewScanner(inFile)
 	for scanner.Scan() {
-		fn(scanner.Text())
+		if err := fn(scanner.Text()); err != nil {
+			return err
+		}
 	}
 
 	return nil

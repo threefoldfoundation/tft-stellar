@@ -31,7 +31,7 @@ func sign(secret, stellarNetwork, transactionsFilePath, out string) error {
 	err = HandleFile(transactionsFilePath, func(xdr string) error {
 		tx, err := txnbuild.TransactionFromXDR(xdr)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to parse transaction: %w", err)
 		}
 
 		transaction, ok := tx.Transaction()
@@ -39,7 +39,10 @@ func sign(secret, stellarNetwork, transactionsFilePath, out string) error {
 			return errors.New("failed to build transactions")
 		}
 
-		signedTx, _ := transaction.Sign(sNetwork, kp)
+		signedTx, err := transaction.Sign(sNetwork, kp)
+		if err != nil {
+			return errors.New("failed to sign transaction: %s",err)
+		}
 
 		signatures = append(signatures, base64.StdEncoding.EncodeToString(signedTx.Signatures()[0].Signature))
 
