@@ -1,4 +1,4 @@
-# Dockerfiles  and kubernetes installs
+# Dockerfiles and kubernetes helm charts
 
 If executing docker builds on an Apple Silicon chip, add `--platform linux/amd64`.
 
@@ -42,6 +42,14 @@ docker build tftbackup -t tftbackup:$(git describe --abbrev=0 --tags | sed 's/^v
 ```
 
 There is an example of deploying this image on kubernetes as a cronjob in the [tftbackup readme](./tftbackup/readme.md)
+
+## unvesting app
+
+At the root of this repository:
+
+```sh
+docker build -t unvestingapp:$(git describe --abbrev=0 --tags | sed 's/^v//') -f docker/unvestingapp/Dockerfile . --no-cache
+```
 
 ## helm charts
 
