@@ -45,9 +45,7 @@
   <div class="container">
     <div class="lock">
       <div class="alert w-100 mb-4 text-start">
-        <h4>
-          First Screen | <span class="text-primary">Address Activation</span>
-        </h4>
+        <h4>Search for vested TFT</h4>
       </div>
       <div class="row w-100">
         <div class="col-8 p-relative">
@@ -79,7 +77,7 @@
         </div>
         <small class="pl-2">
           <span class="text-danger">*</span>
-          Write your address then press enter key.
+          Enter your wallet address then press enter key.
         </small>
         <VestingAccounts {vestingAccounts} />
       </div>
