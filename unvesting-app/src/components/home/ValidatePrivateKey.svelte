@@ -10,7 +10,6 @@
 
   let privateKeyValue: string;
   let isLoading: boolean;
-  let isSubmited: boolean;
   let isSigned: boolean;
   const stellar = new Stellar();
 
@@ -36,7 +35,6 @@
               isOpen: true,
             });
             isLoading = isSigned = false;
-            isSubmited = true;
           } catch (e) {
             console.log('An error has occured:', e);
             throw Error(e);
@@ -110,10 +108,7 @@
         {/if}
       </div>
       <div class="col-4">
-        {#if isSubmited}
-          <button class="fa-solid fa-refresh locked refresh-btn" />
-          <span>Refresh The Page</span>
-        {:else if isSigned}
+        {#if isSigned}
           <i class="fa-solid fa-lock-open unlocked" />
         {:else}
           <i class="fa-solid fa-lock locked" />
