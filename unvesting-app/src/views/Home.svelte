@@ -5,5 +5,5 @@
 <HomeComponent />
 
 <svelte:head>
-  <title>TF-Vesting | Home</title>
+  <title>Unvest TFT</title>
 </svelte:head>
