@@ -1,9 +1,16 @@
-import { default as StellarSdk, FeeBumpTransaction, Memo, Operation, Transaction, type MemoType } from 'stellar-sdk';
+import {
+  default as StellarSdk,
+  FeeBumpTransaction,
+  Memo,
+  Operation,
+  Transaction,
+  type MemoType,
+} from 'stellar-sdk';
 import { Buffer } from 'buffer';
 
 const server = new StellarSdk.Server(window.config.STELLAR_HORIZON_URL);
 
-class Stellar{
+class Stellar {
   async init(secret: string) {
     const walletKeypair = StellarSdk.Keypair.fromSecret(secret);
     const walletPublicKey = walletKeypair.publicKey();
@@ -17,7 +24,9 @@ class Stellar{
     return Buffer.from(signed_content).toString('hex');
   }
 
-  async submitTransaction(transaction: Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction){
+  async submitTransaction(
+    transaction: Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction,
+  ) {
     return await server.submitTransaction(transaction);
   }
 }

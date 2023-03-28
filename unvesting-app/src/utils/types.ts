@@ -30,10 +30,10 @@ export type StellarWalletVerifyModel = {
   public_key: string;
   content: string;
   signedContent: string;
-}
+};
 
 export type UnvestingTransactionModel = {
   secret: string;
   address: string;
   content: string;
-}
+};
