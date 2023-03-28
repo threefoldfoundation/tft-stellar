@@ -20,7 +20,12 @@
         if (res && res.data) {
           options.content = res.data;
           const sourceKeypair = Keypair.fromSecret(options.secret);
-          const tx = TransactionBuilder.fromXDR(res.data, Networks.TESTNET);
+          const tx = TransactionBuilder.fromXDR(
+            res.data,
+            window.config.STELLAR_NETWORK.toLocaleLowerCase() === 'test'
+              ? Networks.TESTNET
+              : Networks.PUBLIC,
+          );
           tx.sign(sourceKeypair);
           try {
             const transactionResult = await stellar.submitTransaction(tx);
