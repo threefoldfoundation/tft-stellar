@@ -55,3 +55,20 @@ jobs:
           file: docker/tftstatistics/Dockerfile
           tags: ${{ steps.metatftstatistics.outputs.tags }}
           labels: ${{ steps.metatftstatistics.outputs.labels }}
+
+      - name: Extract metadata for unvestingapp
+        id: metaunvestingapp
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/threefoldfoundation/unvestingapp
+          tags: |
+            type=semver,pattern={{version}}
+
+      - name: Build and push unvestingapp
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          no-cache: true
+          file: docker/unvestingapp/Dockerfile
+          tags: ${{ steps.metaunvestingapp.outputs.tags }}
+          labels: ${{ steps.metaunvestingapp.outputs.labels }}
