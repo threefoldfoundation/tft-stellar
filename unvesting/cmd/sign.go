@@ -41,7 +41,7 @@ func sign(secret, stellarNetwork, transactionsFilePath, out string) error {
 
 		signedTx, err := transaction.Sign(sNetwork, kp)
 		if err != nil {
-			return errors.New("failed to sign transaction: %s",err)
+			return fmt.Errorf("failed to sign transaction: %s", err)
 		}
 
 		signatures = append(signatures, base64.StdEncoding.EncodeToString(signedTx.Signatures()[0].Signature))
