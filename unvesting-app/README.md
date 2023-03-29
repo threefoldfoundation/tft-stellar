@@ -22,6 +22,11 @@ It all depends on the stellar network, You have to export the varible then run t
     export VITE_STELLAR_NETWORK=test
 ```
 
+`VITE_STELLAR_NETWORK` options.
+
+- test
+- main
+
 ## How to run
 
 ```sh
