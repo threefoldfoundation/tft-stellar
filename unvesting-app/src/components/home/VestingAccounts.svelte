@@ -5,7 +5,8 @@
   export let vestingAccounts: OnResponseVestingAccounts;
   const activatePrivateKey = () => {
     activatePKStore.set({
-      address: vestingAccounts.vesting_accounts[0].address,
+      selectedAddress: vestingAccounts.vesting_accounts[0].address,
+      ownerAddress: vestingAccounts.owner_adress,
       isSelected: true,
     });
   };

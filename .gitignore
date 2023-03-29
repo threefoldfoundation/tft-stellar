@@ -11,3 +11,5 @@ specs/l2validatorapplication/swap/swap
 .venv
 scripts/vesting/unvesting_transactions.txt
 scripts/vesting/unvesting_transactions_production.txt
+.unvesting-app/public/config.js
+.vscode/

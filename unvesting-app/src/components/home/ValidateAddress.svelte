@@ -17,10 +17,7 @@
       if (validateAddress(addressValue).isValid) {
         isLoading = true;
         await http
-          .post(
-            'https://testnet.threefold.io/threefoldfoundation/vesting_service/vesting_accounts',
-            { owner_address: addressValue },
-          )
+          .post('vesting_accounts', { owner_address: addressValue })
           .then((res) => {
             if (res) {
               vestingAccounts = res.data;

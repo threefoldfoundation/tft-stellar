@@ -28,3 +28,5 @@ dist-ssr
 .DS_Store
 .vscode
 .node_modules
+/public/config.js
+./public/config.js

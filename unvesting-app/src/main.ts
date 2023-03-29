@@ -6,8 +6,9 @@ const app = new App({
 });
 
 interface AppConfigs {
-  NETWORK: string;
   SERVER_API_URL: string;
+  STELLAR_HORIZON_URL: string;
+  VITE_STELLAR_NETWORK: string;
 }
 
 declare global {

@@ -73,7 +73,7 @@ a {
   margin: 0 auto;
 }
 .custom-invalid-feedback{
-  right: 37.8%!important;
+  right: 15px !important;
   margin-top: -0.9rem!important;
 }
 .address-card{
@@ -84,4 +84,12 @@ a {
 }
 .form-control:focus{
   box-shadow: none;
+}
+.refresh-btn{
+  outline: none;
+  padding: 0;
+  border: 0;
+  background: 0;
+  font-size: 30px;
+  margin-top: 43px;
 }
