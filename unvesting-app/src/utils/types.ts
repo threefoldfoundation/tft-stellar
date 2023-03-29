@@ -15,9 +15,9 @@ type VestingAccount = {
 };
 
 export type OnResponseVestingAccounts = {
-  owner_adress: string;
-  vesting_accounts: Array<VestingAccount>;
-  Error: string;
+  owner_adress?: string;
+  vesting_accounts?: Array<VestingAccount>;
+  Error?: string;
 };
 
 export type OnSelectAddress = {
