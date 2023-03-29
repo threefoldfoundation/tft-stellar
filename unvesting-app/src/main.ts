@@ -8,7 +8,7 @@ const app = new App({
 interface AppConfigs {
   SERVER_API_URL: string;
   STELLAR_HORIZON_URL: string;
-  STELLAR_NETWORK: string;
+  VITE_STELLAR_NETWORK: string;
 }
 
 declare global {

@@ -1,13 +1,10 @@
 import axios from 'axios';
+import { setConfig } from './helpers';
 
-const noConfigs = () => {
-  throw new Error(
-    'Invalid config. Please fill the config.json file with the correct data',
-  );
-};
+setConfig();
 
 const http = axios.create({
-  baseURL: window.config ? window.config.SERVER_API_URL : noConfigs(),
+  baseURL: window.config.SERVER_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
