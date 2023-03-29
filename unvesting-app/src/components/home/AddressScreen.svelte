@@ -25,7 +25,7 @@
               if (vestingAccounts && !vestingAccounts.vesting_accounts.length) {
                 alertStore.set({
                   message:
-                    "Seems this address doesn't have any linked addresses.",
+                    'Seems this address doesn\'t have any linked addresses.',
                   isOpen: true,
                   className: 'danger',
                 });
