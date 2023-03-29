@@ -16,11 +16,10 @@ This projects uses `svelte` and `vite` and it depandes on `npx`
 
 ## Build environment
 
-It all depends on the stellar network, by default we set it to be works against `testnet`, but if you want to change it just export it and then run the `build-env.sh` script inside the `public` directory.
+It all depends on the stellar network, You have to export the varible then run the server.
 
 ```sh
-    export STELLAR_NETWORK=main
-    cd public && source ../scripts/build-env.sh
+    export VITE_STELLAR_NETWORK=test
 ```
 
 ## How to run
