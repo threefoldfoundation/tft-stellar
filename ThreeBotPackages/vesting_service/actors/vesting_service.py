@@ -194,9 +194,16 @@ class VestingService(BaseActor):
             vesting_accounts = []
             data = {"owner_adress": owner_address}
             for found_vesting_account in found_vesting_accounts:
-                vesting_account = {"address": found_vesting_account["account_id"]}
+                tokenbalances = [
+                    b["balance"]
+                    for b in found_vesting_account["balances"]
+                    if b["asset_type"] == "credit_alphanum4"
+                    and b["asset_code"] == "TFT"
+                    and b["asset_issuer"] == self._get_tft_issuer()
+                ]
+                tokenbalance = tokenbalances[0] if tokenbalances else "0"
+                vesting_account = {"address": found_vesting_account["account_id"], "TFT": tokenbalance}
                 vesting_accounts.append(vesting_account)
-
             data["vesting_accounts"] = vesting_accounts
 
         except stellar_sdk.exceptions.NotFoundError as e:
