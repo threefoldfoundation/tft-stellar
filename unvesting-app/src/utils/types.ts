@@ -12,6 +12,7 @@ export type AlertType = {
 
 type VestingAccount = {
   address: string;
+  TFT: string;
 };
 
 export type OnResponseVestingAccounts = {
