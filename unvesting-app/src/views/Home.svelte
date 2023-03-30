@@ -1,8 +1,14 @@
 <script lang="ts">
-  import HomeComponent from '../components/home/HomeComponent.svelte';
+  import AddressScreen from '../components/home/AddressScreen.svelte';
+  import SecretScreen from '../components/home/SecretScreen.svelte';
+  import { activatePKStore } from '../utils/stores';
 </script>
 
-<HomeComponent />
+{#if !$activatePKStore.isSelected}
+  <AddressScreen />
+{:else}
+  <SecretScreen />
+{/if}
 
 <svelte:head>
   <title>Unvest TFT</title>

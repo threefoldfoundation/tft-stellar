@@ -9,14 +9,15 @@
   export let validation: CallableFunction | undefined = undefined;
   export let onKeyPress: CallableFunction | undefined = undefined;
   export let isLoading: boolean;
+  export let placeholder = '';
 
   let validateClass: string;
-  let elmID: string;
+  const elmID: string = label.replace(/\s+/g, '-').toLowerCase();
+  +'-id';
   let validated: InputValidationsType;
 
   function typeAction(node: HTMLInputElement) {
     node.type = type;
-    elmID = label.replace(' ', '-').toLocaleLowerCase() + '-id';
   }
 
   const _onKeyPress = (e: { keyCode: number }) => {
@@ -39,7 +40,7 @@
   $: value, validate();
 </script>
 
-<div class="form-group p-2 mb-2 w-100 d-contents p-relative">
+<div class="form-group h-100 p-2 mb-2 w-100 d-contents p-relative">
   {#if label}
     <strong>
       <label for={elmID}>{label}</label>
@@ -49,15 +50,16 @@
     bind:value
     use:typeAction
     {disabled}
-    class="form-control mt-2 input {className} {validateClass}"
+    class="form-control input {className} {validateClass}"
     style={type === 'password' ? 'display: inline;' : ''}
     id={elmID}
     on:keypress={_onKeyPress}
+    {placeholder}
   />
   {#if isLoading}
     <div class="spinner-border input-spinner" role="status" />
   {/if}
-  {#if type === 'password'}
+  {#if type === 'password' && !isLoading}
     <!-- Eye icon to show password -->
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <i
@@ -108,9 +110,13 @@
       border-color: rgb(0 183 74) !important;
     }
     .fa-eye-custom {
-      margin-left: -30px;
       cursor: pointer;
       color: var(--text-primary);
+      position: absolute;
+      right: 15px;
+      top: 43px;
+      font-size: 17px;
+      color: #3f72b6;
     }
     .invalid-feedback {
       width: auto;
