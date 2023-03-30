@@ -24,8 +24,7 @@
               vestingAccounts = res.data;
               if (vestingAccounts && !vestingAccounts.vesting_accounts.length) {
                 alertStore.set({
-                  message:
-                    'Seems this address doesn\'t have any linked addresses.',
+                  message: 'No vested TFT found for this address”',
                   isOpen: true,
                   className: 'danger',
                 });
