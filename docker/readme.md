@@ -66,6 +66,7 @@ Empty the folder if it already existed and in this folder, package the charts yo
 ```sh
 helm package ./../tftservices
 helm package ./../tftstatistics
+helm package ./../unvestingapp
 ```
 
 ## Update the index
