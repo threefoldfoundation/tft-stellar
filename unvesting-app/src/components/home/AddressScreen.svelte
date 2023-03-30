@@ -21,6 +21,8 @@
           .post('vesting_accounts', { owner_address: addressValue })
           .then((res) => {
             if (res) {
+              console.log(res.data);
+
               vestingAccounts = res.data;
               if (vestingAccounts && !vestingAccounts.vesting_accounts.length) {
                 alertStore.set({
@@ -71,7 +73,7 @@
           <div class="card-body">
             <h5 class="card-title d-flex justify-content-center">
               <span class="screen-view-dot">1</span>
-              Search for vested TFT
+              Vested TFT
             </h5>
             <hr />
             <div class="row">
@@ -117,12 +119,23 @@
                 {#each vestingAccounts.vesting_accounts as account}
                   <div class="card mt-4 mb-5">
                     <div class="card-body">
-                      <p class="mb-4">{account.address}</p>
+                      <div class="row">
+                        <div class="col-12">
+                          <span class="badge badge-primary">
+                            Amount: {Math.round(
+                              (+account.TFT + Number.EPSILON) * 100,
+                            ) / 100} TFT
+                          </span>
+                        </div>
+                        <div class="col-12 mb-4">
+                          <p class="mb-0">on {account.address}</p>
+                        </div>
+                      </div>
                       <button
                         class="btn use-btn w-100 btn-use"
                         on:click={activatePrivateKey}
                       >
-                        Use This Address
+                        unvest
                       </button>
                     </div>
                   </div>
