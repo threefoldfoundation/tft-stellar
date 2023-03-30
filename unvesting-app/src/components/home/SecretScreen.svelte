@@ -110,6 +110,11 @@
               Validate Private Key
             </h5>
             <hr />
+            <small>
+              Please keep in mind that, the secret key is used within the
+              browser to sign the transaction, it is not stored anywhere and not
+              send anywhere.
+            </small>
             <div class="row">
               <div class="col-11 padding-left-none padding-right-none">
                 <Input
