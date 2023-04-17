@@ -8,7 +8,7 @@ export const validateAddress = (
   if (value === '') {
     return {
       isValid: false,
-      errorMessage: 'Address is required!',
+      errorMessage: 'Address is required',
     };
   }
   if (noAddresses) {
@@ -21,7 +21,7 @@ export const validateAddress = (
   if (!StrKey.isValidEd25519PublicKey(value)) {
     return {
       isValid: false,
-      errorMessage: 'Please enter a valid address.',
+      errorMessage: 'Invalid address.',
     };
   }
   return {
@@ -34,19 +34,19 @@ export const validatePrivateKey = (value: string) => {
   if (value === '') {
     return {
       isValid: false,
-      errorMessage: 'Private key is required!',
+      errorMessage: 'Private key is required',
     };
   }
   if (value && value.length < 20) {
     return {
       isValid: false,
-      errorMessage: 'Private key should be > 20 char.',
+      errorMessage: 'A private key should be longer than 20 characters.',
     };
   }
   if (!StrKey.isValidEd25519SecretSeed(value)) {
     return {
       isValid: false,
-      errorMessage: 'The private Key seems to be not valid.',
+      errorMessage: 'Invalid private key.',
     };
   }
   return {
