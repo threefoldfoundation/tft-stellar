@@ -106,17 +106,3 @@ input {
 .p-relative {
   position: relative;
 }
-
-.unlocked {
-  font-size: 40px;
-  color: var(--nav-primary);
-  margin-top: -20px;
-  margin-left: -5px;
-}
-
-.locked {
-  font-size: 40px;
-  color: var(--nav-primary);
-  margin-top: -18px;
-  margin-left: -5px;
-}

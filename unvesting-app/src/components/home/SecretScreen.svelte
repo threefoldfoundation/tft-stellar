@@ -66,7 +66,7 @@
           if (address != $activatePKStore.ownerAddress) {
             alertStore.set({
               message:
-                'The secrest key you provided does not match the selected wallet address.',
+                'The secret you provided does not match the selected wallet address.',
               isOpen: true,
               className: 'danger',
             });
@@ -107,7 +107,7 @@
           <div class="card-body">
             <h5 class="card-title d-flex justify-content-center">
               <span class="screen-view-dot">2</span>
-              Validate Private Key
+              Sign and submit unvesting transaction
             </h5>
             <hr />
             <small>
@@ -116,7 +116,7 @@
               send anywhere.
             </small>
             <div class="row">
-              <div class="col-11 padding-left-none padding-right-none">
+              <div class="col-12 padding-left-none padding-right-none">
                 <Input
                   bind:value={privateKeyValue}
                   label="Wallet Private Key"
@@ -126,15 +126,6 @@
                   onKeyPress={(e) => onKeypress(e)}
                   type="password"
                 />
-              </div>
-              <div
-                class="col-1 padding-left-none d-flex align-items-center justify-content-center"
-              >
-                {#if isSigned}
-                  <i class="fa-solid unlocked fa-lock-open" />
-                {:else}
-                  <i class="fa-solid locked fa-lock" />
-                {/if}
               </div>
             </div>
             {#if $alertStore.isOpen}
@@ -159,8 +150,7 @@
                 }}
                 class="btn btn-success ml-btn-action"
               >
-                Submit Transaction & Unvest
-                <i class="fas fa-search" />
+                Sign & submit unvesting transaction
               </button>
             </div>
           </div>

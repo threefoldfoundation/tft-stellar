@@ -14,14 +14,14 @@ export const validateAddress = (
   if (noAddresses) {
     return {
       isValid: false,
-      errorMessage: 'Seems to be no linked address found.',
+      errorMessage: 'Seems to be no linked address found',
     };
     // 'Seems to be no linked address found.'
   }
   if (!StrKey.isValidEd25519PublicKey(value)) {
     return {
       isValid: false,
-      errorMessage: 'Invalid address.',
+      errorMessage: 'Invalid address',
     };
   }
   return {
