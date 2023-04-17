@@ -2,19 +2,24 @@ a {
   text-decoration: none;
   color: #4472b5;
 }
-:root{
-	--nav-primary: #3f72b6;
+
+:root {
+  --nav-primary: #3f72b6;
 }
-.bg-nav-primary{
+
+.bg-nav-primary {
   background: var(--nav-primary);
 }
-.logo-size{
+
+.logo-size {
   width: 140px;
 }
-.home-card{
+
+.home-card {
   height: 90vh;
 }
-.screen-view-dot{
+
+.screen-view-dot {
   background: #9b9b9b;
   border-radius: 50%;
   height: 30px;
@@ -27,47 +32,51 @@ a {
   margin-right: 7px;
   margin-top: -4px;
 }
+
 .card {
   border-radius: 0;
   box-shadow: -3px 4px 25px -14px #000;
   width: 100%;
 }
+
 .form-control:focus {
   border-color: none;
   box-shadow: none;
 }
-.card-title{
+
+.card-title {
   padding-top: 35px;
   color: #9b9b9b;
   font-weight: 600;
 }
-.padding-right-none{
+
+.padding-right-none {
   padding-right: 0;
 }
-.padding-left-none{
+
+.padding-left-none {
   padding-left: 0;
 }
-.wallet-icon{
-  font-size: 40px;
-  color: var(--nav-primary);
-  margin-top: -9px;
-  margin-left: -5px;
-}
-input{
+
+input {
   margin-top: 0 !important;
 }
+
 .invalid-feedback {
   position: relative;
   margin-left: 15px;
 }
-.h-100{
+
+.h-100 {
   height: 100px !important;
 }
-.ml-btn-action{
+
+.ml-btn-action {
   margin-left: 10px;
   font-weight: 900;
 }
-.btn-use{
+
+.btn-use {
   background: var(--nav-primary);
   color: #fff;
   padding: 10px;
@@ -75,13 +84,16 @@ input{
   border: 0;
   box-shadow: none;
 }
-.btn-use:hover{
+
+.btn-use:hover {
   color: #fff;
 }
-.tf-image{
+
+.tf-image {
   width: 100%;
   height: 100%;
 }
+
 .input-spinner {
   position: absolute;
   top: 41.7%;
@@ -90,16 +102,19 @@ input{
   right: 2.5%;
   color: #3f72b6;
 }
-.p-relative{
+
+.p-relative {
   position: relative;
 }
-.unlocked{
+
+.unlocked {
   font-size: 40px;
   color: var(--nav-primary);
   margin-top: -20px;
   margin-left: -5px;
 }
-.locked{
+
+.locked {
   font-size: 40px;
   color: var(--nav-primary);
   margin-top: -18px;

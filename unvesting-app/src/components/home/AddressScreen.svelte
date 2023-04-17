@@ -26,9 +26,9 @@
               vestingAccounts = res.data;
               if (vestingAccounts && !vestingAccounts.vesting_accounts.length) {
                 alertStore.set({
-                  message: 'No vested TFT found for this address”',
+                  message: 'No vested TFT found for this address',
                   isOpen: true,
-                  className: 'danger',
+                  className: 'info',
                 });
               } else if (vestingAccounts.Error) {
                 alertStore.set({
@@ -73,11 +73,11 @@
           <div class="card-body">
             <h5 class="card-title d-flex justify-content-center">
               <span class="screen-view-dot">1</span>
-              Vested TFT
+              Check for vested TFT
             </h5>
             <hr />
             <div class="row">
-              <div class="col-11 padding-left-none padding-right-none">
+              <div class="col-12 padding-left-none padding-right-none">
                 <Input
                   bind:value={addressValue}
                   label="Wallet Address"
@@ -87,11 +87,6 @@
                   onKeyPress={(e) => onKeypress(e)}
                   placeholder={''}
                 />
-              </div>
-              <div
-                class="col-1 padding-left-none d-flex align-items-center justify-content-center"
-              >
-                <i class="fa-solid wallet-icon fa-wallet" />
               </div>
             </div>
             {#if $alertStore.isOpen}
@@ -115,20 +110,20 @@
             </div>
             {#if vestingAccounts && !vestingAccounts.Error}
               {#if vestingAccounts.vesting_accounts.length}
-                <strong class="card-text ml-2">Linked Address</strong>
                 {#each vestingAccounts.vesting_accounts as account}
                   <div class="card mt-4 mb-5">
                     <div class="card-body">
                       <div class="row">
                         <div class="col-12">
-                          <span class="badge badge-primary">
-                            Amount: {Math.round(
-                              (+account.TFT + Number.EPSILON) * 100,
-                            ) / 100} TFT
-                          </span>
+                          <strong>
+                            {Math.round((+account.TFT + Number.EPSILON) * 100) /
+                              100} vested TFT
+                          </strong>
                         </div>
                         <div class="col-12 mb-4">
-                          <p class="mb-0">on {account.address}</p>
+                          <p class="mb-0">
+                            on escrow account {account.address}
+                          </p>
                         </div>
                       </div>
                       <button
