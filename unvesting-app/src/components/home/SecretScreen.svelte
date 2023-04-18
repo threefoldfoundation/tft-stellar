@@ -111,20 +111,20 @@
             </h5>
             <hr />
             <small>
-              Please keep in mind that, the secret key is used within the
-              browser to sign the transaction, it is not stored anywhere and not
-              send anywhere.
+              The guardians have prepared and signed an unvesting transaction
+              but it still needs your signature.<br />
+              The secret is used only within this browser to sign the transaction,
+              it is not stored and not send anywhere.
             </small>
             <div class="row">
               <div class="col-12 padding-left-none padding-right-none">
                 <Input
                   bind:value={privateKeyValue}
-                  label="Wallet Private Key"
+                  label="Wallet secret"
                   validation={validatePrivateKey}
                   className={'pk-input'}
                   bind:isLoading
                   onKeyPress={(e) => onKeypress(e)}
-                  type="password"
                 />
               </div>
             </div>

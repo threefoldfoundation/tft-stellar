@@ -34,19 +34,19 @@ export const validatePrivateKey = (value: string) => {
   if (value === '') {
     return {
       isValid: false,
-      errorMessage: 'Private key is required',
+      errorMessage: 'Secret is required',
     };
   }
   if (value && value.length < 20) {
     return {
       isValid: false,
-      errorMessage: 'A private key should be longer than 20 characters.',
+      errorMessage: 'A secret should be longer than 20 characters',
     };
   }
   if (!StrKey.isValidEd25519SecretSeed(value)) {
     return {
       isValid: false,
-      errorMessage: 'Invalid private key.',
+      errorMessage: 'Invalid secret',
     };
   }
   return {
