@@ -95,65 +95,51 @@
 <div class="container height-100">
   <div class="d-flex justify-content-center align-items-center home-card">
     <div class="card mb-3">
-      <div class="row g-0">
-        <div class="col-md-4">
-          <img
-            src="assets/Vesting-scheduleblue.png"
-            class="img-fluid tf-image rounded-start"
-            alt="Vesting-scheduleblue"
-          />
-        </div>
-        <div class="col-md-8">
-          <div class="card-body">
-            <h5 class="card-title d-flex justify-content-center">
-              <span class="screen-view-dot">2</span>
-              Sign and submit unvesting transaction
-            </h5>
-            <hr />
-            <small>
-              The guardians have prepared and signed an unvesting transaction
-              but it still needs your signature.<br />
-              The secret is used only on this page to sign the transaction, it is
-              not stored nor sent anywhere.
-            </small>
-            <div class="row">
-              <div class="col-12 padding-left-none padding-right-none">
-                <Input
-                  bind:value={privateKeyValue}
-                  label="Wallet secret"
-                  validation={validatePrivateKey}
-                  className={'pk-input'}
-                  bind:isLoading
-                  onKeyPress={(e) => onKeypress(e)}
-                />
-              </div>
-            </div>
-            {#if $alertStore.isOpen}
-              <Alert
-                message={$alertStore.message}
-                isOpen={$alertStore.isOpen}
-                className={$alertStore.className}
-              />
-            {/if}
-            <div class="btns d-flex justify-content-end">
-              <button
-                class="btn btn-primary ml-btn-action"
-                on:click={unSetAddress}
-              >
-                <i class="fas fa-angle-left" />
-                Back
-              </button>
-              <button
-                {disabled}
-                on:click={() => {
-                  onKeypress({ keyCode: 13 });
-                }}
-                class="btn btn-success ml-btn-action"
-              >
-                Sign & submit unvesting transaction
-              </button>
-            </div>
+      <div class="card-body">
+        <h5 class="card-title d-flex justify-content-center">
+          <span class="screen-view-dot">2</span>
+          Sign and submit the unvesting transaction
+        </h5>
+        <hr />
+        <small>
+          The guardians have prepared and signed an unvesting transaction but it
+          still needs your signature.<br />
+          The secret is used only on this page to sign the transaction, it is not
+          stored nor sent anywhere.
+        </small>
+        <div class="row">
+          <div class="col-12 padding-left-none padding-right-none">
+            <Input
+              bind:value={privateKeyValue}
+              label="Wallet secret"
+              validation={validatePrivateKey}
+              className={'pk-input'}
+              bind:isLoading
+              onKeyPress={(e) => onKeypress(e)}
+            />
           </div>
+        </div>
+        {#if $alertStore.isOpen}
+          <Alert
+            message={$alertStore.message}
+            isOpen={$alertStore.isOpen}
+            className={$alertStore.className}
+          />
+        {/if}
+        <div class="btns d-flex justify-content-end">
+          <button class="btn btn-primary ml-btn-action" on:click={unSetAddress}>
+            <i class="fas fa-angle-left" />
+            Back
+          </button>
+          <button
+            {disabled}
+            on:click={() => {
+              onKeypress({ keyCode: 13 });
+            }}
+            class="btn btn-success ml-btn-action"
+          >
+            Sign & submit unvesting transaction
+          </button>
         </div>
       </div>
     </div>

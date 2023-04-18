@@ -61,84 +61,73 @@
 <div class="container height-100">
   <div class="d-flex justify-content-center align-items-center home-card">
     <div class="card mb-3">
-      <div class="row g-0">
-        <div class="col-md-4">
-          <img
-            src="assets/Vesting-scheduleblue.png"
-            class="img-fluid tf-image rounded-start"
-            alt="Vesting-scheduleblue"
-          />
-        </div>
-        <div class="col-md-8">
-          <div class="card-body">
-            <h5 class="card-title d-flex justify-content-center">
-              <span class="screen-view-dot">1</span>
-              Check for vested TFT
-            </h5>
-            <hr />
-            <div class="row">
-              <div class="col-12 padding-left-none padding-right-none">
-                <Input
-                  bind:value={addressValue}
-                  label="Wallet Address"
-                  validation={validateAddress}
-                  className={'address-input'}
-                  bind:isLoading
-                  onKeyPress={(e) => onKeypress(e)}
-                  placeholder={''}
-                />
-              </div>
-            </div>
-            {#if $alertStore.isOpen}
-              <Alert
-                message={$alertStore.message}
-                isOpen={$alertStore.isOpen}
-                className={$alertStore.className}
-              />
-            {/if}
-            <div class="btns d-flex justify-content-end">
-              <button
-                {disabled}
-                on:click={() => {
-                  onKeypress({ keyCode: 13 });
-                }}
-                class="btn btn-success ml-btn-action"
-              >
-                Search
-                <i class="fas fa-search" />
-              </button>
-            </div>
-            {#if vestingAccounts && !vestingAccounts.Error}
-              {#if vestingAccounts.vesting_accounts.length}
-                {#each vestingAccounts.vesting_accounts as account}
-                  <div class="card mt-4 mb-5">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-12">
-                          <strong>
-                            {Math.round((+account.TFT + Number.EPSILON) * 100) /
-                              100} vested TFT
-                          </strong>
-                        </div>
-                        <div class="col-12 mb-4">
-                          <p class="mb-0">
-                            on escrow account {account.address}
-                          </p>
-                        </div>
-                      </div>
-                      <button
-                        class="btn use-btn w-100 btn-use"
-                        on:click={activatePrivateKey}
-                      >
-                        unvest
-                      </button>
-                    </div>
-                  </div>
-                {/each}
-              {/if}
-            {/if}
+      <div class="card-body">
+        <h5 class="card-title d-flex justify-content-center">
+          <span class="screen-view-dot">1</span>
+          Check for vested TFT
+        </h5>
+        <hr />
+        <div class="row">
+          <div class="col-12 padding-left-none padding-right-none">
+            <Input
+              bind:value={addressValue}
+              label="Wallet Address"
+              validation={validateAddress}
+              className={'address-input'}
+              bind:isLoading
+              onKeyPress={(e) => onKeypress(e)}
+              placeholder={''}
+            />
           </div>
         </div>
+        {#if $alertStore.isOpen}
+          <Alert
+            message={$alertStore.message}
+            isOpen={$alertStore.isOpen}
+            className={$alertStore.className}
+          />
+        {/if}
+        <div class="btns d-flex justify-content-end">
+          <button
+            {disabled}
+            on:click={() => {
+              onKeypress({ keyCode: 13 });
+            }}
+            class="btn btn-success ml-btn-action"
+          >
+            Search
+            <i class="fas fa-search" />
+          </button>
+        </div>
+        {#if vestingAccounts && !vestingAccounts.Error}
+          {#if vestingAccounts.vesting_accounts.length}
+            {#each vestingAccounts.vesting_accounts as account}
+              <div class="card mt-4 mb-5">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <strong>
+                        {Math.round((+account.TFT + Number.EPSILON) * 100) /
+                          100} vested TFT
+                      </strong>
+                    </div>
+                    <div class="col-12 mb-4">
+                      <p class="mb-0">
+                        on escrow account {account.address}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    class="btn use-btn w-100 btn-use"
+                    on:click={activatePrivateKey}
+                  >
+                    unvest
+                  </button>
+                </div>
+              </div>
+            {/each}
+          {/if}
+        {/if}
       </div>
     </div>
   </div>
