@@ -33,17 +33,17 @@
             const transactionResult = await stellar.submitTransaction(tx);
             console.log(JSON.stringify(transactionResult, null, 2));
             console.log(
-              'Success! View the transaction at: ',
+              'Successfully submitted the unvesting transaction: ',
               transactionResult._links.transaction.href,
             );
             alertStore.set({
-              message: 'Success! Transaction Submited!',
+              message: 'Unvesting succeeded',
               className: 'success',
               isOpen: true,
             });
             isLoading = isSigned = false;
           } catch (e) {
-            console.log('An error has occured:', e);
+            console.log('An error has occurred:', e);
             throw Error(e);
           }
         }
@@ -66,7 +66,7 @@
           if (address != $activatePKStore.ownerAddress) {
             alertStore.set({
               message:
-                'The secret you provided does not match the selected wallet address.',
+                'The secret you provided does not match the previously entered wallet address',
               isOpen: true,
               className: 'danger',
             });
@@ -113,8 +113,8 @@
             <small>
               The guardians have prepared and signed an unvesting transaction
               but it still needs your signature.<br />
-              The secret is used only within this browser to sign the transaction,
-              it is not stored and not send anywhere.
+              The secret is used only on this page to sign the transaction, it is
+              not stored nor sent anywhere.
             </small>
             <div class="row">
               <div class="col-12 padding-left-none padding-right-none">
