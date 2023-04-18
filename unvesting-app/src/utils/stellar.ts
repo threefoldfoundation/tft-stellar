@@ -14,7 +14,6 @@ class Stellar {
   async init(secret: string) {
     const walletKeypair = StellarSdk.Keypair.fromSecret(secret);
     const walletPublicKey = walletKeypair.publicKey();
-    await server.loadAccount(walletPublicKey);
     return walletPublicKey;
   }
 
