@@ -34,12 +34,16 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: VITE_STELLAR_NETWORK
+            - name: STELLAR_NETWORK
               value:  {{ .Values.network }}
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
+          lifecycle:
+            postStart:
+              exec:
+                command: ["bash", "-c", "echo \"window.STELLAR_NETWORK='$STELLAR_NETWORK'\" >  /usr/share/nginx/html/config.js"]
           livenessProbe:
             httpGet:
               path: /
