@@ -14,15 +14,11 @@ This projects uses `svelte` and `vite` and it depandes on `npx`
 
 - [npx](https://www.npmjs.com/package/npx)
 
-## Build environment
+## Network configuration
 
-It all depends on the stellar network, You have to export the varible then run the server.
+It all depends on the stellar network, You have to set configure the network in [config.js](./public/config.js) file.
 
-```sh
-    export VITE_STELLAR_NETWORK=test
-```
-
-`VITE_STELLAR_NETWORK` options.
+`window.STELLAR_NETWORK` options.
 
 - test
 - main

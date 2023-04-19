@@ -24,7 +24,7 @@
           const sourceKeypair = Keypair.fromSecret(options.secret);
           const tx = TransactionBuilder.fromXDR(
             res.data,
-            window.config.VITE_STELLAR_NETWORK.toLocaleLowerCase() === 'test'
+            window.config.STELLAR_NETWORK.toLocaleLowerCase() === 'test'
               ? Networks.TESTNET
               : Networks.PUBLIC,
           );
