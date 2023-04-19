@@ -56,9 +56,7 @@ ingress:
   #   - host: chart-example.local
   #     paths:
   #       - path: /
-  #         backend:
-  #           serviceName: unvestingapp
-  #           servicePort: 80
+  #         pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
