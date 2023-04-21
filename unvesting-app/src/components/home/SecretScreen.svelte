@@ -49,7 +49,7 @@
         }
       })
       .catch((err) => {
-        let errorMessage: string = '';
+        let errorMessage = '';
         if (String(err.message).includes('400')) {
           errorMessage = 'An error occurred, please contact support';
         } else {
