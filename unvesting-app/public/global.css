@@ -58,16 +58,6 @@ a {
   padding-left: 0;
 }
 
-<<<<<<< Updated upstream
-=======
-.wallet-icon {
-  font-size: 40px;
-  color: var(--nav-primary);
-  margin-top: -9px;
-  margin-left: -5px;
-}
-
->>>>>>> Stashed changes
 input {
   margin-top: 0 !important;
 }
@@ -115,21 +105,4 @@ input {
 
 .p-relative {
   position: relative;
-<<<<<<< Updated upstream
-=======
-}
-
-.unlocked {
-  font-size: 40px;
-  color: var(--nav-primary);
-  margin-top: -20px;
-  margin-left: -5px;
-}
-
-.locked {
-  font-size: 40px;
-  color: var(--nav-primary);
-  margin-top: -18px;
-  margin-left: -5px;
->>>>>>> Stashed changes
 }
