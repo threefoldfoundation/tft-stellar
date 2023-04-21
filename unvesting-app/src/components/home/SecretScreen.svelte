@@ -49,8 +49,14 @@
         }
       })
       .catch((err) => {
+        let errorMessage: string = '';
+        if (String(err.message).includes('400')) {
+          errorMessage = 'An error occurred, please contact support';
+        } else {
+          errorMessage = 'An error occurred, please try again later';
+        }
         alertStore.set({
-          message: err.response.data.error,
+          message: err.response ? err.response.data.error : errorMessage,
           className: 'danger',
           isOpen: true,
         });

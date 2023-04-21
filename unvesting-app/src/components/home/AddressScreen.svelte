@@ -21,8 +21,6 @@
           .post('vesting_accounts', { owner_address: addressValue })
           .then((res) => {
             if (res) {
-              console.log(res.data);
-
               vestingAccounts = res.data;
               if (vestingAccounts && !vestingAccounts.vesting_accounts.length) {
                 alertStore.set({
