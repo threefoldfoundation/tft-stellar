@@ -106,3 +106,8 @@ input {
 .p-relative {
   position: relative;
 }
+.nav-logo-btn{
+  outline: 0;
+  border: 0;
+  background: transparent;
+}
