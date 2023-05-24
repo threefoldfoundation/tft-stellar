@@ -73,6 +73,9 @@ def check_command(tfchainaddress, deauthorizationsfile, issuedfile, stellaraddre
             deauthorizationtx = splitdeauthorization[0]
             break
     print(f"Deauthorization transaction: {deauthorizationtx}")
+    if not deauthorizationtx:
+        print("This address was not deauthorized so had no balance on the rivine chain")
+        return
 
     issuedtokens = []
     totalissuedamount = Decimal()
