@@ -27,7 +27,10 @@ def get_ordered_assets(asset_pair: str) -> list[stellar_sdk.Asset]:
 @click.argument("asset_pair", type=click.Choice(["XLM/TFT", "XLM/USDC", "TFT/USDC"]), required=True)
 @click.argument("account_secret", type=str, required=True)
 def manage_liquidity_pool_command(asset_pair, account_secret):
+    manage_liquidity_pool(asset_pair,account_secret)
 
+
+def manage_liquidity_pool(asset_pair, account_secret):
     try:
         account_keypair = stellar_sdk.Keypair.from_secret(account_secret)
     except stellar_sdk.exceptions.Ed25519SecretSeedInvalidError:
