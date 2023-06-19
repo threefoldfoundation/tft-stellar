@@ -100,10 +100,12 @@ There are two options of getting thetransaction funded:
 
 The source of the transaction will be modified and a fee payment operation is added. It is signed by the transaction funding service and needs to be signed by the client and submitted to the Stellar network.
 
-- Send a signed transaction containing the oiperation to execute and a fee payment operation. 
+- Send a signed transaction containing the oiperation to execute and a fee payment operation.
 
 The details of the feepayment operation can be found through the conditions endpoint. Set the fee of your transaction to 0.
 The transaction funding service will wrap the transaction in a feebump transaction and submit it to the Stellar network.
+
+The second option is easier since in the first one the returned transaction needs to be validated by the client as it needs to be sure what's in there before signing.
 
 curl examle:
 
