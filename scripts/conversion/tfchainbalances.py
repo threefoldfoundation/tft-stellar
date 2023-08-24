@@ -16,6 +16,8 @@ from tfchainexplorer import unlockhash_get, blockchain_info_get
 def tfchain_balances(deauthorizationsfile, output):
     counter = 0
     blockchaininfo = blockchain_info_get()
+    # Write header
+    output.write('rivineaddress free locked total')
     for deauthorization in deauthorizationsfile.read().splitlines():
         counter += 1
         print(f"{counter}")
@@ -23,10 +25,10 @@ def tfchain_balances(deauthorizationsfile, output):
         address = splitdeauthorization[1]
         unlockhash = unlockhash_get(address)
         balance = unlockhash.balance(blockchaininfo)
-
         unlocked_tokens = balance.available.value
         locked_tokens = balance.locked.value
-        output.write(f"{address} Free: {unlocked_tokens} Locked: {locked_tokens}\n")
+        total= unlocked_tokens + locked_tokens 
+        output.write(f"{address} {unlocked_tokens} {locked_tokens} {total}\n")
         time.sleep(2)  # give the explorer a break
 
 if __name__ == "__main__":
