@@ -13,3 +13,4 @@ scripts/vesting/unvesting_transactions.txt
 scripts/vesting/unvesting_transactions_production.txt
 .unvesting-app/public/config.js
 .vscode/
+tft_data.db

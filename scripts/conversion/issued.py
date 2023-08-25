@@ -38,13 +38,14 @@ def list_issued():
                 if response_transaction["memo_type"] != "hash":
                     continue
                 memo = binascii.hexlify(base64.b64decode(response_transaction["memo"])).decode("utf-8")
+                
                 env = stellar_sdk.transaction_envelope.TransactionEnvelope.from_xdr(
                     response_transaction["envelope_xdr"], stellar_sdk.Network.PUBLIC_NETWORK_PASSPHRASE
                 )
                 paymentoperation = env.transaction.operations[0]
 
                 print(
-                    f"{memo} {paymentoperation.amount} {tokencode} {paymentoperation.destination} {response_transaction['id']}"
+                    f"{memo} {paymentoperation.amount} {tokencode} {paymentoperation.destination.account_id} {response_transaction['id']}"
                 )
 
 
