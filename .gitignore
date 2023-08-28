@@ -3,7 +3,6 @@ createlockingscript.sh
 issued.txt
 deauthorizedbalances.txt
 docker/helm/packagedcharts
-matched.txt
 ThreeBotPackages/unlock_service/scripts/testnetdata
 scripts/data
 specs/l2validatorapplication/destinationaddress/destinationaddress

@@ -19,6 +19,7 @@ The data is available in the tft_data.db sqlite database.
 | free            | spendable TFT at the time of locking |
 | locked          | Timelocked TFT at the time of locking |
 | total           | = free + locked |
+| stellaraddress  | If migrated, the corresponding address on Stellar |
 
 #### Data collection
 
@@ -31,6 +32,8 @@ The `conversion/lockedaddresses.py` script finds these lock transactions and pri
 The `conversion/tfchainbalances.py` script collects the balance on rivine of the locked addresses. It's being output to  `conversion/deauthorizedbalances.txt`.
 
 The `rivinedata.py` script combines it in the `rivine` table.
+
+To add the `stellaraddress` column, run the `migrationaddresses.py` script after the `issuertxs.py` script from the next steps.
 
 ### TFTA to TFT conversions
 

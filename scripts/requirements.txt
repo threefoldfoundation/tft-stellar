@@ -2,3 +2,4 @@ Click==7.0
 stellar-sdk==8.2.1
 py-dateutil
 pandas
+sqlalchemy
