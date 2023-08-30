@@ -69,3 +69,14 @@ There is 1 transaction which is not included in this table as it has no hash mem
 ### Data collection of tftadestruction and minted
 
 These tables are created by the `issuertxs.py` script that queries the Stellar network for all transactions on the TFT and TFTA issuer accounts.
+
+### Special accounts
+
+`specialaccounts` table
+
+| Column          |
+| --------------- |
+| chain           |
+| address         |
+| name            |
+| description     |
