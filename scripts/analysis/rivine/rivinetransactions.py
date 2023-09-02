@@ -30,8 +30,8 @@ def get_sender(senders:[], value)-> str:
             return sender.address
     raise Exception("not enough value input")
 
-TABLE_CREATION_SQL='CREATE TABLE IF NOT EXISTS rivinetxs ("transaction" TEXT, "from" TEXT, "to" TEXT, "amount" TEXT, "timestamp" INTEGER, "type" TEXT);'
-INSERT_SQL='INSERT INTO rivinetxs("transaction","from","to","amount","timestamp","type") VALUES(?,?,?,?,?,?);'
+TABLE_CREATION_SQL='CREATE TABLE IF NOT EXISTS rivinetxs ("transaction" TEXT, "from" TEXT, "to" TEXT, "amount" TEXT, "timestamp" INTEGER, "type" TEXT, "farmingproof" TEXT);'
+INSERT_SQL='INSERT INTO rivinetxs("transaction","from","to","amount","timestamp","type","farmingproof") VALUES(?,?,?,?,?,?,?);'
 @click.command(help="Fetches all Rivine transactions and stores them in an sqlite database")
 @click.argument("dbfile", default="tft_data.db", type=click.Path())
 @click.option('--start','-s',default=0, type=int)
@@ -54,6 +54,9 @@ def find_rivine_transactions( dbfile,start,preview):
                     senders.append(inputoutput(cio["unlockhash"],decimal.Decimal(cio["value"])))
                     
             transaction=transaction_from_explorer_transaction(raw_transaction)
+            is_mint_transaction=isinstance(transaction,tfchaintypes.transactions.Minting.TransactionV129)
+            farming_proof=str(transaction.data) if is_mint_transaction else None
+
             for output in transaction.coin_outputs:
                 beneficiary=None
                 if isinstance(output.condition,tfchaintypes.ConditionTypes.ConditionUnlockHash):
@@ -61,27 +64,29 @@ def find_rivine_transactions( dbfile,start,preview):
                 elif isinstance(output.condition,tfchaintypes.ConditionTypes.ConditionLockTime):
                     beneficiary=str(output.condition.unlockhash)
                 else:    
-                    print(f"ROB: unparsed conditiontype in transaction {transaction.id}: {output.condition}")
+                    print(f"unparsed conditiontype in transaction {transaction.id}: {output.condition}")
                     return
-                sender=get_sender(senders,output.value.value)
+                
+                sender=None if is_mint_transaction else get_sender(senders,output.value.value)
                 if preview:
-                    print(f"transaction {transaction.id} {output.value} from {sender} to {beneficiary} at {timestamp}, type: payment")
+                    print(f"transaction {transaction.id} {output.value} from {sender} to {beneficiary} at {timestamp}, type {'farming' if is_mint_transaction else 'payment'} farmingproof {farming_proof}")
                 else:
-                    db_connection.execute(INSERT_SQL,(transaction.id,sender,beneficiary,str(output.value),timestamp,'payment'))
-            for txfee in transaction.miner_fees:
-                amount=txfee.value
-                sender=get_sender(senders,amount)
-                if preview:
-                    print(f"transaction {transaction.id} {amount.copy_negate()} from {sender} at {timestamp} type: txfee")
-                else:
-                    db_connection.execute(INSERT_SQL,(transaction.id,sender,None,str(amount.copy_negate()),timestamp,'txfee'))
+                    db_connection.execute(INSERT_SQL,(transaction.id,sender,beneficiary,str(output.value),timestamp,'farming' if is_mint_transaction else 'payment',farming_proof))
+            if not is_mint_transaction:
+                for txfee in transaction.miner_fees:
+                    amount=txfee.value
+                    sender=get_sender(senders,amount)
+                    if preview:
+                        print(f"transaction {transaction.id} {amount.copy_negate()} from {sender} at {timestamp} type: txfee")
+                    else:
+                        db_connection.execute(INSERT_SQL,(transaction.id,sender,None,str(amount.copy_negate()),timestamp,'txfee',None))
             for minerpayout in raw_transaction["minerpayouts"]:
                 beneficiary=minerpayout["rawminerpayout"]["unlockhash"]
                 amount=Currency.from_json(minerpayout["rawminerpayout"]["value"]).value
                 if preview:
                     print(f"transaction {transaction.id} {amount} to {beneficiary} at {timestamp}, type: minerfee")
                 else:
-                    db_connection.execute(INSERT_SQL,(transaction.id,None,beneficiary,str(amount),timestamp,'minerfee'))
+                    db_connection.execute(INSERT_SQL,(transaction.id,None,beneficiary,str(amount),timestamp,'minerfee',farming_proof))
         db_connection.commit()
         time.sleep(0.5)  # give the explorer a break
         block_height+=1
