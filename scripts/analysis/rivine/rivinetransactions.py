@@ -54,7 +54,8 @@ def find_rivine_transactions( dbfile,start,preview):
                     senders.append(inputoutput(cio["unlockhash"],decimal.Decimal(cio["value"])))
                     
             transaction=transaction_from_explorer_transaction(raw_transaction)
-            is_mint_transaction=isinstance(transaction,tfchaintypes.transactions.Minting.TransactionV129)
+            is_mint_transaction= isinstance(transaction,tfchaintypes.transactions.Minting.TransactionV129)
+            is_mint_related_transaction=is_mint_transaction or isinstance(transaction,tfchaintypes.transactions.Minting.TransactionV128) 
             farming_proof=str(transaction.data) if is_mint_transaction else None
 
             for output in transaction.coin_outputs:
@@ -69,12 +70,12 @@ def find_rivine_transactions( dbfile,start,preview):
                     print(f"unparsed conditiontype in transaction {transaction.id}: {output.condition}")
                     return
                 
-                sender=None if is_mint_transaction else get_sender(senders,output.value.value)
+                sender=None if is_mint_related_transaction else get_sender(senders,output.value.value)
                 if preview:
-                    print(f"transaction {transaction.id} {output.value} from {sender} to {beneficiary} at {timestamp}, type {'farming' if is_mint_transaction else 'payment'} farmingproof {farming_proof}")
+                    print(f"transaction {transaction.id} {output.value} from {sender} to {beneficiary} at {timestamp}, type {'farming' if is_mint_related_transaction else 'payment'} farmingproof {farming_proof}")
                 else:
-                    db_connection.execute(INSERT_SQL,(transaction.id,sender,beneficiary,str(output.value),timestamp,'farming' if is_mint_transaction else 'payment',farming_proof))
-            if not is_mint_transaction:
+                    db_connection.execute(INSERT_SQL,(transaction.id,sender,beneficiary,str(output.value),timestamp,'farming' if is_mint_related_transaction else 'payment',farming_proof))
+            if not is_mint_related_transaction:
                 for txfee in transaction.miner_fees:
                     amount=txfee.value
                     sender=get_sender(senders,amount)
