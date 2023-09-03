@@ -63,6 +63,8 @@ def find_rivine_transactions( dbfile,start,preview):
                     beneficiary=str(output.condition.unlockhash)
                 elif isinstance(output.condition,tfchaintypes.ConditionTypes.ConditionLockTime):
                     beneficiary=str(output.condition.unlockhash)
+                elif isinstance(output.condition,tfchaintypes.ConditionTypes.ConditionMultiSignature):
+                   beneficiary=str(output.condition.unlockhash) 
                 else:    
                     print(f"unparsed conditiontype in transaction {transaction.id}: {output.condition}")
                     return
