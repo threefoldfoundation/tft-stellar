@@ -5,10 +5,10 @@
 | Column          | |
 | --------------- | - |
 | transaction     |  |
-| from | sending adress |
-| amount            | stored as text |
-| to          |  reveiving address |
-| timestamp       |  time in unix time |
+| from            | sending address |
+| amount          | stored as text |
+| to              | reveiving address |
+| timestamp       | time in unix time |
 | type            | payment, minerfee, txfee, farming |
 | farmingproof    | in case of farming |
 
