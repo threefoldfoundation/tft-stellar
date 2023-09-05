@@ -3,7 +3,7 @@ import random
 from .Base import TransactionBaseClass, TransactionVersion
 
 from ..FulfillmentTypes import FulfillmentBaseClass, FulfillmentSingleSignature, FulfillmentFactory
-from ..ConditionTypes import ConditionBaseClass, ConditionNil, UnlockHash
+from ..ConditionTypes import ConditionBaseClass, ConditionNil, UnlockHash, ConditionFactory
 from ..PrimitiveTypes import BinaryData, Currency
 from ..IO import CoinInput, CoinOutput
 
@@ -124,7 +124,7 @@ class TransactionV176(TransactionBaseClass):
             self._auth_fulfillment = None
             return
         if not isinstance(value, FulfillmentBaseClass):
-            raise Exzception(
+            raise Exception(
                 "AuthAddressUpdate (v176) Transaction's auth fulfillment has to be a subtype of FulfillmentBaseClass, not {}".format(
                     type(value)
                 )
@@ -241,7 +241,7 @@ class TransactionV177(TransactionBaseClass):
     _SPECIFIER = b"auth cond update"
 
     def __init__(self):
-        self._nonce = BinaryData(j.data.idgenerator.generateXByteID(8), strencoding="base64")
+        self._nonce = BinaryData(_generateXByteID(8), strencoding="base64")
         self._auth_fulfillment = None
         self._auth_condition = None
         self._data = None
@@ -400,8 +400,8 @@ class TransactionV177(TransactionBaseClass):
 
     def _from_json_data_object(self, data):
         self._nonce = BinaryData.from_json(data.get("nonce", ""), strencoding="base64")
-        self._auth_condition = j.clients.tfchain.types.conditions.from_json(data.get("authcondition", {}))
-        self._auth_fulfillment = j.clients.tfchain.types.fulfillments.from_json(data.get("authfulfillment", {}))
+        self._auth_condition = ConditionFactory.from_json(data.get("authcondition", {}))
+        self._auth_fulfillment = FulfillmentFactory.from_json(data.get("authfulfillment", {}))
         self._miner_fees = [Currency.from_json(fee) for fee in data.get("minerfees", []) or []]
         self._data = BinaryData.from_json(data.get("arbitrarydata", None) or "", strencoding="base64")
 

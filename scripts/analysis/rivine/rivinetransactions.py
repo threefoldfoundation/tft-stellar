@@ -57,7 +57,7 @@ def find_rivine_transactions( dbfile,start,preview):
             
             is_mint_transaction= isinstance(transaction,tfchaintypes.transactions.Minting.TransactionV129)
             is_mint_related_transaction=is_mint_transaction or isinstance(transaction,tfchaintypes.transactions.Minting.TransactionV128)
-            is_authorization_transaction= isinstance(transaction,tfchaintypes.transactions.Authcoin.TransactionV176)
+            is_authorization_transaction= isinstance(transaction,tfchaintypes.transactions.Authcoin.TransactionV176) or isinstance(transaction,tfchaintypes.transactions.Authcoin.TransactionV177)
             farming_proof=str(transaction.data) if is_mint_transaction else None
 
             for output in transaction.coin_outputs:
