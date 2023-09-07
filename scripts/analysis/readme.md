@@ -8,7 +8,7 @@ In order to perform some basic analysis on TFT, data is gathered in an sqlite da
 
 The data is available in the tft_data.db sqlite database.
 
-### Rivine
+### Rivine closing
 
 `rivine` table:
 
@@ -31,9 +31,31 @@ The `conversion/lockedaddresses.py` script finds these lock transactions and pri
 
 The `conversion/tfchainbalances.py` script collects the balance on rivine of the locked addresses. It's being output to  `conversion/deauthorizedbalances.txt`.
 
-The `rivinedata.py` script combines it in the `rivine` table.
+The `rivineclosing.py` script combines it in the `rivine` table.
 
 To add the `stellaraddress` column, run the `migrationaddresses.py` script after the `issuertxs.py` script from the next steps.
+
+### Rivine transaction data
+
+`rivinetxs` table
+
+| Column          | |
+| --------------- | - |
+| transaction     |  |
+| from            | sending address |
+| amount          | stored as text |
+| to              | reveiving address |
+| timestamp       | time in unix time |
+| type            | payment, minerfee, txfee, farming |
+| farmingproof    | in case of farming |
+
+`from` is empty if the type is minerfee or farmed. The genesis transaction(a2ee0aa706c9de46ec57dbba1af8d352fbcc3cc5e9626fc56337fd5e9ca44c8d) has initial TFT's so the `from` is empty there too.
+
+`to` is empty if the type is txfee.
+
+The remainder of the used inputs are sent back to the sender, hence there are payments from addresses to itself.
+
+The `rivinetransactions.py` script populates this data from the rivine explorer.
 
 ### TFTA to TFT conversions
 
