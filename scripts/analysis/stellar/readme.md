@@ -24,3 +24,11 @@ Compile/run `main.go`. The program uses the addresses from the [minted table](..
 - Trades are not listed in the transactions, will have to use `trades for account` to list them, Arbitragetraders using pathpayments never have a TFT trustline and do massive amounts of trades.
 
 - We have to list all transactions as not everything are payments and trades (like adding/removing from liquidity pools).
+
+- Addresses that got TFT by only buying from liquidity pools are not included at the moment
+
+- claimable balances are ignored at the moment ( an already claimed claimable balance can not be searched for bt id in horizon)
+
+## Support tables
+
+`stellartxcursor` holds a stellar address and the last paging token for `Transactions for Account` requests.
