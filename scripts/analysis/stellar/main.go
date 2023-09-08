@@ -91,6 +91,8 @@ func main() {
 							continue
 						} else if _, ok := op.(*txnbuild.AllowTrust); ok {
 							continue
+						} else if _, ok := op.(*txnbuild.SetTrustLineFlags); ok {
+							continue
 						} else if _, ok := op.(*txnbuild.BeginSponsoringFutureReserves); ok {
 							continue
 						} else if _, ok := op.(*txnbuild.EndSponsoringFutureReserves); ok {
