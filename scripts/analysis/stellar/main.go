@@ -89,6 +89,8 @@ func main() {
 							continue
 						} else if _, ok := op.(*txnbuild.BumpSequence); ok {
 							continue
+						} else if _, ok := op.(*txnbuild.AllowTrust); ok {
+							continue
 						} else if _, ok := op.(*txnbuild.BeginSponsoringFutureReserves); ok {
 							continue
 						} else if _, ok := op.(*txnbuild.EndSponsoringFutureReserves); ok {
@@ -125,9 +127,25 @@ func main() {
 								}
 							}
 							continue
+						} else if _, ok := op.(*txnbuild.LiquidityPoolWithdraw); ok {
+							lp, amount, err := getLiquidityPoolWithdrawInfo(transaction.ID)
+							if err != nil {
+								panic(err) // Is recoverable, should retry
+							}
+							if amount == "" {
+								continue
+							}
+							if preview {
+								fmt.Println(transaction.ID, lp, "sent", amount, "TFT", "to", address, "with memo", textMemo, "at", transaction.LedgerCloseTime.Unix())
+							} else {
+								if err = StorePayment(dbTx, transaction.ID, "lp "+lp, amount, address, "TFT", textMemo, transaction.LedgerCloseTime.Unix()); err != nil {
+									panic(err)
+								}
+							}
+							continue
 
 						}
-						panic(fmt.Sprintf("Unsupported Operation of type %T", op))
+						panic(fmt.Sprintf("Unsupported Operation of type %T in transaction %s", op, transaction.ID))
 
 					}
 					cursor = transaction.PagingToken()

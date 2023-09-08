@@ -42,6 +42,31 @@ func getLiquidityPoolDepositInfo(transactionID string) (lp string, amount string
 	return
 }
 
+func getLiquidityPoolWithdrawInfo(transactionID string) (lp string, amount string, err error) {
+	effectsReq := horizonclient.EffectRequest{
+		ForTransaction: transactionID,
+	}
+	transactionEffects, err := horizonclient.DefaultPublicNetClient.Effects(effectsReq)
+	if err != nil {
+		return
+	}
+	for _, effect := range transactionEffects.Embedded.Records {
+		if withdrawEffect, ok := effect.(effects.LiquidityPoolWithdrew); ok {
+			assetA := withdrawEffect.ReservesReceived[0].Asset
+			if assetA == "native" {
+				assetA = "XLM"
+			}
+			assetB := withdrawEffect.ReservesReceived[1].Asset
+			for _, rd := range withdrawEffect.ReservesReceived {
+				if rd.Asset == "TFT:GBOVQKJYHXRR3DX6NOX2RRYFRCUMSADGDESTDNBDS6CDVLGVESRTAC47" {
+					amount = rd.Amount
+					lp = fmt.Sprintf("%s/%s", assetA, assetB)
+				}
+			}
+		}
+	}
+	return
+}
 func fetchTransactions(address string, cursor string) (transactions []horizon.Transaction) {
 	timeouts := 0
 	opRequest := horizonclient.TransactionRequest{
