@@ -11,6 +11,8 @@
 | timestamp       | time in unix time |
 | type            | payment, trade |
 
+Deposits into a liquidity pool are in the form `lp <assetA>/<assetB>`in the to field, removals from a liquidity pool have this format in the from field.
+
 ## Go instead of Python
 
 While the rest of the analysis ingestion programs is written Python, the ingestion of TFT Stellar transactions is written in Go as the Python sdk gives errors on loading certain transactions from an envelope xdr.

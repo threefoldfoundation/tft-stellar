@@ -2,14 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"encoding/hex"
 	"flag"
 	"fmt"
-	"net/http"
-	"time"
 
-	"github.com/stellar/go/clients/horizonclient"
-	"github.com/stellar/go/protocols/horizon"
 	"github.com/stellar/go/txnbuild"
 	_ "modernc.org/sqlite"
 )
@@ -114,8 +109,23 @@ func main() {
 							//TODO a rare case where the swap does not incur a trade should be handled
 						} else if _, ok := op.(*txnbuild.ClaimClaimableBalance); ok {
 							continue //probably never used
-						} else if lpDepositOperation, ok := op.(*txnbuild.LiquidityPoolDeposit); ok {
-							panic("should investigate liquidity pool deposit " + hex.EncodeToString(lpDepositOperation.LiquidityPoolID[:]) + " in transaction " + transaction.ID)
+						} else if _, ok := op.(*txnbuild.LiquidityPoolDeposit); ok {
+							lp, amount, err := getLiquidityPoolDepositInfo(transaction.ID)
+							if err != nil {
+								panic(err) // Is recoverable, should retry
+							}
+							if amount == "" {
+								continue
+							}
+							if preview {
+								fmt.Println(transaction.ID, address, "sent", amount, "TFT", "to", lp, "with memo", textMemo, "at", transaction.LedgerCloseTime.Unix())
+							} else {
+								if err = StorePayment(dbTx, transaction.ID, address, amount, "lp "+lp, "TFT", textMemo, transaction.LedgerCloseTime.Unix()); err != nil {
+									panic(err)
+								}
+							}
+							continue
+
 						}
 						panic(fmt.Sprintf("Unsupported Operation of type %T", op))
 
@@ -142,37 +152,4 @@ func addAddresses(addresses map[string]bool, addressesToAdd map[string]bool) {
 	for address := range addressesToAdd {
 		addresses[address] = true
 	}
-}
-func fetchTransactions(address string, cursor string) (transactions []horizon.Transaction) {
-	timeouts := 0
-	opRequest := horizonclient.TransactionRequest{
-		ForAccount:    address,
-		IncludeFailed: false,
-		Cursor:        cursor,
-		Limit:         100,
-	}
-
-	for {
-
-		response, err := horizonclient.DefaultPublicNetClient.Transactions(opRequest)
-		if err != nil {
-			fmt.Println("Error getting transactions for stellar account", "address", opRequest.ForAccount, "cursor", opRequest.Cursor, "pagelimit", opRequest.Limit, "error", err)
-			horizonError, ok := err.(*horizonclient.Error)
-			if ok && (horizonError.Response.StatusCode == http.StatusGatewayTimeout || horizonError.Response.StatusCode == http.StatusServiceUnavailable) {
-				timeouts++
-				if timeouts == 1 {
-					opRequest.Limit = 5
-				} else if timeouts > 1 {
-					opRequest.Limit = 1
-				}
-
-				fmt.Println("Request timed out, lowering pagelimit", "pagelimit", opRequest.Limit)
-			}
-			time.Sleep(5 * time.Second)
-			continue
-		}
-		return response.Embedded.Records
-
-	}
-
 }

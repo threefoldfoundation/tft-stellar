@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"strings"
 )
 
 const (
@@ -68,7 +69,9 @@ func addDestinationAdresses(db *sql.DB, addresses map[string]bool) (err error) {
 		if err = rows.Scan(&address); err != nil {
 			return
 		}
-		addresses[address] = true
+		if !strings.HasPrefix(address, "lp ") {
+			addresses[address] = true
+		}
 	}
 	err = rows.Err()
 	return
