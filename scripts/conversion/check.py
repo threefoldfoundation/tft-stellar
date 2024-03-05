@@ -14,11 +14,14 @@ def check_command(deauthorizationsfile, deauthorizedbalancesfile, issuedfile):
     deauthorizedbalances = {}
     for deauthorizedbalance in deauthorizedbalancesfile.read().splitlines():
         splitbalance = deauthorizedbalance.split()
-        deauthorizedbalances[splitbalance[0]] = {"free": splitbalance[2], "locked": splitbalance[4]}
+        deauthorizedbalances[splitbalance[0]] = {"free": splitbalance[1], "locked": splitbalance[2]}
 
     deauthorizations = {}
     numberofdeauthorizations = 0
     numberofzerobalances = 0
+    # total_stellar = Decimal()
+    total_rivine = Decimal()
+    migrated_to_stellar = Decimal()
     for deauthorization in deauthorizationsfile.read().splitlines():
         numberofdeauthorizations += 1
         splitdeauthorization = deauthorization.split()
@@ -38,6 +41,8 @@ def check_command(deauthorizationsfile, deauthorizedbalancesfile, issuedfile):
         splitissuance = issuance.split()
         deauthorizationtx = splitissuance[0]
         totalissuedamount = Decimal(splitissuance[1])
+        # all issued tokens on stellar that have a hash type memo
+        # total_stellar += totalissuedamount
         if deauthorizationtx in issuedtokens:
             totalissuedamount += issuedtokens[deauthorizationtx]
         issuedtokens[deauthorizationtx] = totalissuedamount
@@ -63,8 +68,18 @@ def check_command(deauthorizationsfile, deauthorizedbalancesfile, issuedfile):
                 f"deauthtx: {deauthorizationtx} tfchainaddress: {tfchainaddress} difference: {difference}"
             )
             numberofincorrectconversions += 1
+        # all de-authorized balance on rivine
+        total_rivine += deauthorizedbalance
+        # migrated balance
+        migrated_to_stellar += issuedbalance
+
     conversionsleft = len(deauthorizations)
     print(f"{numberofdeauthorizations-(conversionsleft+numberofzerobalances)} conversions done, {conversionsleft} left")
+    print()
+    print(f"{total_rivine} TFT is the sum of all deauthorized balances on rivine")
+    print(f"{migrated_to_stellar} TFT was migrated from rivine to stellar (hash memo match deauth tx on rivine)")
+    print(f"{(total_rivine - migrated_to_stellar)} TFT Remains on rivine unmigrated (based on above number)")
+    print()
     print(f"{numberofcorrectconversions} correct conversions")
     print(f"{numberofincorrectconversions} incorrect conversions:")
     for ic in incorrectconversions:
