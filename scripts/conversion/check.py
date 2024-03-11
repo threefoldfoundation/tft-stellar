@@ -84,6 +84,11 @@ def check_command(deauthorizationsfile, deauthorizedbalancesfile, issuedfile):
     print(f"{numberofincorrectconversions} incorrect conversions:")
     for ic in incorrectconversions:
         print(ic)
+    print("----------")
+    print("remaining accounts balances on rivine")
+    for tx in deauthorizations.keys():
+        tfchainaddress = deauthorizations[tx]
+        print(f"deauthtx: {tx} tfchainaddress: {tfchainaddress} free: {deauthorizedbalances[tfchainaddress]['free']} locked: {deauthorizedbalances[tfchainaddress]['locked']} total: {deauthorizedbalances[tfchainaddress]['free'] + deauthorizedbalances[tfchainaddress]['locked']}")
 
 
 if __name__ == "__main__":
