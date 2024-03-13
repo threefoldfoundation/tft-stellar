@@ -37,12 +37,6 @@ A TFTA can be converted to a TFT anytime anyone wants.
 
 All TFT on these bridge accounts are locked on Stellar and cannot be used, they are part of the TFT bucket above.
 
-## Wallet implementations
-
-While we provide some tooling to make it easier for users of only these tokens, it are regular assets on the Stellar network so any Stellar wallet can be used.
-
-- [Jumpscale](https://github.com/threefoldtech/jumpscaleX_libs/tree/development/JumpscaleLibs/clients/stellar)
-
 ## tft-stellar services
 
 - [Conversion Service](ThreeBotPackages/tfchainmigration_service/readme.md): Service for converting TFChain TFT's to Stellar TFT's.
