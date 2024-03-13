@@ -2,6 +2,8 @@
 
 Threefoldtoken on the stellar network
 
+> Status 13 March 2024:
+
 Total amount of TFT = 891,551,662 + 51,022,747 TFT = 942,574,409 TFT
 
 The maximum amount of TFT will be 1 Billion TFT
@@ -28,8 +30,6 @@ A TFTA can be converted to a TFT anytime anyone wants.
 > 51,022,747 TFT
 
 ## Bridges
-
-Status 13 March 2024:
 
 - [Binance Smart Chain - BSC](https://stellar.expert/explorer/public/account/GBFFWXWBZDILJJAMSINHPJEUJKB3H4UYXRWNB4COYQAF7UUQSWSBUXW5) 68,340,360 TFT
 - [Etherium Bridge](https://stellar.expert/explorer/public/account/GARQ6KUXUCKDPIGI7NPITDN55J23SVR5RJ5RFOOU3ZPLMRJYOQRNMOIJ):  3,159,861 TFT
