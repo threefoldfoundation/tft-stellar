@@ -6,7 +6,7 @@ Threefoldtoken on the stellar network
 
 Total amount of TFT = 891,551,662 + 51,022,747 TFT = 942,574,409 TFT
 
-The maximum amount of TFT will be 1 Billion TFT
+The maximum amount of TFT will be 1 Billion TFT (originally was planned for 4 billion)
 
 ## TFT
 
