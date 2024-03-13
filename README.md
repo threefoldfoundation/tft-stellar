@@ -16,7 +16,7 @@ Threefoldtoken on the stellar network
 
 ## Token statistics
 
-Token statistics can be seen on [https://tokenstats.threefoldtoken.com](https://tokenstats.threefoldtoken.com).
+Token statistics can be seen on [token statistics](https://statsdata.threefoldtoken.com/stellar_stats/api/stats)
 
 [A js-sdk script for getting statistics about  one of the tokens is also available](lib/stats/readme.md).
 
