@@ -63,6 +63,23 @@ def total_tft():
     return HTTPError(status=j.tools.http.status_codes.codes.SERVICE_UNAVAILABLE)
 
 
+@app.route("/api/total_supply")
+def total_supply():
+    # just adds TFT + TFTA on Stellar to give a total supply figure.
+    total_supply = 0
+    redis = j.clients.redis.get("redis_instance")
+    for tokencode in ["TFT", "TFTA"]:
+        if cached_data := redis.get(tokencode):
+            token_data = j.data.serializers.json.loads(cached_data)
+            if token_data.get("total_tokens"):
+                total_supply += float(token_data["total_tokens"].replace(",", ""))
+            else:
+                return HTTPError(status=j.tools.http.status_codes.codes.SERVICE_UNAVAILABLE)
+        else:
+            return HTTPError(status=j.tools.http.status_codes.codes.SERVICE_UNAVAILABLE)
+    return str(total_supply)
+
+
 @app.route("/api/total_unlocked_tft")
 def total_unlocked_tft():
     query_params = request.query.decode()
